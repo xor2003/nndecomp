@@ -2,6 +2,8 @@
 
 Neural network 16bit C/C++ decompiler
 
+Want to implement something like [https://github.com/facebookresearch/CodeGen](TransCoder)
+
 TODO:
 
 [x] Collect C++ sources of 16 bit code
