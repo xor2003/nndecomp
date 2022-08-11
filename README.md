@@ -3,10 +3,15 @@
 Neural network 16bit C/C++ decompiler
 
 TODO:
+
 [x] Collect C++ sources of 16 bit code
+
 [ ] Prepare build environment to convert .CPP into assembler. Prepare compilation validators
+
 [ ] Adopt compilers input/output to analyze with CRNN
+
 [ ] Train CRNN with compilers input/output
+
 [ ] Profit
 
 Thoughts:
