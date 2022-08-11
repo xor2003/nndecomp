@@ -1,0 +1,1298 @@
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 1
+CRC16.ASM
+
+
+
+      1					     ifndef  ??version
+      2				     ?debug  macro
+      3					     endm
+      4				     publicdll macro name
+      5					     public  name
+      6					     endm
+      7				     $comm   macro   name,dist,size,count
+      8					     comm    dist name:BYTE:count*size
+      9					     endm
+     10					     else
+     11				     $comm   macro   name,dist,size,count
+     12					     comm    dist name[size]:BYTE:count
+     13					     endm
+     14					     endif
+     15					     ?debug  V 300h
+     16					     ?debug  S "crc16.cpp"
+     17					     ?debug  C E9795AFE540963726331362E637070
+     18					     ?debug  C E94019CA181B433A5C424F524C414E44435C494E434C5544455C73+
+     19					     ?debug  C 7464696F2E68
+     20					     ?debug  C E94019CA181B433A5C424F524C414E44435C494E434C5544455C5F+
+     21					     ?debug  C 646566732E68
+     22					     ?debug  C E94019CA181C433A5C424F524C414E44435C494E434C5544455C5F+
+     23					     ?debug  C 6E66696C652E68
+     24					     ?debug  C E94019CA181B433A5C424F524C414E44435C494E434C5544455C5F+
+     25					     ?debug  C 6E756C6C2E68
+     26					     ?debug  C E94019CA181C433A5C424F524C414E44435C494E434C5544455C73+
+     27					     ?debug  C 74646C69622E68
+     28					     ?debug  C E94019CA181C433A5C424F524C414E44435C494E434C5544455C73+
+     29					     ?debug  C 7472696E672E68
+     30					     ?debug  C E9695B8C3A19433A5C424F524C414E44435C494E434C5544455C64+
+     31					     ?debug  C 6F732E68
+     32					     ?debug  C E94019CA181A433A5C424F524C414E44435C494E434C5544455C74+
+     33					     ?debug  C 696D652E68
+     34	0000			     _TEXT   segment byte public 'CODE'
+     35	0000			     _TEXT   ends
+     36				     DGROUP  group   _DATA,_BSS
+     37					     assume  cs:_TEXT,ds:DGROUP
+     38	0000			     _DATA   segment word public 'DATA'
+     39	0000			     d@	     label   byte
+     40	0000			     d@w     label   word
+     41	0000			     _DATA   ends
+     42	0000			     _BSS    segment word public 'BSS'
+     43	0000			     b@	     label   byte
+     44	0000			     b@w     label   word
+     45	0000			     _BSS    ends
+     46	0000			     _DATA   segment word public 'DATA'
+     47	0000			     _crc16tab	     label   word
+     48	0000  00			     db	     0
+     49	0001  00			     db	     0
+     50	0002  C1			     db	     193
+     51	0003  C0			     db	     192
+     52	0004  81			     db	     129
+     53	0005  C1			     db	     193
+     54	0006  40			     db	     64
+     55	0007  01			     db	     1
+     56	0008  01			     db	     1
+     57	0009  C3			     db	     195
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 2
+CRC16.ASM
+
+
+
+     58	000A  C0			     db	     192
+     59	000B  03			     db	     3
+     60	000C  80			     db	     128
+     61	000D  02			     db	     2
+     62	000E  41			     db	     65
+     63	000F  C2			     db	     194
+     64	0010  01			     db	     1
+     65	0011  C6			     db	     198
+     66	0012  C0			     db	     192
+     67	0013  06			     db	     6
+     68	0014  80			     db	     128
+     69	0015  07			     db	     7
+     70	0016  41			     db	     65
+     71	0017  C7			     db	     199
+     72	0018  00			     db	     0
+     73	0019  05			     db	     5
+     74	001A  C1			     db	     193
+     75	001B  C5			     db	     197
+     76	001C  81			     db	     129
+     77	001D  C4			     db	     196
+     78	001E  40			     db	     64
+     79	001F  04			     db	     4
+     80	0020  01			     db	     1
+     81	0021  CC			     db	     204
+     82	0022  C0			     db	     192
+     83	0023  0C			     db	     12
+     84	0024  80			     db	     128
+     85	0025  0D			     db	     13
+     86	0026  41			     db	     65
+     87	0027  CD			     db	     205
+     88	0028  00			     db	     0
+     89	0029  0F			     db	     15
+     90	002A  C1			     db	     193
+     91	002B  CF			     db	     207
+     92	002C  81			     db	     129
+     93	002D  CE			     db	     206
+     94	002E  40			     db	     64
+     95	002F  0E			     db	     14
+     96	0030  00			     db	     0
+     97	0031  0A			     db	     10
+     98	0032  C1			     db	     193
+     99	0033  CA			     db	     202
+    100	0034  81			     db	     129
+    101	0035  CB			     db	     203
+    102	0036  40			     db	     64
+    103	0037  0B			     db	     11
+    104	0038  01			     db	     1
+    105	0039  C9			     db	     201
+    106	003A  C0			     db	     192
+    107	003B  09			     db	     9
+    108	003C  80			     db	     128
+    109	003D  08			     db	     8
+    110	003E  41			     db	     65
+    111	003F  C8			     db	     200
+    112	0040  01			     db	     1
+    113	0041  D8			     db	     216
+    114	0042  C0			     db	     192
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 3
+CRC16.ASM
+
+
+
+    115	0043  18			     db	     24
+    116	0044  80			     db	     128
+    117	0045  19			     db	     25
+    118	0046  41			     db	     65
+    119	0047  D9			     db	     217
+    120	0048  00			     db	     0
+    121	0049  1B			     db	     27
+    122	004A  C1			     db	     193
+    123	004B  DB			     db	     219
+    124	004C  81			     db	     129
+    125	004D  DA			     db	     218
+    126	004E  40			     db	     64
+    127	004F  1A			     db	     26
+    128	0050  00			     db	     0
+    129	0051  1E			     db	     30
+    130	0052  C1			     db	     193
+    131	0053  DE			     db	     222
+    132	0054  81			     db	     129
+    133	0055  DF			     db	     223
+    134	0056  40			     db	     64
+    135	0057  1F			     db	     31
+    136	0058  01			     db	     1
+    137	0059  DD			     db	     221
+    138	005A  C0			     db	     192
+    139	005B  1D			     db	     29
+    140	005C  80			     db	     128
+    141	005D  1C			     db	     28
+    142	005E  41			     db	     65
+    143	005F  DC			     db	     220
+    144	0060  00			     db	     0
+    145	0061  14			     db	     20
+    146	0062  C1			     db	     193
+    147	0063  D4			     db	     212
+    148	0064  81			     db	     129
+    149	0065  D5			     db	     213
+    150	0066  40			     db	     64
+    151	0067  15			     db	     21
+    152	0068  01			     db	     1
+    153	0069  D7			     db	     215
+    154	006A  C0			     db	     192
+    155	006B  17			     db	     23
+    156	006C  80			     db	     128
+    157	006D  16			     db	     22
+    158	006E  41			     db	     65
+    159	006F  D6			     db	     214
+    160	0070  01			     db	     1
+    161	0071  D2			     db	     210
+    162	0072  C0			     db	     192
+    163	0073  12			     db	     18
+    164	0074  80			     db	     128
+    165	0075  13			     db	     19
+    166	0076  41			     db	     65
+    167	0077  D3			     db	     211
+    168	0078  00			     db	     0
+    169	0079  11			     db	     17
+    170	007A  C1			     db	     193
+    171	007B  D1			     db	     209
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 4
+CRC16.ASM
+
+
+
+    172	007C  81			     db	     129
+    173	007D  D0			     db	     208
+    174	007E  40			     db	     64
+    175	007F  10			     db	     16
+    176	0080  01			     db	     1
+    177	0081  F0			     db	     240
+    178	0082  C0			     db	     192
+    179	0083  30			     db	     48
+    180	0084  80			     db	     128
+    181	0085  31			     db	     49
+    182	0086  41			     db	     65
+    183	0087  F1			     db	     241
+    184	0088  00			     db	     0
+    185	0089  33			     db	     51
+    186	008A  C1			     db	     193
+    187	008B  F3			     db	     243
+    188	008C  81			     db	     129
+    189	008D  F2			     db	     242
+    190	008E  40			     db	     64
+    191	008F  32			     db	     50
+    192	0090  00			     db	     0
+    193	0091  36			     db	     54
+    194	0092  C1			     db	     193
+    195	0093  F6			     db	     246
+    196	0094  81			     db	     129
+    197	0095  F7			     db	     247
+    198	0096  40			     db	     64
+    199	0097  37			     db	     55
+    200	0098  01			     db	     1
+    201	0099  F5			     db	     245
+    202	009A  C0			     db	     192
+    203	009B  35			     db	     53
+    204	009C  80			     db	     128
+    205	009D  34			     db	     52
+    206	009E  41			     db	     65
+    207	009F  F4			     db	     244
+    208	00A0  00			     db	     0
+    209	00A1  3C			     db	     60
+    210	00A2  C1			     db	     193
+    211	00A3  FC			     db	     252
+    212	00A4  81			     db	     129
+    213	00A5  FD			     db	     253
+    214	00A6  40			     db	     64
+    215	00A7  3D			     db	     61
+    216	00A8  01			     db	     1
+    217	00A9  FF			     db	     255
+    218	00AA  C0			     db	     192
+    219	00AB  3F			     db	     63
+    220	00AC  80			     db	     128
+    221	00AD  3E			     db	     62
+    222	00AE  41			     db	     65
+    223	00AF  FE			     db	     254
+    224	00B0  01			     db	     1
+    225	00B1  FA			     db	     250
+    226	00B2  C0			     db	     192
+    227	00B3  3A			     db	     58
+    228	00B4  80			     db	     128
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 5
+CRC16.ASM
+
+
+
+    229	00B5  3B			     db	     59
+    230	00B6  41			     db	     65
+    231	00B7  FB			     db	     251
+    232	00B8  00			     db	     0
+    233	00B9  39			     db	     57
+    234	00BA  C1			     db	     193
+    235	00BB  F9			     db	     249
+    236	00BC  81			     db	     129
+    237	00BD  F8			     db	     248
+    238	00BE  40			     db	     64
+    239	00BF  38			     db	     56
+    240	00C0  00			     db	     0
+    241	00C1  28			     db	     40
+    242	00C2  C1			     db	     193
+    243	00C3  E8			     db	     232
+    244	00C4  81			     db	     129
+    245	00C5  E9			     db	     233
+    246	00C6  40			     db	     64
+    247	00C7  29			     db	     41
+    248	00C8  01			     db	     1
+    249	00C9  EB			     db	     235
+    250	00CA  C0			     db	     192
+    251	00CB  2B			     db	     43
+    252	00CC  80			     db	     128
+    253	00CD  2A			     db	     42
+    254	00CE  41			     db	     65
+    255	00CF  EA			     db	     234
+    256	00D0  01			     db	     1
+    257	00D1  EE			     db	     238
+    258	00D2  C0			     db	     192
+    259	00D3  2E			     db	     46
+    260	00D4  80			     db	     128
+    261	00D5  2F			     db	     47
+    262	00D6  41			     db	     65
+    263	00D7  EF			     db	     239
+    264	00D8  00			     db	     0
+    265	00D9  2D			     db	     45
+    266	00DA  C1			     db	     193
+    267	00DB  ED			     db	     237
+    268	00DC  81			     db	     129
+    269	00DD  EC			     db	     236
+    270	00DE  40			     db	     64
+    271	00DF  2C			     db	     44
+    272	00E0  01			     db	     1
+    273	00E1  E4			     db	     228
+    274	00E2  C0			     db	     192
+    275	00E3  24			     db	     36
+    276	00E4  80			     db	     128
+    277	00E5  25			     db	     37
+    278	00E6  41			     db	     65
+    279	00E7  E5			     db	     229
+    280	00E8  00			     db	     0
+    281	00E9  27			     db	     39
+    282	00EA  C1			     db	     193
+    283	00EB  E7			     db	     231
+    284	00EC  81			     db	     129
+    285	00ED  E6			     db	     230
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 6
+CRC16.ASM
+
+
+
+    286	00EE  40			     db	     64
+    287	00EF  26			     db	     38
+    288	00F0  00			     db	     0
+    289	00F1  22			     db	     34
+    290	00F2  C1			     db	     193
+    291	00F3  E2			     db	     226
+    292	00F4  81			     db	     129
+    293	00F5  E3			     db	     227
+    294	00F6  40			     db	     64
+    295	00F7  23			     db	     35
+    296	00F8  01			     db	     1
+    297	00F9  E1			     db	     225
+    298	00FA  C0			     db	     192
+    299	00FB  21			     db	     33
+    300	00FC  80			     db	     128
+    301	00FD  20			     db	     32
+    302	00FE  41			     db	     65
+    303	00FF  E0			     db	     224
+    304	0100  01			     db	     1
+    305	0101  A0			     db	     160
+    306	0102  C0			     db	     192
+    307	0103  60			     db	     96
+    308	0104  80			     db	     128
+    309	0105  61			     db	     97
+    310	0106  41			     db	     65
+    311	0107  A1			     db	     161
+    312	0108  00			     db	     0
+    313	0109  63			     db	     99
+    314	010A  C1			     db	     193
+    315	010B  A3			     db	     163
+    316	010C  81			     db	     129
+    317	010D  A2			     db	     162
+    318	010E  40			     db	     64
+    319	010F  62			     db	     98
+    320	0110  00			     db	     0
+    321	0111  66			     db	     102
+    322	0112  C1			     db	     193
+    323	0113  A6			     db	     166
+    324	0114  81			     db	     129
+    325	0115  A7			     db	     167
+    326	0116  40			     db	     64
+    327	0117  67			     db	     103
+    328	0118  01			     db	     1
+    329	0119  A5			     db	     165
+    330	011A  C0			     db	     192
+    331	011B  65			     db	     101
+    332	011C  80			     db	     128
+    333	011D  64			     db	     100
+    334	011E  41			     db	     65
+    335	011F  A4			     db	     164
+    336	0120  00			     db	     0
+    337	0121  6C			     db	     108
+    338	0122  C1			     db	     193
+    339	0123  AC			     db	     172
+    340	0124  81			     db	     129
+    341	0125  AD			     db	     173
+    342	0126  40			     db	     64
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 7
+CRC16.ASM
+
+
+
+    343	0127  6D			     db	     109
+    344	0128  01			     db	     1
+    345	0129  AF			     db	     175
+    346	012A  C0			     db	     192
+    347	012B  6F			     db	     111
+    348	012C  80			     db	     128
+    349	012D  6E			     db	     110
+    350	012E  41			     db	     65
+    351	012F  AE			     db	     174
+    352	0130  01			     db	     1
+    353	0131  AA			     db	     170
+    354	0132  C0			     db	     192
+    355	0133  6A			     db	     106
+    356	0134  80			     db	     128
+    357	0135  6B			     db	     107
+    358	0136  41			     db	     65
+    359	0137  AB			     db	     171
+    360	0138  00			     db	     0
+    361	0139  69			     db	     105
+    362	013A  C1			     db	     193
+    363	013B  A9			     db	     169
+    364	013C  81			     db	     129
+    365	013D  A8			     db	     168
+    366	013E  40			     db	     64
+    367	013F  68			     db	     104
+    368	0140  00			     db	     0
+    369	0141  78			     db	     120
+    370	0142  C1			     db	     193
+    371	0143  B8			     db	     184
+    372	0144  81			     db	     129
+    373	0145  B9			     db	     185
+    374	0146  40			     db	     64
+    375	0147  79			     db	     121
+    376	0148  01			     db	     1
+    377	0149  BB			     db	     187
+    378	014A  C0			     db	     192
+    379	014B  7B			     db	     123
+    380	014C  80			     db	     128
+    381	014D  7A			     db	     122
+    382	014E  41			     db	     65
+    383	014F  BA			     db	     186
+    384	0150  01			     db	     1
+    385	0151  BE			     db	     190
+    386	0152  C0			     db	     192
+    387	0153  7E			     db	     126
+    388	0154  80			     db	     128
+    389	0155  7F			     db	     127
+    390	0156  41			     db	     65
+    391	0157  BF			     db	     191
+    392	0158  00			     db	     0
+    393	0159  7D			     db	     125
+    394	015A  C1			     db	     193
+    395	015B  BD			     db	     189
+    396	015C  81			     db	     129
+    397	015D  BC			     db	     188
+    398	015E  40			     db	     64
+    399	015F  7C			     db	     124
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 8
+CRC16.ASM
+
+
+
+    400	0160  01			     db	     1
+    401	0161  B4			     db	     180
+    402	0162  C0			     db	     192
+    403	0163  74			     db	     116
+    404	0164  80			     db	     128
+    405	0165  75			     db	     117
+    406	0166  41			     db	     65
+    407	0167  B5			     db	     181
+    408	0168  00			     db	     0
+    409	0169  77			     db	     119
+    410	016A  C1			     db	     193
+    411	016B  B7			     db	     183
+    412	016C  81			     db	     129
+    413	016D  B6			     db	     182
+    414	016E  40			     db	     64
+    415	016F  76			     db	     118
+    416	0170  00			     db	     0
+    417	0171  72			     db	     114
+    418	0172  C1			     db	     193
+    419	0173  B2			     db	     178
+    420	0174  81			     db	     129
+    421	0175  B3			     db	     179
+    422	0176  40			     db	     64
+    423	0177  73			     db	     115
+    424	0178  01			     db	     1
+    425	0179  B1			     db	     177
+    426	017A  C0			     db	     192
+    427	017B  71			     db	     113
+    428	017C  80			     db	     128
+    429	017D  70			     db	     112
+    430	017E  41			     db	     65
+    431	017F  B0			     db	     176
+    432	0180  00			     db	     0
+    433	0181  50			     db	     80
+    434	0182  C1			     db	     193
+    435	0183  90			     db	     144
+    436	0184  81			     db	     129
+    437	0185  91			     db	     145
+    438	0186  40			     db	     64
+    439	0187  51			     db	     81
+    440	0188  01			     db	     1
+    441	0189  93			     db	     147
+    442	018A  C0			     db	     192
+    443	018B  53			     db	     83
+    444	018C  80			     db	     128
+    445	018D  52			     db	     82
+    446	018E  41			     db	     65
+    447	018F  92			     db	     146
+    448	0190  01			     db	     1
+    449	0191  96			     db	     150
+    450	0192  C0			     db	     192
+    451	0193  56			     db	     86
+    452	0194  80			     db	     128
+    453	0195  57			     db	     87
+    454	0196  41			     db	     65
+    455	0197  97			     db	     151
+    456	0198  00			     db	     0
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 9
+CRC16.ASM
+
+
+
+    457	0199  55			     db	     85
+    458	019A  C1			     db	     193
+    459	019B  95			     db	     149
+    460	019C  81			     db	     129
+    461	019D  94			     db	     148
+    462	019E  40			     db	     64
+    463	019F  54			     db	     84
+    464	01A0  01			     db	     1
+    465	01A1  9C			     db	     156
+    466	01A2  C0			     db	     192
+    467	01A3  5C			     db	     92
+    468	01A4  80			     db	     128
+    469	01A5  5D			     db	     93
+    470	01A6  41			     db	     65
+    471	01A7  9D			     db	     157
+    472	01A8  00			     db	     0
+    473	01A9  5F			     db	     95
+    474	01AA  C1			     db	     193
+    475	01AB  9F			     db	     159
+    476	01AC  81			     db	     129
+    477	01AD  9E			     db	     158
+    478	01AE  40			     db	     64
+    479	01AF  5E			     db	     94
+    480	01B0  00			     db	     0
+    481	01B1  5A			     db	     90
+    482	01B2  C1			     db	     193
+    483	01B3  9A			     db	     154
+    484	01B4  81			     db	     129
+    485	01B5  9B			     db	     155
+    486	01B6  40			     db	     64
+    487	01B7  5B			     db	     91
+    488	01B8  01			     db	     1
+    489	01B9  99			     db	     153
+    490	01BA  C0			     db	     192
+    491	01BB  59			     db	     89
+    492	01BC  80			     db	     128
+    493	01BD  58			     db	     88
+    494	01BE  41			     db	     65
+    495	01BF  98			     db	     152
+    496	01C0  01			     db	     1
+    497	01C1  88			     db	     136
+    498	01C2  C0			     db	     192
+    499	01C3  48			     db	     72
+    500	01C4  80			     db	     128
+    501	01C5  49			     db	     73
+    502	01C6  41			     db	     65
+    503	01C7  89			     db	     137
+    504	01C8  00			     db	     0
+    505	01C9  4B			     db	     75
+    506	01CA  C1			     db	     193
+    507	01CB  8B			     db	     139
+    508	01CC  81			     db	     129
+    509	01CD  8A			     db	     138
+    510	01CE  40			     db	     64
+    511	01CF  4A			     db	     74
+    512	01D0  00			     db	     0
+    513	01D1  4E			     db	     78
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 10
+CRC16.ASM
+
+
+
+    514	01D2  C1			     db	     193
+    515	01D3  8E			     db	     142
+    516	01D4  81			     db	     129
+    517	01D5  8F			     db	     143
+    518	01D6  40			     db	     64
+    519	01D7  4F			     db	     79
+    520	01D8  01			     db	     1
+    521	01D9  8D			     db	     141
+    522	01DA  C0			     db	     192
+    523	01DB  4D			     db	     77
+    524	01DC  80			     db	     128
+    525	01DD  4C			     db	     76
+    526	01DE  41			     db	     65
+    527	01DF  8C			     db	     140
+    528	01E0  00			     db	     0
+    529	01E1  44			     db	     68
+    530	01E2  C1			     db	     193
+    531	01E3  84			     db	     132
+    532	01E4  81			     db	     129
+    533	01E5  85			     db	     133
+    534	01E6  40			     db	     64
+    535	01E7  45			     db	     69
+    536	01E8  01			     db	     1
+    537	01E9  87			     db	     135
+    538	01EA  C0			     db	     192
+    539	01EB  47			     db	     71
+    540	01EC  80			     db	     128
+    541	01ED  46			     db	     70
+    542	01EE  41			     db	     65
+    543	01EF  86			     db	     134
+    544	01F0  01			     db	     1
+    545	01F1  82			     db	     130
+    546	01F2  C0			     db	     192
+    547	01F3  42			     db	     66
+    548	01F4  80			     db	     128
+    549	01F5  43			     db	     67
+    550	01F6  41			     db	     65
+    551	01F7  83			     db	     131
+    552	01F8  00			     db	     0
+    553	01F9  41			     db	     65
+    554	01FA  C1			     db	     193
+    555	01FB  81			     db	     129
+    556	01FC  81			     db	     129
+    557	01FD  80			     db	     128
+    558	01FE  40			     db	     64
+    559	01FF  40			     db	     64
+    560	0200			     _DATA   ends
+    561	0000			     _TEXT   segment byte public 'CODE'
+    562					     ?debug  C E8010963726331362E637070795AFE54
+    563					;
+    564					;    int main(void)
+    565					;
+    566					     ?debug  L 62
+    567					     assume  cs:_TEXT
+    568	0000			     _main   proc    near
+    569					     ?debug  B
+    570	0000  55			     push    bp
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 11
+CRC16.ASM
+
+
+
+    571	0001  8B EC			     mov     bp,sp
+    572	0003  83 EC 5E			     sub     sp,94
+    573	0006  56			     push    si
+    574	0007  57			     push    di
+    575					     ?debug  B
+    576					;
+    577					;    {
+    578					;	 /* variables */
+    579					;	 char filename[80];
+    580					;	 unsigned int crc16;
+    581					;	 int ch;
+    582					;	 unsigned long num;
+    583					;	 FILE *fp;
+    584					;	 time_t	t, t1;
+    585					;
+    586					;	 puts("CRC16 Easy!  Version 0.1	(pre-official release)	 May 26	1997");
+    587					;
+    588					     ?debug  L 72
+    589	0008  B8 0200r			     mov     ax,offset DGROUP:s@
+    590	000B  50			     push    ax
+    591	000C  E8 0000e			     call    near ptr _puts
+    592	000F  59			     pop     cx
+    593					;
+    594					;	 puts("Copyright (c) 1997 Devliber. Licensed under the MIT License.\n");
+    595					;
+    596					     ?debug  L 73
+    597	0010  B8 023Er			     mov     ax,offset DGROUP:s@+62
+    598	0013  50			     push    ax
+    599	0014  E8 0000e			     call    near ptr _puts
+    600	0017  59			     pop     cx
+    601					;
+    602					;
+    603					;	 if (_argc < 2)
+    604					;
+    605					     ?debug  L 75
+    606	0018  83 3E 0000e 02		     cmp     word ptr DGROUP:__argc,2
+    607	001D  7D 0D			     jge     short @1@142
+    608					;
+    609					;	 {
+    610					;	     puts("Usage is: CRC16 <filename>");
+    611					;
+    612					     ?debug  L 77
+    613	001F  B8 027Cr			     mov     ax,offset DGROUP:s@+124
+    614	0022  50			     push    ax
+    615	0023  E8 0000e			     call    near ptr _puts
+    616	0026  59			     pop     cx
+    617	0027			     @1@86:
+    618					;
+    619					;	     return 0;
+    620					;
+    621					     ?debug  L 78
+    622	0027  33 C0			     xor     ax,ax
+    623	0029			     @1@114:
+    624	0029  E9 00CF			     jmp     @1@422
+    625	002C			     @1@142:
+    626					;
+    627					;	 }
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 12
+CRC16.ASM
+
+
+
+    628					;
+    629					;	 if (_argc > 2)
+    630					;
+    631					     ?debug  L 81
+    632	002C  83 3E 0000e 02		     cmp     word ptr DGROUP:__argc,2
+    633	0031  7E 12			     jle     short @1@198
+    634					;
+    635					;	 {
+    636					;	     printf("Too many parameters - %s\n", _argv[2]);
+    637					;
+    638					     ?debug  L 83
+    639	0033  8B 1E 0000e		     mov     bx,word ptr DGROUP:__argv
+    640	0037  FF 77 04			     push    word ptr [bx+4]
+    641	003A  B8 0297r			     mov     ax,offset DGROUP:s@+151
+    642	003D  50			     push    ax
+    643	003E  E8 0000e			     call    near ptr _printf
+    644	0041  59			     pop     cx
+    645	0042  59			     pop     cx
+    646	0043  EB E2			     jmp     short @1@86
+    647	0045			     @1@198:
+    648					;
+    649					;	     return 0;
+    650					;	 }
+    651					;
+    652					;	 if (strpbrk(_argv[1], "*?"))
+    653					;
+    654					     ?debug  L 87
+    655	0045  B8 02B1r			     mov     ax,offset DGROUP:s@+177
+    656	0048  50			     push    ax
+    657	0049  8B 1E 0000e		     mov     bx,word ptr DGROUP:__argv
+    658	004D  FF 77 02			     push    word ptr [bx+2]
+    659	0050  E8 0000e			     call    near ptr _strpbrk
+    660	0053  59			     pop     cx
+    661	0054  59			     pop     cx
+    662	0055  0B C0			     or	     ax,ax
+    663	0057  74 0D			     je	     short @1@254
+    664					;
+    665					;	 {
+    666					;	     puts("Wildcards not allowed");
+    667					;
+    668					     ?debug  L 89
+    669	0059  B8 02B4r			     mov     ax,offset DGROUP:s@+180
+    670	005C  50			     push    ax
+    671	005D  E8 0000e			     call    near ptr _puts
+    672	0060  59			     pop     cx
+    673					;
+    674					;	     return 2;
+    675					;
+    676					     ?debug  L 90
+    677	0061  B8 0002			     mov     ax,2
+    678	0064  EB C3			     jmp     short @1@114
+    679	0066			     @1@254:
+    680					;
+    681					;	 }
+    682					;
+    683					;	 strcpy(filename, _argv[1]);
+    684					;
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 13
+CRC16.ASM
+
+
+
+    685					     ?debug  L 93
+    686	0066  8B 1E 0000e		     mov     bx,word ptr DGROUP:__argv
+    687	006A  FF 77 02			     push    word ptr [bx+2]
+    688	006D  8D 46 A2			     lea     ax,word ptr [bp-94]
+    689	0070  50			     push    ax
+    690	0071  E8 0000e			     call    near ptr _strcpy
+    691	0074  59			     pop     cx
+    692	0075  59			     pop     cx
+    693					;
+    694					;	 if ((fp = fopen(filename, "rb")) == NULL)
+    695					;
+    696					     ?debug  L 94
+    697	0076  B8 02CAr			     mov     ax,offset DGROUP:s@+202
+    698	0079  50			     push    ax
+    699	007A  8D 46 A2			     lea     ax,word ptr [bp-94]
+    700	007D  50			     push    ax
+    701	007E  E8 0000e			     call    near ptr _fopen
+    702	0081  59			     pop     cx
+    703	0082  59			     pop     cx
+    704	0083  8B F8			     mov     di,ax
+    705	0085  0B C0			     or	     ax,ax
+    706	0087  75 0D			     jne     short @1@310
+    707					;
+    708					;	 {
+    709					;	     puts("Can't open file");
+    710					;
+    711					     ?debug  L 96
+    712	0089  B8 02CDr			     mov     ax,offset DGROUP:s@+205
+    713	008C  50			     push    ax
+    714	008D  E8 0000e			     call    near ptr _puts
+    715	0090  59			     pop     cx
+    716					;
+    717					;	     return 1;
+    718					;
+    719					     ?debug  L 97
+    720	0091  B8 0001			     mov     ax,1
+    721	0094  EB 93			     jmp     short @1@114
+    722	0096			     @1@310:
+    723					;
+    724					;	 }
+    725					;
+    726					;	 num = 0L;
+    727					;
+    728					     ?debug  L 100
+    729	0096  C7 46 FC 0000		     mov     word ptr [bp-4],0
+    730	009B  C7 46 FA 0000		     mov     word ptr [bp-6],0
+    731					;
+    732					;	 crc16 = 0;
+    733					;
+    734					     ?debug  L 101
+    735	00A0  33 F6			     xor     si,si
+    736					;
+    737					;	 time(&t);
+    738					;
+    739					     ?debug  L 102
+    740	00A2  8D 46 F6			     lea     ax,word ptr [bp-10]
+    741	00A5  50			     push    ax
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 14
+CRC16.ASM
+
+
+
+    742	00A6  E8 0000e			     call    near ptr _time
+    743	00A9  59			     pop     cx
+    744	00AA  EB 13			     jmp     short @1@366
+    745	00AC			     @1@338:
+    746					;
+    747					;	 while ((ch = fgetc(fp)) != EOF)
+    748					;	 {
+    749					;	     num++;
+    750					;
+    751					     ?debug  L 105
+    752	00AC  83 46 FA 01		     add     word ptr [bp-6],1
+    753	00B0  83 56 FC 00		     adc     word ptr [bp-4],0
+    754					;
+    755					;	     crc16 = updcrcr(crc16, ch);
+    756					;
+    757					     ?debug  L 106
+    758	00B4  FF 76 FE			     push    word ptr [bp-2]
+    759	00B7  56			     push    si
+    760	00B8  E8 0046			     call    near ptr @updcrcr$quii
+    761	00BB  59			     pop     cx
+    762	00BC  59			     pop     cx
+    763	00BD  8B F0			     mov     si,ax
+    764	00BF			     @1@366:
+    765					     ?debug  L 103
+    766	00BF  57			     push    di
+    767	00C0  E8 0000e			     call    near ptr _fgetc
+    768	00C3  59			     pop     cx
+    769	00C4  89 46 FE			     mov     word ptr [bp-2],ax
+    770	00C7  3D FFFF			     cmp     ax,-1
+    771	00CA  75 E0			     jne     short @1@338
+    772					;
+    773					;	 }
+    774					;	 fclose(fp);
+    775					;
+    776					     ?debug  L 108
+    777	00CC  57			     push    di
+    778	00CD  E8 0000e			     call    near ptr _fclose
+    779	00D0  59			     pop     cx
+    780					;
+    781					;	 time(&t1);
+    782					;
+    783					     ?debug  L 109
+    784	00D1  8D 46 F2			     lea     ax,word ptr [bp-14]
+    785	00D4  50			     push    ax
+    786	00D5  E8 0000e			     call    near ptr _time
+    787	00D8  59			     pop     cx
+    788					;
+    789					;	 printf("%lu byte(s) read, CRC16 is %04X\nDone in %u second(s)\n", num,
+    790					;
+    791					     ?debug  L 110
+    792					;
+    793					;		crc16, t1 - t);
+    794					;
+    795					     ?debug  L 111
+    796	00D9  8B 46 F4			     mov     ax,word ptr [bp-12]
+    797	00DC  8B 56 F2			     mov     dx,word ptr [bp-14]
+    798	00DF  2B 56 F6			     sub     dx,word ptr [bp-10]
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 15
+CRC16.ASM
+
+
+
+    799	00E2  1B 46 F8			     sbb     ax,word ptr [bp-8]
+    800	00E5  50			     push    ax
+    801	00E6  52			     push    dx
+    802	00E7  56			     push    si
+    803	00E8  FF 76 FC			     push    word ptr [bp-4]
+    804	00EB  FF 76 FA			     push    word ptr [bp-6]
+    805	00EE  B8 02DDr			     mov     ax,offset DGROUP:s@+221
+    806	00F1  50			     push    ax
+    807	00F2  E8 0000e			     call    near ptr _printf
+    808	00F5  83 C4 0C			     add     sp,12
+    809	00F8  E9 FF2C			     jmp     @1@86
+    810	00FB			     @1@422:
+    811					;
+    812					;	 return	0;
+    813					;    }
+    814					;
+    815					     ?debug  L 113
+    816	00FB  5F			     pop     di
+    817	00FC  5E			     pop     si
+    818	00FD  8B E5			     mov     sp,bp
+    819	00FF  5D			     pop     bp
+    820	0100  C3			     ret
+    821					     ?debug  C E3190446494C4510001E01
+    822					     ?debug  C E31A000200150804
+    823					     ?debug  C E318000200151904
+    824					     ?debug  C E31B0050001A02
+    825					     ?debug  C E60274310602F2FF0001740602F6FF0002667018+
+    826					     ?debug  C 040700036E756D0C02FAFF000263680402FEFF00+
+    827					     ?debug  C 0563726331360A0406000866696C656E616D651B+
+    828					     ?debug  C 02A2FF00
+    829					     ?debug  E
+    830					     ?debug  E
+    831	0101			     _main   endp
+    832					;
+    833					;    unsigned int updcrcr(unsigned int crc, int	c)
+    834					;
+    835					     ?debug  L 116
+    836					     assume  cs:_TEXT
+    837	0101			     @updcrcr$quii   proc    near
+    838					     ?debug  B
+    839	0101  55			     push    bp
+    840	0102  8B EC			     mov     bp,sp
+    841	0104  83 EC 02			     sub     sp,2
+    842					     ?debug  C E60163040A060000036372630A0A040000
+    843	0107  8B 56 04			     mov     dx,word ptr [bp+4]
+    844					     ?debug  B
+    845					;
+    846					;    {
+    847					;	 int tmp;
+    848					;	 tmp = crc ^ c;
+    849					;
+    850					     ?debug  L 119
+    851	010A  8B C2			     mov     ax,dx
+    852	010C  33 46 06			     xor     ax,word ptr [bp+6]
+    853	010F  89 46 FE			     mov     word ptr [bp-2],ax
+    854					;
+    855					;	 crc = (crc >> 8) ^ crc16tab[tmp & 0xff];
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 16
+CRC16.ASM
+
+
+
+    856					;
+    857					     ?debug  L 120
+    858	0112  8B C2			     mov     ax,dx
+    859	0114  B1 08			     mov     cl,8
+    860	0116  D3 E8			     shr     ax,cl
+    861	0118  8B 5E FE			     mov     bx,word ptr [bp-2]
+    862	011B  81 E3 00FF		     and     bx,255
+    863	011F  D1 E3			     shl     bx,1
+    864	0121  33 87 0000r		     xor     ax,word ptr DGROUP:_crc16tab[bx]
+    865	0125  8B D0			     mov     dx,ax
+    866					;
+    867					;	 return	crc;
+    868					;
+    869					     ?debug  L 121
+    870	0127  8B C2			     mov     ax,dx
+    871	0129  EB 00			     jmp     short @2@58
+    872	012B			     @2@58:
+    873					;
+    874					;    }
+    875					;
+    876					     ?debug  L 122
+    877	012B  8B E5			     mov     sp,bp
+    878	012D  5D			     pop     bp
+    879	012E  C3			     ret
+    880					     ?debug  C E603746D700402FEFF00036372630A0C02000163+
+    881					     ?debug  C 040A060000
+    882					     ?debug  E
+    883					     ?debug  E
+    884	012F			     @updcrcr$quii   endp
+    885					     ?debug  C E9
+    886					     ?debug  C FA00000000
+    887	012F			     _TEXT   ends
+    888	0200			     _DATA   segment word public 'DATA'
+    889	0200			     s@	     label   byte
+    890	0200  43 52 43 31 36 20	45+	     db	     'CRC16 Easy!  Version 0.1 (pre-official release)	May 26 1997'
+    891	      61 73 79 21 20 20	56+
+    892	      65 72 73 69 6F 6E	20+
+    893	      30 2E 31 20 28 70	72+
+    894	      65 2D 6F 66 66 69	63+
+    895	      69 61 6C 20 72 65	6C+
+    896	      65 61 73 65 29 20	20+
+    897	      20 4D 61 79 20 32	36+
+    898	      20 31 39 39 37
+    899	023D  00			     db	     0
+    900	023E  43 6F 70 79 72 69	67+	     db	     'Copyright	(c) 1997 Devliber. Licensed under the MIT License.'
+    901	      68 74 20 28 63 29	20+
+    902	      31 39 39 37 20 44	65+
+    903	      76 6C 69 62 65 72	2E+
+    904	      20 4C 69 63 65 6E	73+
+    905	      65 64 20 75 6E 64	65+
+    906	      72 20 74 68 65 20	4D+
+    907	      49 54 20 4C 69 63	65+
+    908	      6E 73 65 2E
+    909	027A  0A			     db	     10
+    910	027B  00			     db	     0
+    911	027C  55 73 61 67 65 20	69+	     db	     'Usage is:	CRC16 <filename>'
+    912	      73 3A 20 43 52 43	31+
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 17
+CRC16.ASM
+
+
+
+    913	      36 20 3C 66 69 6C	65+
+    914	      6E 61 6D 65 3E
+    915	0296  00			     db	     0
+    916	0297  54 6F 6F 20 6D 61	6E+	     db	     'Too many parameters - %s'
+    917	      79 20 70 61 72 61	6D+
+    918	      65 74 65 72 73 20	2D+
+    919	      20 25 73
+    920	02AF  0A			     db	     10
+    921	02B0  00			     db	     0
+    922	02B1  2A 3F			     db	     '*?'
+    923	02B3  00			     db	     0
+    924	02B4  57 69 6C 64 63 61	72+	     db	     'Wildcards	not allowed'
+    925	      64 73 20 6E 6F 74	20+
+    926	      61 6C 6C 6F 77 65	64
+    927	02C9  00			     db	     0
+    928	02CA  72 62			     db	     'rb'
+    929	02CC  00			     db	     0
+    930	02CD  43 61 6E			     db	     'Can'
+    931	02D0  27			     db	     39
+    932	02D1  74 20 6F 70 65 6E	20+	     db	     't	open file'
+    933	      66 69 6C 65
+    934	02DC  00			     db	     0
+    935	02DD  25 6C 75 20 62 79	74+	     db	     '%lu byte(s) read,	CRC16 is %04X'
+    936	      65 28 73 29 20 72	65+
+    937	      61 64 2C 20 43 52	43+
+    938	      31 36 20 69 73 20	25+
+    939	      30 34 58
+    940	02FC  0A			     db	     10
+    941	02FD  44 6F 6E 65 20 69	6E+	     db	     'Done in %u second(s)'
+    942	      20 25 75 20 73 65	63+
+    943	      6F 6E 64 28 73 29
+    944	0311  0A			     db	     10
+    945	0312  00			     db	     0
+    946	0313			     _DATA   ends
+    947	012F			     _TEXT   segment byte public 'CODE'
+    948	012F			     _TEXT   ends
+    949					     public  _main
+    950					     public  _crc16tab
+    951					     public  @updcrcr$quii
+    952				     _pokeb  equ     pokeb
+    953				     _poke   equ     poke
+    954				     _peekb  equ     peekb
+    955				     _peek   equ     peek
+    956					     extrn   __argv:word
+    957					     extrn   __argc:word
+    958					     extrn   _strpbrk:near
+    959					     extrn   _strcpy:near
+    960					     extrn   _time:near
+    961				     _atoi   equ     atoi
+    962				     _abs    equ     abs
+    963					     extrn   _puts:near
+    964					     extrn   _printf:near
+    965					     extrn   _fopen:near
+    966					     extrn   _fgetc:near
+    967					     extrn   _fclose:near
+    968				     _s@     equ     s@
+    969					     ?debug  C EA0509
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 18
+CRC16.ASM
+
+
+
+    970					     ?debug  C E31C00000023040000
+    971					     ?debug  C EC055F6D61696E1C1800
+    972					     ?debug  C E31D0000021A0A
+    973					     ?debug  C EC095F63726331367461621D0000
+    974					     ?debug  C E31E000000230A0000
+    975					     ?debug  C EC0D407570646372637224717569691E1800
+    976					     ?debug  C E31F02746D12001E0B
+    977					     ?debug  C E32000000023010000
+    978					     ?debug  C E32100000023010000
+    979					     ?debug  C E32200000023020000
+    980					     ?debug  C E32300000023040000
+    981					     ?debug  C E3240666696E645F742B001E15
+    982					     ?debug  C E3250015001A02
+    983					     ?debug  C E326000D001A02
+    984					     ?debug  C E327056666626C6B2B001E1C
+    985					     ?debug  C E3280015001A02
+    986					     ?debug  C E329000D001A02
+    987					     ?debug  C E32A075245475041434B14001E23
+    988					     ?debug  C E32B05535245475308001E2E
+    989					     ?debug  C E32C045245475310001F33
+    990					     ?debug  C E32D08574F52445245475310001E36
+    991					     ?debug  C E32E08425954455245475308001E3F
+    992					     ?debug  C E32F09646F73646174655F7405001E48
+    993					     ?debug  C E330046461746504001E4D
+    994					     ?debug  C E33109646F7374696D655F7404001E51
+    995					     ?debug  C E3320474696D6504001E56
+    996					     ?debug  C E3330664657668647212001E5B
+    997					     ?debug  C E3340008001A02
+    998					     ?debug  C E33507666174696E666F06001E61
+    999					     ?debug  C E3360A6469736B667265655F7408001E66
+   1000					     ?debug  C E33705646672656508001E6B
+   1001					     ?debug  C E33808444F534552524F5205001E70
+   1002					     ?debug  C E33907434F554E54525922001E75
+   1003					     ?debug  C E33A0005001A02
+   1004					     ?debug  C E33B0002001A02
+   1005					     ?debug  C E33C0002001A02
+   1006					     ?debug  C E33D0002001A02
+   1007					     ?debug  C E33E0002001A02
+   1008					     ?debug  C E33F0002001A02
+   1009					     ?debug  C E340000A001A02
+   1010					     ?debug  C E34104786663622C001E8082
+   1011					     ?debug  C E3420005001A02
+   1012					     ?debug  C E3430366636225001E8087
+   1013					     ?debug  C E3440008001A02
+   1014					     ?debug  C E3450003001A02
+   1015					     ?debug  C E346000A001A02
+   1016					     ?debug  C E348000200150204
+   1017					     ?debug  C E347000200154804
+   1018					     ?debug  C EB065F5F617267764700
+   1019					     ?debug  C EB065F5F617267630400
+   1020					     ?debug  C E34900000023480000
+   1021					     ?debug  C EB085F7374727062726B4900
+   1022					     ?debug  C E34A00000023480000
+   1023					     ?debug  C EB075F7374726370794A00
+   1024					     ?debug  C E34B00000023010000
+   1025					     ?debug  C E34C00000023060000
+   1026					     ?debug  C EB055F74696D654C00
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 19
+CRC16.ASM
+
+
+
+   1027					     ?debug  C E34D00000023040000
+   1028					     ?debug  C E34E00000023040000
+   1029					     ?debug  C E34F00000023040000
+   1030					     ?debug  C E35000000023040000
+   1031					     ?debug  C EB055F707574735000
+   1032					     ?debug  C E35100000023040001
+   1033					     ?debug  C EB075F7072696E74665100
+   1034					     ?debug  C E35200000023180000
+   1035					     ?debug  C EB065F666F70656E5200
+   1036					     ?debug  C E35300000023040000
+   1037					     ?debug  C EB065F66676574635300
+   1038					     ?debug  C E35400000023040000
+   1039					     ?debug  C EB075F66636C6F73655400
+   1040					     ?debug  C E607636C6F636B5F740606000674696D655F7406+
+   1041					     ?debug  C 06000777636861725F740206000446494C451906+
+   1042					     ?debug  C 000666706F735F740606000673697A655F740A06+
+   1043					     ?debug  C 0002746D1F07000666696E645F74240700056666+
+   1044					     ?debug  C 626C6B270700075245475041434B2A0700055352+
+   1045					     ?debug  C 4547532B070004524547532C0700084259544552+
+   1046					     ?debug  C 4547532E070008574F5244524547532D07000964+
+   1047					     ?debug  C 6F73646174655F742F0700046461746530070009+
+   1048					     ?debug  C 646F7374696D655F743107000474696D65320700+
+   1049					     ?debug  C 0664657668647233070007666174696E666F3507+
+   1050					     ?debug  C 000A6469736B667265655F743607000564667265+
+   1051					     ?debug  C 6537070008444F534552524F5238070007434F55+
+   1052					     ?debug  C 4E54525939070004786663624107000366636243+
+   1053					     ?debug  C 0700
+   1054					     ?debug  F pokeb 32	24 0
+   1055					     ?debug  F poke 33 24 0
+   1056					     ?debug  F peekb 34	24 0
+   1057					     ?debug  F peek 35 24 0
+   1058					     ?debug  F @randomize$qv 75	24 0
+   1059					     ?debug  F @random$qi 77 24	0
+   1060					     ?debug  F atoi 78 24 0
+   1061					     ?debug  F abs 79 24 0
+   1062					     ?debug  C E200056C6576656C040005666C6167730A000266+
+   1063					     ?debug  C 64020004686F6C640800056273697A6504000662+
+   1064					     ?debug  C 75666665721A0004637572701A0006697374656D+
+   1065					     ?debug  C 700A0005746F6B656E04C010000000
+   1066					     ?debug  C E20006746D5F736563040006746D5F6D696E0400+
+   1067					     ?debug  C 07746D5F686F7572040007746D5F6D6461790400+
+   1068					     ?debug  C 06746D5F6D6F6E040007746D5F79656172040007+
+   1069					     ?debug  C 746D5F77646179040007746D5F79646179040008+
+   1070					     ?debug  C 746D5F697364737404C012000000
+   1071					     ?debug  C E200087265736572766564250006617474726962+
+   1072					     ?debug  C 02000777725F74696D650A000777725F64617465+
+   1073					     ?debug  C 0A000473697A650600046E616D6526C02B000000
+   1074					     ?debug  C E2000B66665F726573657276656428000966665F+
+   1075					     ?debug  C 61747472696202000866665F6674696D650A0008+
+   1076					     ?debug  C 66665F66646174650A000866665F6673697A6506+
+   1077					     ?debug  C 000766665F6E616D6529C02B000000
+   1078					     ?debug  C E20004725F61780A0004725F62780A0004725F63+
+   1079					     ?debug  C 780A0004725F64780A0004725F62700A0004725F+
+   1080					     ?debug  C 73690A0004725F64690A0004725F64730A000472+
+   1081					     ?debug  C 5F65730A0007725F666C6167730AC014000000
+   1082					     ?debug  C E2000265730A000263730A000273730A00026473+
+   1083					     ?debug  C 0AC008000000
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 20
+CRC16.ASM
+
+
+
+   1084					     ?debug  C E20001782D0001682EC010000000
+   1085					     ?debug  C E2000261780A000262780A000263780A00026478+
+   1086					     ?debug  C 0A000273690A000264690A000563666C61670A00+
+   1087					     ?debug  C 05666C6167730AC010000000
+   1088					     ?debug  C E20002616C0800026168080002626C0800026268+
+   1089					     ?debug  C 080002636C0800026368080002646C0800026468+
+   1090					     ?debug  C 08C008000000
+   1091					     ?debug  C E200036461790800056D6F6E7468080004796561+
+   1092					     ?debug  C 720A00096461796F667765656B08C005000000
+   1093					     ?debug  C E2000764615F7965617204000664615F64617902+
+   1094					     ?debug  C 000664615F6D6F6E02C004000000
+   1095					     ?debug  C E20004686F75720800066D696E75746508000673+
+   1096					     ?debug  C 65636F6E64080007687365636F6E6408C0040000+
+   1097					     ?debug  C 00
+   1098					     ?debug  C E2000674695F6D696E08000774695F686F757208+
+   1099					     ?debug  C 000774695F68756E6408000674695F73656308C0+
+   1100					     ?debug  C 04000000
+   1101					     ?debug  C E2000764685F6E65787406000764685F61747472+
+   1102					     ?debug  C 04000864685F73747261740A000864685F696E74+
+   1103					     ?debug  C 65720A000764685F6E616D6534C012000000
+   1104					     ?debug  C E2000866695F73636C757302000866695F666174+
+   1105					     ?debug  C 696402000866695F6E636C75730A000866695F62+
+   1106					     ?debug  C 7973656304C006000000
+   1107					     ?debug  C E2000E746F74616C5F636C7573746572730A000E+
+   1108					     ?debug  C 617661696C5F636C7573746572730A0013736563+
+   1109					     ?debug  C 746F72735F7065725F636C75737465720A001062+
+   1110					     ?debug  C 797465735F7065725F736563746F720AC0080000+
+   1111					     ?debug  C 00
+   1112					     ?debug  C E2000864665F617661696C0A000864665F746F74+
+   1113					     ?debug  C 616C0A000764665F627365630A000864665F7363+
+   1114					     ?debug  C 6C75730AC008000000
+   1115					     ?debug  C E2000B64655F6578746572726F7204000864655F+
+   1116					     ?debug  C 636C61737302000964655F616374696F6E020008+
+   1117					     ?debug  C 64655F6C6F63757302C005000000
+   1118					     ?debug  C E20007636F5F64617465040007636F5F63757272+
+   1119					     ?debug  C 3A0008636F5F74687365703B0008636F5F646573+
+   1120					     ?debug  C 65703C0008636F5F64747365703D0008636F5F74+
+   1121					     ?debug  C 6D7365703E000C636F5F637572727374796C6502+
+   1122					     ?debug  C 0009636F5F646967697473020007636F5F74696D+
+   1123					     ?debug  C 65020007636F5F63617365060008636F5F646173+
+   1124					     ?debug  C 65703F0007636F5F66696C6C40C022000000
+   1125					     ?debug  C E20009786663625F666C6167020009786663625F+
+   1126					     ?debug  C 72657376420009786663625F6174747202000878+
+   1127					     ?debug  C 6663625F66636243C02C000000
+   1128					     ?debug  C E200096663625F64726976650200086663625F6E+
+   1129					     ?debug  C 616D654400076663625F65787445000A6663625F+
+   1130					     ?debug  C 637572626C6B04000B6663625F72656373697A65+
+   1131					     ?debug  C 04000B6663625F66696C73697A65060008666362+
+   1132					     ?debug  C 5F646174650400086663625F7265737646000A66+
+   1133					     ?debug  C 63625F63757272656302000A6663625F72616E64+
+   1134					     ?debug  C 6F6D06C025000000
+   1135					     end
+Turbo Assembler	 Version 3.2	    08/11/22 19:50:16	    Page 21
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "08/11/22"
+??FILENAME			  Text	 "CRC16	  "
+??TIME				  Text	 "19:50:16"
+??VERSION			  Number 0314
+@1@114				  Near	 _TEXT:0029
+@1@142				  Near	 _TEXT:002C
+@1@198				  Near	 _TEXT:0045
+@1@254				  Near	 _TEXT:0066
+@1@310				  Near	 _TEXT:0096
+@1@338				  Near	 _TEXT:00AC
+@1@366				  Near	 _TEXT:00BF
+@1@422				  Near	 _TEXT:00FB
+@1@86				  Near	 _TEXT:0027
+@2@58				  Near	 _TEXT:012B
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@FILENAME			  Text	 CRC16
+@UPDCRCR$QUII			  Near	 _TEXT:0101
+@WORDSIZE			  Text	 2
+B@				  Byte	 _BSS:0000
+B@W				  Word	 _BSS:0000
+D@				  Byte	 _DATA:0000
+D@W				  Word	 _DATA:0000
+S@				  Byte	 _DATA:0200
+_ABS				  Alias	 ABS
+_ATOI				  Alias	 ATOI
+_CRC16TAB			  Word	 _DATA:0000
+_FCLOSE				  Near	 ----:---- Extern
+_FGETC				  Near	 ----:---- Extern
+_FOPEN				  Near	 ----:---- Extern
+_MAIN				  Near	 _TEXT:0000
+_PEEK				  Alias	 PEEK
+_PEEKB				  Alias	 PEEKB
+_POKE				  Alias	 POKE
+_POKEB				  Alias	 POKEB
+_PRINTF				  Near	 ----:---- Extern
+_PUTS				  Near	 ----:---- Extern
+_S@				  Alias	 S@
+_STRCPY				  Near	 ----:---- Extern
+_STRPBRK			  Near	 ----:---- Extern
+_TIME				  Near	 ----:---- Extern
+__ARGC				  Word	 ----:---- Extern
+__ARGV				  Word	 ----:---- Extern
+
+Macro Name
+
+$COMM
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _BSS				  16  0000 Word	  Public  BSS
+  _DATA				  16  0313 Word	  Public  DATA
+_TEXT				  16  012F Byte	  Public  CODE
+
