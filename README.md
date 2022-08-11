@@ -22,8 +22,11 @@ Thoughts:
 5 typedefs - must be replaced
 
 build_prj.sh - will convert Borland C++ .prj file into makefile and build
+
 doscompilelib.sh - library to execute various builders
+
 sources.tar.bz2 - backup archive of source examples for Borland C++ 3/5, Turbo C++, Microsoft C++
+
 /bcex/crc16eas/Source/ - first project to test on
 
 
