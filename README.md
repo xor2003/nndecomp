@@ -10,9 +10,9 @@ TODO:
 
 [ ] Prepare build environment to convert .CPP into assembler. Prepare compilation validators
 
-[ ] Adopt compilers input/output to analyze with CRNN
+[ ] Adopt compilers input/output to analyze with LLM
 
-[ ] Train CRNN with compilers input/output
+[ ] Train LLM with compilers input/output
 
 [ ] Profit
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+import datetime
 import os
 import shutil
 import subprocess
@@ -21,19 +23,28 @@ class BuildToolchain:
         config_map = {
             'borland': 'borland.conf',
             'turbo': 'turbo.conf',
-            'msc': 'msc.conf'
+            'msc': 'msc_working.conf'  # Use the new working configuration
         }
         config_file = config_map.get(self.compiler_type.lower())
-        if not config_file or not Path(config_file).exists():
-            raise FileNotFoundError(f"Config for {self.compiler_type} not found")
-        return config_file
+        if not config_file:
+            raise ValueError(f"Unsupported compiler type: {self.compiler_type}")
+        
+        # For msc compiler, use the test config file
+        if self.compiler_type.lower() == 'msc':
+            config_file = 'msc_test.conf'
+        
+        # Always resolve the path from the project's root directory
+        config_path = Path(__file__).parent.resolve() / config_file
+        if not config_path.exists():
+            raise FileNotFoundError(f"Config file '{config_path}' not found")
+        return str(config_path)
 
     def _get_mount_path(self):
         """Get the base path for the compiler installation"""
         mount_path_map = {
             'borland': '/home/xor/nndecomp/BorlandC',
             'turbo': '/home/xor/nndecomp/tc301',
-            'msc': '/home/xor/nndecomp/msdos'
+            'msc': '/home/xor/nndecomp'
         }
         path = mount_path_map.get(self.compiler_type.lower())
         if not path:
@@ -46,77 +57,49 @@ class BuildToolchain:
         build_files = []
         
         for root, _, files in os.walk(self.project_dir):
+            # Check if cmd.bat exists in this directory
+            has_cmd_bat = 'cmd.bat' in [f.lower() for f in files]
+            has_makefile = 'makefile' in [f.lower() for f in files]
+            
             for file in files:
-                if file.lower().endswith('.prj') or file.lower() == 'makefile' or file.lower().endswith('.bat'):
-                    build_files.append(Path(root) / file)
+                # If both cmd.bat and MAKEFILE exist, prioritize MAKEFILE
+                if has_cmd_bat and has_makefile:
+                    if file.lower() == 'makefile' or file.lower().endswith('.prj'):
+                        build_files.append(Path(root) / file)
+                # If only cmd.bat exists, include cmd.bat and .prj files
+                elif has_cmd_bat:
+                    if file.lower() == 'cmd.bat' or file.lower().endswith('.prj'):
+                        build_files.append(Path(root) / file)
+                # If no cmd.bat, include all standard build files
+                else:
+                    if file.lower().endswith('.prj') or file.lower() == 'makefile' or file.lower().endswith('.bat'):
+                        build_files.append(Path(root) / file)
         
         logging.info(f"Found {len(build_files)} build files")
         return build_files
 
     def execute_build(self, build_files):
         """Execute build process using DOSBox with centralized build.bat"""
+        compiler_cmd = ""
         logging.info(f"Starting build with {self.compiler_type} using {self.dosbox_config}")
+        logging.info(f"Mount path: {self.mount_path}")
+        logging.info(f"Project directory: {self.project_dir}")
+        logging.info(f"Found build files: {[str(f) for f in build_files]}")
         
         # Create artifacts directory
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
         
-        # Create build.bat in project directory
-        build_bat = self.project_dir / 'BUILD2.BAT'
-        with open(build_bat, 'w') as f:
-            f.write("@echo off\n")
-            f.write("echo [INFO] Dumping environment variables...\n")
-            f.write("set > env_vars.txt\n")
-            
-            compiler_map = {
-                'borland': 'bcc',
-                'turbo': 'tc',
-                'msc': 'cl'
-            }
-            compiler_cmd = compiler_map.get(self.compiler_type.lower(), 'bcc')
-            
-            for build_file in build_files:
-                build_file_low = str(build_file).lower()
-                if "build1.bat" in build_file_low or "build2.bat" in build_file_low:
-                    continue
-                
-                errlvl_file = f'{build_file.stem}.ERL'
-                
-                if build_file.suffix.lower() == '.prj':
-                    cmd_str = f'{compiler_cmd} @{build_file.name}'
-                    f.write(f"echo [CMD] {cmd_str}\n")
-                    f.write(f"{cmd_str}\n")
-                    f.write(f"errorlvl.com > {errlvl_file}\n")
-                elif build_file.name.lower() == 'makefile':
-                    f.write(f"echo [CMD] make\n")
-                    f.write(f"make\n")
-                    f.write(f"errorlvl.com > {errlvl_file}\n")
-                elif build_file.suffix.lower() == '.bat':
-                    f.write(f"echo [CMD] {build_file.name}\n")
-                    f.write(f"{build_file.name}\n")
-                    f.write(f"errorlvl.com > {errlvl_file}\n")
-            
-            f.write("exit\n")
+        # Create log file for DOSBox output
+        dosbox_log = self.artifacts_dir / 'dosbox.log'
         
-        log_file = 'BUILD2.OUT'
-        err_file = 'BUILD2.ERR'
-        # Create run_build.bat that redirects output
-        run_build_bat = self.project_dir / 'BUILD1.BAT'
-        with open(run_build_bat, 'w') as f:
-            f.write(f"BUILD2.BAT >{log_file} 2>{err_file}\n")
-            #f.write(f"exit\n")
+        # No specific batch file needed for direct command execution
+        logging.info("Executing DOSBox commands with output redirection")
         
         # Build DOSBox command
         cmd = [
             'dosbox',
             '-conf', self.dosbox_config,
-            '-c', f'mount c {self.mount_path}',
-            '-c', f'mount d {self.project_dir}',
-            '-c', 'set PATH=c:\\bin',
-            '-c', 'set INCLUDE=c:\\include',
-            '-c', 'set LIB=c:\\lib',
-            '-c', 'd:',
-            '-c', "call BUILD1.BAT",
-            '-c', 'exit'
+            '--exit'
         ]
         
         # Log the DOSBox command
@@ -124,33 +107,58 @@ class BuildToolchain:
         
         # Execute build
         try:
+            # Run headlessly with output redirection
+            logging.info("Executing DOSBox build command...")
             result = subprocess.run(
                 cmd,
-                cwd=self.project_dir,
+                cwd=str(self.project_dir),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                check=True
+                check=False
             )
-            logging.info("Build executed successfully")
-            
+            # Write output to log file
+            with open(dosbox_log, 'w') as log_f:
+                log_f.write(f"STDOUT:\n{result.stdout}\n\nSTDERR:\n{result.stderr}\n")
+            logging.info(f"DOSBox execution completed with return code: {result.returncode}")
+            logging.info(f"DOSBox stdout: {result.stdout}")
+            logging.info(f"DOSBox stderr: {result.stderr}")
+            result.stdout = result.stdout or ""
+            result.stderr = result.stderr or ""
+
+            # Always try to collect artifacts, even if build failed
             # Print environment variables (using root path)
             env_file = Path(self.project_dir) / 'env_vars.txt'
             if env_file.exists():
-                logging.info(f"Environment variables:\n{env_file.read_text()}")
+                logging.info(f"Environment variables captured in DOSBox:\n{env_file.read_text()}")
             
+            # Check for build output files
+            
+            # If DOSBox failed, raise the exception
+            if result.returncode != 0:
+                logging.error(f"DOSBox failed with return code {result.returncode}")
+                raise subprocess.CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
+            
+            logging.info("Build executed successfully")
             return result.stdout
         except subprocess.CalledProcessError as e:
+            logging.error(f"DOSBox execution failed with return code {e.returncode}")
+            logging.error(f"DOSBox stdout: {e.stdout}")
+            logging.error(f"DOSBox stderr: {e.stderr}")
+            
             # Print environment variables if available
             env_file = Path(self.project_dir) / 'env_vars.txt'
             if env_file.exists():
-                logging.error(f"Environment variables:\n{env_file.read_text()}")
+                logging.error(f"Environment variables captured in DOSBox:\n{env_file.read_text()}")
+            
+            # Check for build output files even on failure
             
             # Check if error indicates missing compiler
-            if "command not found" in e.stderr or "Bad command or file name" in e.stderr:
+            error_output = f"{e.stdout}\n{e.stderr}"
+            if "command not found" in error_output or "Bad command or file name" in error_output:
                 logging.error(f"Compiler '{compiler_cmd}' not found in DOS environment")
             else:
-                logging.error(f"Build failed: {e.stderr}")
+                logging.error(f"Build failed: {error_output}")
             raise
 
     def collect_artifacts(self, build_output):
@@ -165,7 +173,8 @@ class BuildToolchain:
         logs_dir.mkdir(exist_ok=True)
         
         # Copy build logs, outputs, errorlevel files, and text files
-        for pattern in ['*.LOG', '*.OUT', '*.ERR', '*.ERL', '*.TXT']:
+        # Check for both lowercase and uppercase versions due to DOSBox case sensitivity issues
+        for pattern in ['*.LOG', '*.log', '*.OUT', '*.out', '*.ERR', '*.err', '*.ERL', '*.erl', '*.TXT', '*.txt']:
             for file in self.project_dir.glob(pattern):
                 if file.is_file():
                     file.chmod(0o666)
@@ -184,7 +193,8 @@ class BuildToolchain:
         bin_dir = self.artifacts_dir / 'binaries'
         bin_dir.mkdir(exist_ok=True)
         binaries_found = False
-        for pattern in ['*.EXE', '*.COM', '*.OBJ']:
+        # Check for both lowercase and uppercase extensions due to DOSBox case sensitivity issues
+        for pattern in ['*.EXE', '*.exe', '*.COM', '*.com', '*.OBJ', '*.obj']:
             for file in self.project_dir.glob(f'**/{pattern}'):
                 # Make file writable before copying
                 file.chmod(0o666)
@@ -196,7 +206,8 @@ class BuildToolchain:
             logging.error("No binaries found after build!")
         else:
             # Check for errorlevel files in any case
-            erl_files = list(logs_dir.glob('*.[Ee][Rr][Ll]'))
+            # Check for errorlevel files (both uppercase and lowercase)
+            erl_files = list(logs_dir.glob('*.ERL')) + list(logs_dir.glob('*.erl'))
             if not erl_files:
                 logging.error("No errorlevel files captured!")
             else:
