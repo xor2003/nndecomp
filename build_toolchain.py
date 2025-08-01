@@ -99,6 +99,9 @@ class BuildToolchain:
         cmd = [
             'dosbox',
             '-conf', self.dosbox_config,
+            '-c', 'mount c .',
+            '-c', 'c:',
+            '-c', 'BUILD.BAT',
             '--exit'
         ]
         

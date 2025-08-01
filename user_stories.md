@@ -44,12 +44,11 @@ I want containerized build environments for each compiler,
 So that compilation is reproducible and isolated.
 
 9. **Title:** Fragment Code for Training  
-As an ML engineer,  
-I want to split source/assembly pairs into function-level samples,  
-So that the model can learn from manageable code units.
+-As an ML engineer,  
+-I want to split source/assembly pairs into function-level samples,  
+-So that the model can learn from manageable code units.
 
 ## Edge Cases
 - Handling compiler-specific optimizations
 - Dealing with obfuscated or minified code
 - Supporting different memory models (tiny, small, large, etc)
-- Processing incomplete or corrupted binaries

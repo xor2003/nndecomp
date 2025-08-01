@@ -116,7 +116,7 @@ def convert_to_build_script(variables, targets, rules, compiler_type='msc'):
     """
     Convert parsed DOS makefile to a build script.
     """
-    output = ["@echo off", ""]
+    output = ["echo on", ""]
     
     # Add header
     output.append("echo Building project... > BUILD.LOG")
