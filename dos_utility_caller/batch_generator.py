@@ -39,11 +39,10 @@ class BatchGenerator:
             arg_str = " " + " ".join(arguments)
         
         # Create batch content
-        batch_content = f"""@echo off
+        batch_content = f"""@echo on
 {command}{arg_str} > {stdout_file} 2> {stderr_file}
 echo %ERRORLEVEL% > C:\\EXITCODE.TXT
-echo TEST > C:\\TEST.TXT
-dir C:\\*.TXT
+exit
 """
         
         # Write to temporary file
