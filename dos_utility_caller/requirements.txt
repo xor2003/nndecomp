@@ -1,0 +1,2 @@
+# This project has no external dependencies
+# DOSBox must be installed separately on the system

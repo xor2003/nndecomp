@@ -1,0 +1,38 @@
+[sdl]
+fullscreen=false
+vsync=false
+
+[render]
+aspect=false
+
+[dosbox]
+machine=svga_s3
+memsize=16
+
+[cpu]
+cycles=20000
+
+[environment]
+PATH=%PATH%;D:\BIN
+INCLUDE=D:\INCLUDE
+LIB=D:\LIB
+
+[mount]
+c=.
+d=%TOOL_ROOT_DIR%
+
+[output]
+capture_stdout=true
+capture_stderr=true
+output_directory=.
+
+[autoexec]
+mount_c=%MOUNT% c %MOUNT_C%
+mount_d=%MOUNT% d %MOUNT_D%
+path=%PATH%;D:\BIN
+set_include=set INCLUDE=%INCLUDE%
+set_lib=set LIB=%LIB%
+change_to_c=c:
+
+[execution]
+timeout=300
