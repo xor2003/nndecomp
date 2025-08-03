@@ -91,23 +91,32 @@ def call_dos_utility(
             logger.debug("Updating environment variables: %s", environment)
             config_manager.update_config({'environment': environment})
         
+        # Convert command and arguments to DOS paths
+        dos_command = config_manager.convert_path_to_dosbox(command)
+        dos_arguments = []
+        if arguments:
+            for arg in arguments:
+                # Don't convert command-line switches
+                if arg.startswith('/') or arg.startswith('-'):
+                    dos_arguments.append(arg)
+                else:
+                    dos_arguments.append(config_manager.convert_path_to_dosbox(arg))
+
         # Generate batch file
         if capture_output:
-            # Create temporary files for output capture in the current working directory
+            # Create temporary file for output capture in the current working directory
             stdout_file = os.path.join(os.getcwd(), "STDOUT.TXT")
-            stderr_file = os.path.join(os.getcwd(), "STDERR.TXT")
-            # Create empty files
+            # Create empty file
             open(stdout_file, 'w').close()
-            open(stderr_file, 'w').close()
-            logger.debug("Created temporary files: stdout=%s, stderr=%s", stdout_file, stderr_file)
+            logger.debug("Created temporary file: stdout=%s", stdout_file)
             
             # Pass absolute paths to the batch generator
             batch_file = batch_generator.generate_simple_batch(
-                command, arguments, "C:\\STDOUT.TXT", "C:\\STDERR.TXT"
+                dos_command, dos_arguments, "C:\\STDOUT.TXT"
             )
             logger.debug("Generated simple batch file: %s", batch_file)
         else:
-            batch_file = batch_generator.generate_batch_with_case_warning(command, arguments)
+            batch_file = batch_generator.generate_batch_with_case_warning(dos_command, dos_arguments)
             logger.debug("Generated batch file with case warning: %s", batch_file)
         
         # Get configuration
@@ -129,15 +138,15 @@ def call_dos_utility(
         
         # Process output
         if capture_output:
-            logger.debug("Capturing output from files: stdout=%s, stderr=%s", stdout_file, stderr_file)
-            output = output_handler.capture_output(stdout_file, stderr_file)
+            logger.debug("Capturing output from files: stdout=%s", stdout_file)
+            output = output_handler.capture_output(stdout_file)
             logger.debug("Captured output: %s", output)
-            result = output_handler.process_output(output['stdout'], output['stderr'])
+            result = output_handler.process_output(output['stdout'])
             logger.debug("Processed output result: %s", result)
             
             # Clean up temporary files
             # Temporarily disable cleanup for debugging
-            # for temp_file in [stdout_file, stderr_file, batch_file]:
+            # for temp_file in [stdout_file, batch_file]:
             #     if os.path.exists(temp_file):
             #         logger.debug("Cleaning up temporary file: %s", temp_file)
             #         os.remove(temp_file)

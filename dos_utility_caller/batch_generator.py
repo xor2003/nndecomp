@@ -18,9 +18,8 @@ class BatchGenerator:
         """Initialize the batch generator."""
         pass
     
-    def generate_simple_batch(self, command: str, arguments: List[str] = None, 
-                             stdout_file: str = "stdout.txt", 
-                             stderr_file: str = "stderr.txt") -> str:
+    def generate_simple_batch(self, command: str, arguments: List[str] = None,
+                             stdout_file: str = "stdout.txt") -> str:
         """
         Generate a simple batch file for command execution.
         
@@ -28,7 +27,6 @@ class BatchGenerator:
             command: DOS command to execute
             arguments: Command arguments
             stdout_file: File to capture stdout
-            stderr_file: File to capture stderr
             
         Returns:
             Path to the generated batch file
@@ -40,7 +38,7 @@ class BatchGenerator:
         
         # Create batch content
         batch_content = f"""@echo on
-{command}{arg_str} > {stdout_file} 2> {stderr_file}
+{command}{arg_str} > {stdout_file}
 echo %ERRORLEVEL% > C:\\EXITCODE.TXT
 exit
 """
@@ -142,6 +140,7 @@ echo.
         # Set up logging
         logger = logging.getLogger(__name__)
         logger.debug("Writing batch file with content:\n%s", content)
+        
         
         # Create file in current directory with 8.3 compliant name
         import os

@@ -16,26 +16,24 @@ class OutputHandler:
         """Initialize the output handler."""
         pass
     
-    def capture_output(self, stdout_file: str = None, stderr_file: str = None) -> Dict[str, str]:
+    def capture_output(self, stdout_file: str = None) -> Dict[str, str]:
         """
         Capture output from files.
         
         Args:
             stdout_file: File containing stdout
-            stderr_file: File containing stderr
             
         Returns:
-            Dictionary with stdout and stderr content
+            Dictionary with stdout content
         """
         output = {
             'stdout': '',
-            'stderr': ''
         }
         
         # Read stdout if file exists
         if stdout_file and os.path.exists(stdout_file):
             try:
-                with open(stdout_file, 'r', encoding='cp850') as f:  # DOS encoding
+                with open(stdout_file, 'r', encoding='cp866') as f:  # DOS encoding
                     output['stdout'] = f.read()
             except Exception:
                 # Fallback to utf-8
@@ -44,19 +42,6 @@ class OutputHandler:
                         output['stdout'] = f.read()
                 except Exception as e:
                     output['stdout'] = f"Error reading stdout file: {str(e)}"
-        
-        # Read stderr if file exists
-        if stderr_file and os.path.exists(stderr_file):
-            try:
-                with open(stderr_file, 'r', encoding='cp850') as f:  # DOS encoding
-                    output['stderr'] = f.read()
-            except Exception:
-                # Fallback to utf-8
-                try:
-                    with open(stderr_file, 'r', encoding='utf-8') as f:
-                        output['stderr'] = f.read()
-                except Exception as e:
-                    output['stderr'] = f"Error reading stderr file: {str(e)}"
         
         return output
     

@@ -29,6 +29,7 @@ Examples:
   %(prog)s echo Hello World
   %(prog)s cl /c test.c
   %(prog)s --config config.doscfg dir *.txt
+  %(prog)s -c /path/to/source -d /path/to/tools dir C:\\
         """
     )
     
@@ -45,7 +46,6 @@ Examples:
     
     parser.add_argument(
         '--config',
-        '-c',
         type=str,
         help='Path to DOSBox configuration file (.doscfg)'
     )
@@ -78,9 +78,26 @@ Examples:
     )
     
     parser.add_argument(
+        '--source-dir',
+        '--c-drive',
+        '-c',
+        type=str,
+        default='.',
+        help='Path to mount as disk C: (default: current directory)'
+    )
+    
+    parser.add_argument(
+        '--tools-dir',
+        '--d-drive',
+        '-d',
+        type=str,
+        help='Path to mount as disk D: (default: TOOL_ROOT_DIR env var or /home/xor/nndecomp/msc60)'
+    )
+    
+    parser.add_argument(
         '--tool-root',
         type=str,
-        help='Path for disk D: (overrides TOOL_ROOT_DIR environment variable)'
+        help='Path for disk D: (overrides TOOL_ROOT_DIR environment variable) (deprecated, use --tools-dir instead)'
     )
     
     parser.add_argument(
@@ -148,8 +165,9 @@ def main() -> None:
     logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
     
-    # Set TOOL_ROOT_DIR if provided
+    # Handle deprecated --tool-root argument
     if args.tool_root:
+        print("Warning: --tool-root is deprecated, use --tools-dir instead", file=sys.stderr)
         os.environ['TOOL_ROOT_DIR'] = args.tool_root
     
     # Parse environment variables
@@ -176,6 +194,8 @@ def main() -> None:
         result = call_dos_utility(
             command=args.command,
             arguments=args.arguments,
+            source_dir=args.source_dir,
+            tools_dir=args.tools_dir,
             environment=environment,
             dosbox_config=dosbox_config,
             capture_output=not args.no_capture,

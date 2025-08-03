@@ -73,6 +73,26 @@ def example_custom_config():
     print(f"Output:\n{result['stdout']}")
 
 
+def example_custom_mounts():
+    """Example of using custom mount points for C: and D: drives."""
+    print("\n=== Custom Mount Points Example ===")
+    
+    # Use custom directories for C: and D: drives
+    source_dir = "/path/to/source/files"  # Replace with actual path
+    tools_dir = "/path/to/tools"  # Replace with actual path
+    
+    result = call_dos_utility(
+        command="dir",
+        arguments=["C:\\"],
+        source_dir=source_dir,
+        tools_dir=tools_dir
+    )
+    
+    print(f"Exit code: {result['exit_code']}")
+    print(f"Success: {result['success']}")
+    print(f"Output:\n{result['stdout']}")
+
+
 if __name__ == "__main__":
     # Check if DOSBox is installed
     if os.system("which dosbox > /dev/null 2>&1") != 0:
@@ -85,5 +105,6 @@ if __name__ == "__main__":
     example_simple_command()
     example_compilation()
     example_custom_config()
+    example_custom_mounts()
     
     print("\n=== All examples completed ===")
