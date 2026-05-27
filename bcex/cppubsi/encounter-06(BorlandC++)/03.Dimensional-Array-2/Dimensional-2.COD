@@ -1,0 +1,202 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9117DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_DATA	segment word public 'DATA'
+	db	80
+	db	97
+	db	107
+	db	7 dup (0)
+	db	66
+	db	85
+	db	8 dup (0)
+	db	77
+	db	97
+	db	115
+	db	7 dup (0)
+	db	65
+	db	110
+	db	100
+	db	105
+	db	6 dup (0)
+	db	66
+	db	117
+	db	100
+	db	105
+	db	6 dup (0)
+	db	67
+	db	97
+	db	114
+	db	108
+	db	105
+	db	5 dup (0)
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,62
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	char nama[2][3][10]={{"Pak","BU","Mas"},{"Andi","Budi","Carli"}};
+   ;	
+	lea	ax,word ptr [bp-62]
+	push	ss
+	push	ax
+	mov	ax,offset DGROUP:d@+0
+	push	ds
+	push	ax
+	mov	cx,60
+	call	near ptr N_SCOPY@
+   ;	
+   ;	
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<nama[0][0]<<ends<<nama[1][0]<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-62]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ends$qr7ostream
+	pop	cx
+	mov	word ptr [bp-2],ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-32]
+	push	ax
+	push	word ptr [bp-2]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-2]
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<nama[0][1]<<ends<<nama[1][2]<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-52]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ends$qr7ostream
+	pop	cx
+	mov	di,ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-12]
+	push	ax
+	push	di
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	di
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<nama[0][2]<<ends<<nama[1][1]<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-42]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ends$qr7ostream
+	pop	cx
+	mov	si,ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-22]
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	N_SCOPY@:near
+	extrn	_clrscr:near
+	extrn	@endl$qr7ostream:near
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	@ends$qr7ostream:near
+	extrn	_cout:word
+	extrn	_getch:near
+	end
+

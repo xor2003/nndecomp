@@ -1,0 +1,430 @@
+;	Static Name Aliases
+;
+	TITLE   C:\3DFUNC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNchkstk:NEAR
+EXTRN	__fltused:NEAR
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /* 3dfunc.c - transformation functions */
+; Line 1
+;|*** 
+;|*** 
+;|*** #include "structs.h"
+; Line 4
+;|*** 
+;|*** 
+;|*** void rotate_x(MODEL *model, double cosine, double sine)
+;|*** {
+; Line 8
+	PUBLIC	_rotate_x
+_rotate_x	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	b8 10 00 		mov	ax,16
+	*** 000006	e8 00 00 		call	__aNchkstk
+	*** 000009	57 			push	di
+	*** 00000a	56 			push	si
+;	register si = vertex
+;	y = -8
+;	z = -16
+;	sine = 14
+;	cosine = 6
+;	model = 4
+;|***     register int vertex;
+;|***     double   y,z;
+;|*** 
+;|***     for (vertex = 0; vertex < model->vertices; vertex++)
+; Line 12
+	*** 00000b	2b f6 			sub	si,si
+	*** 00000d	eb 59 			jmp	SHORT $F115
+	*** 00000f	90 			nop	
+					$FC116:
+;|***     {
+; Line 13
+;|***         y = model->world[vertex].y;
+; Line 14
+	*** 000010	8b c6 			mov	ax,si
+	*** 000012	b9 18 00 		mov	cx,24
+	*** 000015	f7 e9 			imul	cx
+	*** 000017	03 d8 			add	bx,ax
+	*** 000019	8b c3 			mov	ax,bx
+	*** 00001b	83 c3 0c 		add	bx,12
+	*** 00001e	56 			push	si
+	*** 00001f	8d 7e f8 		lea	di,WORD PTR [bp-8]	;y
+	*** 000022	8b f3 			mov	si,bx
+	*** 000024	16 			push	ss
+	*** 000025	07 			pop	es
+	*** 000026	a5 			movsw
+	*** 000027	a5 			movsw
+	*** 000028	a5 			movsw
+	*** 000029	a5 			movsw
+	*** 00002a	5e 			pop	si
+;|***         z = model->world[vertex].z;
+; Line 15
+	*** 00002b	05 14 00 		add	ax,20
+	*** 00002e	56 			push	si
+	*** 00002f	8d 7e f0 		lea	di,WORD PTR [bp-16]	;z
+	*** 000032	8b f0 			mov	si,ax
+	*** 000034	a5 			movsw
+	*** 000035	a5 			movsw
+	*** 000036	a5 			movsw
+	*** 000037	a5 			movsw
+	*** 000038	5e 			pop	si
+;|*** 
+;|***         model->world[vertex].y = y*cosine - z*sine;
+; Line 17
+	*** 000039	9b dd 07 		fld	QWORD PTR [bx]
+	*** 00003c	9b dc 4e 06 		fmul	QWORD PTR [bp+6]	;cosine
+	*** 000040	8b f8 			mov	di,ax
+	*** 000042	9b dd 05 		fld	QWORD PTR [di]
+	*** 000045	9b dc 4e 0e 		fmul	QWORD PTR [bp+14]	;sine
+	*** 000049	9b de e9 		fsub	
+	*** 00004c	9b dd 1f 		fstp	QWORD PTR [bx]
+;|***         model->world[vertex].z = y*sine + z*cosine;
+; Line 18
+	*** 00004f	9b dd 46 f8 		fld	QWORD PTR [bp-8]	;y
+	*** 000053	9b dc 4e 0e 		fmul	QWORD PTR [bp+14]	;sine
+	*** 000057	9b dd 46 f0 		fld	QWORD PTR [bp-16]	;z
+	*** 00005b	9b dc 4e 06 		fmul	QWORD PTR [bp+6]	;cosine
+	*** 00005f	9b de c1 		fadd	
+	*** 000062	9b dd 1d 		fstp	QWORD PTR [di]
+	*** 000065	90 9b 			fwait	
+;|***     }
+; Line 19
+	*** 000067	46 			inc	si
+					$F115:
+	*** 000068	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;model
+	*** 00006b	39 37 			cmp	WORD PTR [bx],si
+	*** 00006d	7f a1 			jg	$FC116
+;|*** }
+; Line 20
+	*** 00006f	5e 			pop	si
+	*** 000070	5f 			pop	di
+	*** 000071	8b e5 			mov	sp,bp
+	*** 000073	5d 			pop	bp
+	*** 000074	c3 			ret	
+	*** 000075	90 			nop	
+
+_rotate_x	ENDP
+;|*** 
+;|*** void rotate_y(MODEL *model, double cosine, double sine)
+;|*** {
+; Line 23
+	PUBLIC	_rotate_y
+_rotate_y	PROC NEAR
+	*** 000076	55 			push	bp
+	*** 000077	8b ec 			mov	bp,sp
+	*** 000079	b8 10 00 		mov	ax,16
+	*** 00007c	e8 00 00 		call	__aNchkstk
+	*** 00007f	57 			push	di
+	*** 000080	56 			push	si
+;	register si = vertex
+;	x = -8
+;	z = -16
+;	sine = 14
+;	cosine = 6
+;	model = 4
+;|***     register int vertex;
+;|***     double   x,z;
+;|*** 
+;|***     for (vertex = 0; vertex < model->vertices; vertex++)
+; Line 27
+	*** 000081	2b f6 			sub	si,si
+	*** 000083	eb 59 			jmp	SHORT $F126
+	*** 000085	90 			nop	
+					$FC127:
+;|***     {
+; Line 28
+;|***         x = model->world[vertex].x;
+; Line 29
+	*** 000086	8b c6 			mov	ax,si
+	*** 000088	b9 18 00 		mov	cx,24
+	*** 00008b	f7 e9 			imul	cx
+	*** 00008d	03 d8 			add	bx,ax
+	*** 00008f	8b c3 			mov	ax,bx
+	*** 000091	83 c3 04 		add	bx,4
+	*** 000094	56 			push	si
+	*** 000095	8d 7e f8 		lea	di,WORD PTR [bp-8]	;x
+	*** 000098	8b f3 			mov	si,bx
+	*** 00009a	16 			push	ss
+	*** 00009b	07 			pop	es
+	*** 00009c	a5 			movsw
+	*** 00009d	a5 			movsw
+	*** 00009e	a5 			movsw
+	*** 00009f	a5 			movsw
+	*** 0000a0	5e 			pop	si
+;|***         z = model->world[vertex].z;
+; Line 30
+	*** 0000a1	05 14 00 		add	ax,20
+	*** 0000a4	56 			push	si
+	*** 0000a5	8d 7e f0 		lea	di,WORD PTR [bp-16]	;z
+	*** 0000a8	8b f0 			mov	si,ax
+	*** 0000aa	a5 			movsw
+	*** 0000ab	a5 			movsw
+	*** 0000ac	a5 			movsw
+	*** 0000ad	a5 			movsw
+	*** 0000ae	5e 			pop	si
+;|*** 
+;|***         model->world[vertex].x = x*cosine - z*sine;
+; Line 32
+	*** 0000af	9b dd 07 		fld	QWORD PTR [bx]
+	*** 0000b2	9b dc 4e 06 		fmul	QWORD PTR [bp+6]	;cosine
+	*** 0000b6	8b f8 			mov	di,ax
+	*** 0000b8	9b dd 05 		fld	QWORD PTR [di]
+	*** 0000bb	9b dc 4e 0e 		fmul	QWORD PTR [bp+14]	;sine
+	*** 0000bf	9b de e9 		fsub	
+	*** 0000c2	9b dd 1f 		fstp	QWORD PTR [bx]
+;|***         model->world[vertex].z = x*sine + z*cosine;
+; Line 33
+	*** 0000c5	9b dd 46 f8 		fld	QWORD PTR [bp-8]	;x
+	*** 0000c9	9b dc 4e 0e 		fmul	QWORD PTR [bp+14]	;sine
+	*** 0000cd	9b dd 46 f0 		fld	QWORD PTR [bp-16]	;z
+	*** 0000d1	9b dc 4e 06 		fmul	QWORD PTR [bp+6]	;cosine
+	*** 0000d5	9b de c1 		fadd	
+	*** 0000d8	9b dd 1d 		fstp	QWORD PTR [di]
+	*** 0000db	90 9b 			fwait	
+;|***     }
+; Line 34
+	*** 0000dd	46 			inc	si
+					$F126:
+	*** 0000de	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;model
+	*** 0000e1	39 37 			cmp	WORD PTR [bx],si
+	*** 0000e3	7f a1 			jg	$FC127
+;|*** }
+; Line 35
+	*** 0000e5	5e 			pop	si
+	*** 0000e6	5f 			pop	di
+	*** 0000e7	8b e5 			mov	sp,bp
+	*** 0000e9	5d 			pop	bp
+	*** 0000ea	c3 			ret	
+	*** 0000eb	90 			nop	
+
+_rotate_y	ENDP
+;|*** 
+;|*** void rotate_z(MODEL *model, double cosine, double sine)
+;|*** {
+; Line 38
+	PUBLIC	_rotate_z
+_rotate_z	PROC NEAR
+	*** 0000ec	55 			push	bp
+	*** 0000ed	8b ec 			mov	bp,sp
+	*** 0000ef	b8 10 00 		mov	ax,16
+	*** 0000f2	e8 00 00 		call	__aNchkstk
+	*** 0000f5	57 			push	di
+	*** 0000f6	56 			push	si
+;	register si = vertex
+;	x = -8
+;	y = -16
+;	sine = 14
+;	cosine = 6
+;	model = 4
+;|***     register int vertex;
+;|***     double   x,y;
+;|*** 
+;|***     for (vertex = 0; vertex < model->vertices; vertex++)
+; Line 42
+	*** 0000f7	2b f6 			sub	si,si
+	*** 0000f9	eb 59 			jmp	SHORT $F137
+	*** 0000fb	90 			nop	
+					$FC138:
+;|***     {
+; Line 43
+;|***         x = model->world[vertex].x;
+; Line 44
+	*** 0000fc	8b c6 			mov	ax,si
+	*** 0000fe	b9 18 00 		mov	cx,24
+	*** 000101	f7 e9 			imul	cx
+	*** 000103	03 d8 			add	bx,ax
+	*** 000105	8b c3 			mov	ax,bx
+	*** 000107	83 c3 04 		add	bx,4
+	*** 00010a	56 			push	si
+	*** 00010b	8d 7e f8 		lea	di,WORD PTR [bp-8]	;x
+	*** 00010e	8b f3 			mov	si,bx
+	*** 000110	16 			push	ss
+	*** 000111	07 			pop	es
+	*** 000112	a5 			movsw
+	*** 000113	a5 			movsw
+	*** 000114	a5 			movsw
+	*** 000115	a5 			movsw
+	*** 000116	5e 			pop	si
+;|***         y = model->world[vertex].y;
+; Line 45
+	*** 000117	05 0c 00 		add	ax,12
+	*** 00011a	56 			push	si
+	*** 00011b	8d 7e f0 		lea	di,WORD PTR [bp-16]	;y
+	*** 00011e	8b f0 			mov	si,ax
+	*** 000120	a5 			movsw
+	*** 000121	a5 			movsw
+	*** 000122	a5 			movsw
+	*** 000123	a5 			movsw
+	*** 000124	5e 			pop	si
+;|*** 
+;|***         model->world[vertex].x = x*cosine - y*sine;
+; Line 47
+	*** 000125	9b dd 07 		fld	QWORD PTR [bx]
+	*** 000128	9b dc 4e 06 		fmul	QWORD PTR [bp+6]	;cosine
+	*** 00012c	8b f8 			mov	di,ax
+	*** 00012e	9b dd 05 		fld	QWORD PTR [di]
+	*** 000131	9b dc 4e 0e 		fmul	QWORD PTR [bp+14]	;sine
+	*** 000135	9b de e9 		fsub	
+	*** 000138	9b dd 1f 		fstp	QWORD PTR [bx]
+;|***         model->world[vertex].y = x*sine + y*cosine;
+; Line 48
+	*** 00013b	9b dd 46 0e 		fld	QWORD PTR [bp+14]	;sine
+	*** 00013f	9b dc 4e f8 		fmul	QWORD PTR [bp-8]	;x
+	*** 000143	9b dd 46 06 		fld	QWORD PTR [bp+6]	;cosine
+	*** 000147	9b dc 4e f0 		fmul	QWORD PTR [bp-16]	;y
+	*** 00014b	9b de c1 		fadd	
+	*** 00014e	9b dd 1d 		fstp	QWORD PTR [di]
+	*** 000151	90 9b 			fwait	
+;|***     }
+; Line 49
+	*** 000153	46 			inc	si
+					$F137:
+	*** 000154	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;model
+	*** 000157	39 37 			cmp	WORD PTR [bx],si
+	*** 000159	7f a1 			jg	$FC138
+;|*** }
+; Line 50
+	*** 00015b	5e 			pop	si
+	*** 00015c	5f 			pop	di
+	*** 00015d	8b e5 			mov	sp,bp
+	*** 00015f	5d 			pop	bp
+	*** 000160	c3 			ret	
+	*** 000161	90 			nop	
+
+_rotate_z	ENDP
+;|*** 
+;|*** void translate(MODEL *model, double x, double y, double z)
+;|*** {
+; Line 53
+	PUBLIC	_translate
+_translate	PROC NEAR
+	*** 000162	55 			push	bp
+	*** 000163	8b ec 			mov	bp,sp
+	*** 000165	33 c0 			xor	ax,ax
+	*** 000167	e8 00 00 		call	__aNchkstk
+	*** 00016a	56 			push	si
+;	register si = vertex
+;	z = 22
+;	y = 14
+;	x = 6
+;	model = 4
+;|***     register int vertex;
+;|*** 
+;|***     for (vertex = 0; vertex < model->vertices; vertex++)
+; Line 56
+	*** 00016b	2b f6 			sub	si,si
+	*** 00016d	eb 31 			jmp	SHORT $F147
+	*** 00016f	90 			nop	
+					$FC148:
+;|***     {
+; Line 57
+;|***         model->world[vertex].x += x;
+; Line 58
+	*** 000170	8b c6 			mov	ax,si
+	*** 000172	b9 18 00 		mov	cx,24
+	*** 000175	f7 e9 			imul	cx
+	*** 000177	03 d8 			add	bx,ax
+	*** 000179	9b dd 46 06 		fld	QWORD PTR [bp+6]	;x
+	*** 00017d	9b dc 47 04 		fadd	QWORD PTR [bx+4]
+	*** 000181	9b dd 5f 04 		fstp	QWORD PTR [bx+4]
+;|***         model->world[vertex].y += y;
+; Line 59
+	*** 000185	9b dd 46 0e 		fld	QWORD PTR [bp+14]	;y
+	*** 000189	9b dc 47 0c 		fadd	QWORD PTR [bx+12]
+	*** 00018d	9b dd 5f 0c 		fstp	QWORD PTR [bx+12]
+;|***         model->world[vertex].z += z;
+; Line 60
+	*** 000191	9b dd 46 16 		fld	QWORD PTR [bp+22]	;z
+	*** 000195	9b dc 47 14 		fadd	QWORD PTR [bx+20]
+	*** 000199	9b dd 5f 14 		fstp	QWORD PTR [bx+20]
+	*** 00019d	90 9b 			fwait	
+;|***     }
+; Line 61
+	*** 00019f	46 			inc	si
+					$F147:
+	*** 0001a0	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;model
+	*** 0001a3	39 37 			cmp	WORD PTR [bx],si
+	*** 0001a5	7f c9 			jg	$FC148
+;|*** }
+; Line 62
+	*** 0001a7	5e 			pop	si
+	*** 0001a8	8b e5 			mov	sp,bp
+	*** 0001aa	5d 			pop	bp
+	*** 0001ab	c3 			ret	
+
+_translate	ENDP
+;|*** 
+;|*** void scale(MODEL *model, double scale_factor)
+;|*** {
+; Line 65
+	PUBLIC	_scale
+_scale	PROC NEAR
+	*** 0001ac	55 			push	bp
+	*** 0001ad	8b ec 			mov	bp,sp
+	*** 0001af	33 c0 			xor	ax,ax
+	*** 0001b1	e8 00 00 		call	__aNchkstk
+	*** 0001b4	56 			push	si
+;	register si = vertex
+;	scale_factor = 6
+;	model = 4
+;|***     register int vertex;
+;|*** 
+;|***     for (vertex = 0; vertex < model->vertices; vertex++)
+; Line 68
+	*** 0001b5	2b f6 			sub	si,si
+	*** 0001b7	eb 31 			jmp	SHORT $F155
+	*** 0001b9	90 			nop	
+					$FC156:
+;|***     {
+; Line 69
+;|***         model->world[vertex].x *= scale_factor;
+; Line 70
+	*** 0001ba	8b c6 			mov	ax,si
+	*** 0001bc	b9 18 00 		mov	cx,24
+	*** 0001bf	f7 e9 			imul	cx
+	*** 0001c1	03 d8 			add	bx,ax
+	*** 0001c3	9b dd 46 06 		fld	QWORD PTR [bp+6]	;scale_factor
+	*** 0001c7	9b dc 4f 04 		fmul	QWORD PTR [bx+4]
+	*** 0001cb	9b dd 5f 04 		fstp	QWORD PTR [bx+4]
+;|***         model->world[vertex].y *= scale_factor;
+; Line 71
+	*** 0001cf	9b dd 46 06 		fld	QWORD PTR [bp+6]	;scale_factor
+	*** 0001d3	9b dc 4f 0c 		fmul	QWORD PTR [bx+12]
+	*** 0001d7	9b dd 5f 0c 		fstp	QWORD PTR [bx+12]
+;|***         model->world[vertex].z *= scale_factor;
+; Line 72
+	*** 0001db	9b dd 46 06 		fld	QWORD PTR [bp+6]	;scale_factor
+	*** 0001df	9b dc 4f 14 		fmul	QWORD PTR [bx+20]
+	*** 0001e3	9b dd 5f 14 		fstp	QWORD PTR [bx+20]
+	*** 0001e7	90 9b 			fwait	
+;|***     }
+; Line 73
+	*** 0001e9	46 			inc	si
+					$F155:
+	*** 0001ea	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;model
+	*** 0001ed	39 37 			cmp	WORD PTR [bx],si
+	*** 0001ef	7f c9 			jg	$FC156
+;|*** }
+; Line 74
+	*** 0001f1	5e 			pop	si
+	*** 0001f2	8b e5 			mov	sp,bp
+	*** 0001f4	5d 			pop	bp
+	*** 0001f5	c3 			ret	
+
+_scale	ENDP
+_TEXT	ENDS
+END

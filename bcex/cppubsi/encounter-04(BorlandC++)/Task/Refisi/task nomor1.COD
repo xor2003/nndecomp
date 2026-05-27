@@ -1,0 +1,253 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9107DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,6
+@1@26:
+   ;	
+   ;	{
+   ;	char nom, lagi, a, b, c;
+   ;	atas:
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"Masukan Kode Buku [1|2|3] :";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	nom = getche();
+   ;	
+	call	near ptr _getche
+	mov	byte ptr [bp-1],al
+   ;	
+   ;	cout<<'\n';
+   ;	
+	mov	al,10
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	switch (nom)
+   ;	
+	mov	al,byte ptr [bp-1]
+	cbw	
+	cmp	ax,49
+	je	short @1@170
+	cmp	ax,50
+	je	short @1@194
+	cmp	ax,51
+	je	short @1@218
+	jmp	short @1@242
+@1@170:
+   ;	
+   ;	{case '1':
+   ;	cout<<"Sukses Belajar Borland C++";cin>>a;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+28
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-3]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+	jmp	short @1@266
+@1@194:
+   ;	
+   ;	break;
+   ;	case '2':
+   ;	cout<<"Kunci Pribadi Yang Sukses";cin>>b;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+55
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-4]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+	jmp	short @1@266
+@1@218:
+   ;	
+   ;	break;
+   ;	case '3':
+   ;	cout<<"Mencari Mutiara Didasar Hati";cin>>c;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+81
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-5]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+	jmp	short @1@266
+@1@242:
+   ;	
+   ;	break;
+   ;	default:
+   ;	cout<<"Pilihan Buku Salah!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+110
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@1@266:
+   ;	
+   ;	}
+   ;	cout<<'\n';
+   ;	
+	mov	al,10
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	cout<<"\nIngin pilih lagi [Y/T]:";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+131
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	lagi = getche();
+   ;	
+	call	near ptr _getche
+	mov	byte ptr [bp-2],al
+   ;	
+   ;	if (lagi == 'Y' || lagi=='y')
+   ;	
+	cmp	byte ptr [bp-2],89
+	je	short @1@314
+	cmp	byte ptr [bp-2],121
+	jne	short @1@338
+@1@314:
+   ;	
+   ;	goto atas;
+   ;	
+	jmp	@1@26
+@1@338:
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'Masukan Kode Buku [1|2|3] :'
+	db	0
+	db	'Sukses Belajar Borland C++'
+	db	0
+	db	'Kunci Pribadi Yang Sukses'
+	db	0
+	db	'Mencari Mutiara Didasar Hati'
+	db	0
+	db	'Pilihan Buku Salah!!'
+	db	0
+	db	10
+	db	'Ingin pilih lagi [Y/T]:'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	_clrscr:near
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	_getche:near
+	extrn	@ostream@$blsh$qzc:near
+	extrn	@istream@$brsh$qrzc:near
+	extrn	_cin:word
+	extrn	_getch:near
+	end
+

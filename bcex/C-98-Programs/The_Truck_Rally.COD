@@ -1,0 +1,3234 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9C37BBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528114443A5C494E434C5544455C6673747265616D2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+	?debug	C E95337528112443A5C494E434C5544455C63747970652E68
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C67726170686963732E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528110443A5C494E434C5544455C646F732E68
+	?debug	C E95337528113443A5C494E434C5544455C737472696E672E68
+	?debug	C E95337528113443A5C494E434C5544455C7374646C69622E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_x1	label	word
+	db	2 dup (?)
+_x2	label	word
+	db	2 dup (?)
+_x3	label	word
+	db	2 dup (?)
+_x4	label	word
+	db	2 dup (?)
+_y2	label	word
+	db	2 dup (?)
+_y3	label	word
+	db	2 dup (?)
+_y4	label	word
+	db	2 dup (?)
+_BSS	ends
+_DATA	segment word public 'DATA'
+_i	label	word
+	db	0
+	db	0
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_DATA	segment word public 'DATA'
+_speed	label	word
+	db	30
+	db	0
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_DATA	segment word public 'DATA'
+_score	label	word
+	db	0
+	db	0
+	db	0
+	db	0
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_DATA	segment word public 'DATA'
+_t	label	dword
+	db	0
+	db	0
+	db	22
+	db	67
+_DATA	ends
+_BSS	segment word public 'BSS'
+_value	label	byte
+	db	20 dup (?)
+_ch	label	byte
+	db	1 dup (?)
+_ch1	label	byte
+	db	1 dup (?)
+_BSS	ends
+_DATA	segment word public 'DATA'
+_sco1	label	word
+	db	22 dup (0)
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_DATA	segment word public 'DATA'
+_sco2	label	word
+	db	22 dup (0)
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	void Reset()
+   ;	
+	assume	cs:_TEXT
+@Reset$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		score=0;
+   ;	
+	mov	word ptr DGROUP:_score,0
+	mov	word ptr DGROUP:_score+2,0
+   ;	
+   ;		speed=30;
+   ;	
+	mov	word ptr DGROUP:_speed,30
+   ;	
+   ;		t=150;
+   ;	
+	FLD	dword ptr DGROUP:s@
+	FSTP	dword ptr DGROUP:_t
+   ;	
+   ;		y2=0;
+   ;	
+	FWAIT	
+	mov	word ptr DGROUP:_y2,0
+   ;	
+   ;		y3=-70;
+   ;	
+	mov	word ptr DGROUP:_y3,65466
+   ;	
+   ;		y4=-200;
+   ;	
+	mov	word ptr DGROUP:_y4,65336
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@Reset$qv	endp
+   ;	
+   ;	void Borders()		//To draw borders
+   ;	
+	assume	cs:_TEXT
+@Borders$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		setfillstyle(SOLID_FILL,RED);
+   ;	
+	mov	ax,4
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(0,0,getmaxx(),10);
+   ;	
+	mov	ax,10
+	push	ax
+	call	far ptr _getmaxx
+	push	ax
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;		setfillstyle(SOLID_FILL,BLUE);
+   ;	
+	mov	ax,1
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(0,getmaxy()-10,getmaxx(),getmaxy());
+   ;	
+	call	far ptr _getmaxy
+	push	ax
+	call	far ptr _getmaxx
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65526
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@Borders$qv	endp
+   ;	
+   ;	void title()
+   ;	
+	assume	cs:_TEXT
+@title$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,4
+	push	si
+   ;	
+   ;	{
+   ;		int gd=DETECT,gm;
+   ;	
+	mov	word ptr [bp-2],0
+   ;	
+   ;		clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+4
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-4]
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-2]
+	push	ax
+	call	far ptr _initgraph
+	add	sp,12
+   ;	
+   ;		for(int i=0;i<10;i++)
+   ;	
+	xor	si,si
+	jmp	@3@98
+@3@50:
+   ;	
+   ;		{
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		setfillstyle(SOLID_FILL,RED);
+   ;	
+	mov	ax,4
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;		rectangle(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _rectangle
+	add	sp,8
+   ;	
+   ;		settextstyle(GOTHIC_FONT,HORIZ_DIR,5);
+   ;	
+	mov	ax,5
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,4
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy(80,160,"        Truck Rally");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+19
+	push	ax
+	mov	ax,160
+	push	ax
+	mov	ax,80
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		delay(100);
+   ;	
+	mov	ax,100
+	push	ax
+	call	near ptr _delay
+	pop	cx
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		setfillstyle(SOLID_FILL,BLUE);
+   ;	
+	mov	ax,1
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;		rectangle(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _rectangle
+	add	sp,8
+   ;	
+   ;		settextstyle(GOTHIC_FONT,HORIZ_DIR,5);
+   ;	
+	mov	ax,5
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,4
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy(80,160,"        Truck Rally");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+39
+	push	ax
+	mov	ax,160
+	push	ax
+	mov	ax,80
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		delay(100);
+   ;	
+	mov	ax,100
+	push	ax
+	call	near ptr _delay
+	pop	cx
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		setfillstyle(SOLID_FILL,CYAN);
+   ;	
+	mov	ax,3
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;		rectangle(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _rectangle
+	add	sp,8
+   ;	
+   ;		settextstyle(GOTHIC_FONT,HORIZ_DIR,5);
+   ;	
+	mov	ax,5
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,4
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy(80,160,"        Truck Rally");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+59
+	push	ax
+	mov	ax,160
+	push	ax
+	mov	ax,80
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		delay(100);
+   ;	
+	mov	ax,100
+	push	ax
+	call	near ptr _delay
+	pop	cx
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		setfillstyle(SOLID_FILL,MAGENTA);
+   ;	
+	mov	ax,5
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _bar
+	add	sp,8
+   ;	
+   ;		rectangle(50,150,600,230);
+   ;	
+	mov	ax,230
+	push	ax
+	mov	ax,600
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,50
+	push	ax
+	call	far ptr _rectangle
+	add	sp,8
+   ;	
+   ;		settextstyle(GOTHIC_FONT,HORIZ_DIR,5);
+   ;	
+	mov	ax,5
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,4
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy(80,160,"        Truck Rally");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+79
+	push	ax
+	mov	ax,160
+	push	ax
+	mov	ax,80
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		delay(100);
+   ;	
+	mov	ax,100
+	push	ax
+	call	near ptr _delay
+	pop	cx
+	inc	si
+@3@98:
+	cmp	si,10
+	jge	@@0
+	jmp	@3@50
+@@0:
+   ;	
+   ;		}
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@title$qv	endp
+   ;	
+   ;	void ScoreSave()
+   ;	
+	assume	cs:_TEXT
+@ScoreSave$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,78
+	push	si
+   ;	
+   ;	{
+   ;		cout<<"\n===============================================================================\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+99
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		cout<<"\t\t\tScoreboard\n\t\t\t-------------\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+182
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		sco1.save();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+215
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_sco1+2
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	mov	ax,word ptr DGROUP:_score
+	mov	word ptr DGROUP:_sco1,ax
+   ;	
+   ;		ofstream fout("Score_Truck.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+249
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		fout.write((char*)&sco1,sizeof(sco1));
+   ;	
+	mov	ax,22
+	push	ax
+	mov	ax,offset DGROUP:_sco1
+	push	ax
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;		sco1.summary();
+   ;	
+	call	near ptr _clrscr
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+265
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+294
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	si,offset DGROUP:_cout
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:_sco1+2
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+303
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:_value
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+312
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	call	near ptr _getch
+   ;	
+   ;		fout.close();
+   ;	
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		getch();
+   ;	
+	call	near ptr _getch
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@ScoreSave$qv	endp
+   ;	
+   ;	int hiscore()
+   ;	
+	assume	cs:_TEXT
+@hiscore$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,82
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;		ifstream fin("Score_Truck.dat",ios::binary|ios::beg);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+346
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-82]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		int max;
+   ;		for(int i=0;i<100;i++)
+   ;	
+	xor	si,si
+	jmp	short @5@122
+@5@50:
+   ;	
+   ;		{
+   ;			fin.read((char*)&sco2,sizeof(sco2));
+   ;	
+	mov	ax,22
+	push	ax
+	mov	ax,offset DGROUP:_sco2
+	push	ax
+	lea	ax,word ptr [bp-42]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;			if(sco2.ret()>max)
+   ;	
+	cmp	word ptr DGROUP:_sco2,di
+	jle	short @5@98
+   ;	
+   ;				max=sco2.ret();
+   ;	
+	mov	di,word ptr DGROUP:_sco2
+@5@98:
+	inc	si
+@5@122:
+	cmp	si,100
+	jl	short @5@50
+   ;	
+   ;	
+   ;		}
+   ;		fin.close();
+   ;	
+	lea	ax,word ptr [bp-82]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		return max;
+   ;	
+	mov	word ptr [bp-2],di
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-82]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	mov	ax,word ptr [bp-2]
+	jmp	short @5@170
+@5@170:
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@hiscore$qv	endp
+   ;	
+   ;	void ene()
+   ;	
+	assume	cs:_TEXT
+@ene$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		X:randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;		int a=210+(rand()%190);
+   ;	
+	call	near ptr _rand
+	mov	bx,190
+	cwd	
+	idiv	bx
+	add	dx,210
+	mov	si,dx
+   ;	
+   ;		x2=a;
+   ;	
+	mov	word ptr DGROUP:_x2,si
+   ;	
+   ;		y2=0;
+   ;	
+	mov	word ptr DGROUP:_y2,0
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@ene$qv	endp
+   ;	
+   ;	void ene1()
+   ;	
+	assume	cs:_TEXT
+@ene1$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;		int a=210+random(190);
+   ;	
+	xor	ax,ax
+	mov	dx,32768
+	push	ax
+	push	dx
+	call	near ptr _rand
+	cwd	
+	push	ax
+	push	dx
+	xor	dx,dx
+	mov	ax,190
+	pop	cx
+	pop	bx
+	call	near ptr N_LXMUL@
+	push	dx
+	push	ax
+	call	near ptr N_LDIV@
+	add	ax,210
+	mov	si,ax
+   ;	
+   ;		x3=a;
+   ;	
+	mov	word ptr DGROUP:_x3,si
+   ;	
+   ;		y3=-70;
+   ;	
+	mov	word ptr DGROUP:_y3,65466
+   ;	
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@ene1$qv	endp
+   ;	
+   ;	void ene2()
+   ;	
+	assume	cs:_TEXT
+@ene2$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+@8@50:
+   ;	
+   ;		int a;
+   ;		X:a=230+(random(100)+(rand()%100));
+   ;	
+	xor	ax,ax
+	mov	dx,32768
+	push	ax
+	push	dx
+	call	near ptr _rand
+	cwd	
+	push	ax
+	push	dx
+	xor	dx,dx
+	mov	ax,100
+	pop	cx
+	pop	bx
+	call	near ptr N_LXMUL@
+	push	dx
+	push	ax
+	call	near ptr N_LDIV@
+	push	ax
+	call	near ptr _rand
+	mov	bx,100
+	cwd	
+	idiv	bx
+	pop	ax
+	add	ax,dx
+	add	ax,230
+	mov	si,ax
+   ;	
+   ;		if(a>400)
+   ;	
+	cmp	si,400
+	jle	short @8@98
+   ;	
+   ;		     goto X;
+   ;	
+	jmp	short @8@50
+@8@98:
+   ;	
+   ;		x4=a;
+   ;	
+	mov	word ptr DGROUP:_x4,si
+   ;	
+   ;		if((x1-10)<=x4&&x4<=(x1+10))
+   ;	
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,65526
+	cmp	ax,word ptr DGROUP:_x4
+	jg	short @8@170
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,10
+	cmp	ax,word ptr DGROUP:_x4
+	jl	short @8@170
+   ;	
+   ;			goto X;
+   ;	
+	jmp	short @8@50
+@8@170:
+   ;	
+   ;		if((x2-10)<=x4&&x4<=(x2+10))
+   ;	
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,65526
+	cmp	ax,word ptr DGROUP:_x4
+	jg	short @8@242
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,10
+	cmp	ax,word ptr DGROUP:_x4
+	jl	short @8@242
+   ;	
+   ;			goto X;
+   ;	
+	jmp	short @8@50
+@8@242:
+   ;	
+   ;		y4=-200;
+   ;	
+	mov	word ptr DGROUP:_y4,65336
+   ;	
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@ene2$qv	endp
+   ;	
+   ;	void ene12()
+   ;	
+	assume	cs:_TEXT
+@ene12$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		ene2();
+   ;	
+	call	near ptr @ene2$qv
+   ;	
+   ;		ene1();
+   ;	
+	call	near ptr @ene1$qv
+   ;	
+   ;		ene();
+   ;	
+	call	near ptr @ene$qv
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@ene12$qv	endp
+   ;	
+   ;	void move()
+   ;	
+	assume	cs:_TEXT
+@move$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		y4+=10;
+   ;	
+	add	word ptr DGROUP:_y4,10
+   ;	
+   ;		y3+=10;
+   ;	
+	add	word ptr DGROUP:_y3,10
+   ;	
+   ;		y2+=10;
+   ;	
+	add	word ptr DGROUP:_y2,10
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@move$qv	endp
+   ;	
+   ;	int Control()
+   ;	
+	assume	cs:_TEXT
+@Control$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		if(!kbhit())
+   ;	
+	call	near ptr _kbhit
+	or	ax,ax
+	jne	short @11@98
+   ;	
+   ;		{       delay(speed);
+   ;	
+	push	word ptr DGROUP:_speed
+	call	near ptr _delay
+	pop	cx
+   ;	
+   ;			return 0;
+   ;	
+	xor	ax,ax
+	jmp	short @11@338
+	jmp	short @11@314
+@11@98:
+   ;	
+   ;		}
+   ;		else
+   ;		{
+   ;			switch(getch())
+   ;	
+	call	near ptr _getch
+	mov	si,ax
+	mov	cx,5
+	mov	bx,offset @11@C968
+@11@146:
+	cmp	word ptr cs:[bx],si
+	je	short @11@218
+	inc	bx
+	inc	bx
+	loop	short @11@146
+	jmp	short @11@314
+@11@218:
+	jmp	word ptr cs:[bx+10]
+@11@242:
+   ;	
+   ;			{
+   ;				case'd':case'D':x1+=10;break;
+   ;	
+	add	word ptr DGROUP:_x1,10
+	jmp	short @11@314
+@11@266:
+   ;	
+   ;				case'a':case'A':x1-=10;break;
+   ;	
+	sub	word ptr DGROUP:_x1,10
+	jmp	short @11@314
+@11@290:
+   ;	
+   ;				case 27:getch();closegraph();exit(0);break;
+   ;	
+	call	near ptr _getch
+	call	far ptr _closegraph
+	xor	ax,ax
+	push	ax
+	call	near ptr _exit
+	pop	cx
+	jmp	short @11@314
+@11@314:
+   ;	
+   ;			}
+   ;		}
+   ;			return 0;
+   ;	
+	xor	ax,ax
+	jmp	short @11@338
+@11@338:
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@Control$qv	endp
+@11@C968	label	word
+	db	27
+	db	0
+	db	65
+	db	0
+	db	68
+	db	0
+	db	97
+	db	0
+	db	100
+	db	0
+	dw	@11@290
+	dw	@11@266
+	dw	@11@242
+	dw	@11@266
+	dw	@11@242
+   ;	
+   ;	void BGround()
+   ;	
+	assume	cs:_TEXT
+@BGround$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		/*		GRASS		*/
+   ;		setfillstyle(9,GREEN);
+   ;	
+	mov	ax,2
+	push	ax
+	mov	ax,9
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(0,0,getmaxx()/3,getmaxy(),0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	push	ax
+	call	far ptr _getmaxx
+	mov	bx,3
+	cwd	
+	idiv	bx
+	push	ax
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(9,GREEN);
+   ;	
+	mov	ax,2
+	push	ax
+	mov	ax,9
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(2*getmaxx()/3,0,getmaxx(),getmaxy(),0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	push	ax
+	call	far ptr _getmaxx
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxx
+	shl	ax,1
+	mov	bx,3
+	cwd	
+	idiv	bx
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		ROAD		       */
+   ;		setfillstyle(SOLID_FILL,8);
+   ;	
+	mov	ax,8
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(getmaxx()/3,0,2*getmaxx()/3,getmaxy(),0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	push	ax
+	call	far ptr _getmaxx
+	shl	ax,1
+	mov	bx,3
+	cwd	
+	idiv	bx
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxx
+	mov	bx,3
+	cwd	
+	idiv	bx
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@BGround$qv	endp
+   ;	
+   ;	void car()
+   ;	
+	assume	cs:_TEXT
+@car$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;		/*		Tyres		*/
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x1+1,getmaxy()-38,x1+5,getmaxy()-32,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65504
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,5
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65498
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	inc	ax
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x1+25,getmaxy()-38,x1+29,getmaxy()-32,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65504
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,29
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65498
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,25
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		Body		*/
+   ;		setfillstyle(1,YELLOW);
+   ;	
+	mov	ax,14
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x1+5,getmaxy()-10,x1+25,getmaxy()-40,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65496
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,25
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65526
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,5
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		Container	*/
+   ;		setfillstyle(4,BLUE);
+   ;	
+	mov	ax,1
+	push	ax
+	mov	ax,4
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x1,getmaxy()-30,x1+30,getmaxy(),0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _getmaxy
+	push	ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,30
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65506
+	push	ax
+	push	word ptr DGROUP:_x1
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@car$qv	endp
+   ;	
+   ;	void car1()
+   ;	
+	assume	cs:_TEXT
+@car1$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		/*		Tyres		*/
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x2+1,y2+2,x2+5,y2+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,5
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	inc	ax
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x2+25,y2+2,x2+29,y2+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,29
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,25
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	
+   ;		/*		Body		*/
+   ;		setfillstyle(1,RED);
+   ;	
+	mov	ax,4
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x2+5,y2-10,x2+25,y2+10,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	add	ax,10
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,25
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	add	ax,65526
+	push	ax
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,5
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		Container	*/
+   ;		int a=random(13);
+   ;	
+	xor	ax,ax
+	mov	dx,32768
+	push	ax
+	push	dx
+	call	near ptr _rand
+	cwd	
+	push	ax
+	push	dx
+	xor	dx,dx
+	mov	ax,13
+	pop	cx
+	pop	bx
+	call	near ptr N_LXMUL@
+	push	dx
+	push	ax
+	call	near ptr N_LDIV@
+	mov	si,ax
+   ;	
+   ;		setfillstyle(11,a);
+   ;	
+	push	si
+	mov	ax,11
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x2,y2-40,x2+30,y2,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	push	word ptr DGROUP:_y2
+	mov	ax,word ptr DGROUP:_x2
+	add	ax,30
+	push	ax
+	mov	ax,word ptr DGROUP:_y2
+	add	ax,65496
+	push	ax
+	push	word ptr DGROUP:_x2
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		if(y2>getmaxy())
+   ;	
+	call	far ptr _getmaxy
+	cmp	ax,word ptr DGROUP:_y2
+	jge	short @14@74
+   ;	
+   ;			ene();
+   ;	
+	call	near ptr @ene$qv
+@14@74:
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@car1$qv	endp
+   ;	
+   ;	void car2()
+   ;	
+	assume	cs:_TEXT
+@car2$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		/*		Tyres		*/
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x3+1,y3+2,x3+5,y3+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,5
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	inc	ax
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x3+25,y3+2,x3+29,y3+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,29
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,25
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	
+   ;		/*		Body		*/
+   ;		setfillstyle(1,GREEN);
+   ;	
+	mov	ax,2
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x3+5,y3-10,x3+25,y3+10,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	add	ax,10
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,25
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	add	ax,65526
+	push	ax
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,5
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		Container	*/
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;		int a=random(13)+1;
+   ;	
+	xor	ax,ax
+	mov	dx,32768
+	push	ax
+	push	dx
+	call	near ptr _rand
+	cwd	
+	push	ax
+	push	dx
+	xor	dx,dx
+	mov	ax,13
+	pop	cx
+	pop	bx
+	call	near ptr N_LXMUL@
+	push	dx
+	push	ax
+	call	near ptr N_LDIV@
+	inc	ax
+	mov	si,ax
+   ;	
+   ;		setfillstyle(11,a);
+   ;	
+	push	si
+	mov	ax,11
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x3,y3-40,x3+30,y3,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	push	word ptr DGROUP:_y3
+	mov	ax,word ptr DGROUP:_x3
+	add	ax,30
+	push	ax
+	mov	ax,word ptr DGROUP:_y3
+	add	ax,65496
+	push	ax
+	push	word ptr DGROUP:_x3
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		if(y3>getmaxy())
+   ;	
+	call	far ptr _getmaxy
+	cmp	ax,word ptr DGROUP:_y3
+	jge	short @15@74
+   ;	
+   ;			ene1();
+   ;	
+	call	near ptr @ene1$qv
+@15@74:
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@car2$qv	endp
+   ;	
+   ;	void car3()
+   ;	
+	assume	cs:_TEXT
+@car3$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+   ;	
+   ;	{
+   ;		/*		Tyres		*/
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x4+1,y4+2,x4+5,y4+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,5
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	inc	ax
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(1,BLACK);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x4+25,y4+2,x4+29,y4+7,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	add	ax,7
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,29
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	inc	ax
+	inc	ax
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,25
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	
+   ;		/*		Body		*/
+   ;		setfillstyle(1,GREEN);
+   ;	
+	mov	ax,2
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x4+5,y4-10,x4+25,y4+10,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	add	ax,10
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,25
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	add	ax,65526
+	push	ax
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,5
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		/*		Container	*/
+   ;		randomize();
+   ;	
+	xor	ax,ax
+	push	ax
+	call	near ptr _time
+	pop	cx
+	push	ax
+	call	near ptr _srand
+	pop	cx
+   ;	
+   ;		int a=random(13)+2;
+   ;	
+	xor	ax,ax
+	mov	dx,32768
+	push	ax
+	push	dx
+	call	near ptr _rand
+	cwd	
+	push	ax
+	push	dx
+	xor	dx,dx
+	mov	ax,13
+	pop	cx
+	pop	bx
+	call	near ptr N_LXMUL@
+	push	dx
+	push	ax
+	call	near ptr N_LDIV@
+	inc	ax
+	inc	ax
+	mov	si,ax
+   ;	
+   ;		setfillstyle(11,a);
+   ;	
+	push	si
+	mov	ax,11
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(x4,y4-40,x4+30,y4,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	push	word ptr DGROUP:_y4
+	mov	ax,word ptr DGROUP:_x4
+	add	ax,30
+	push	ax
+	mov	ax,word ptr DGROUP:_y4
+	add	ax,65496
+	push	ax
+	push	word ptr DGROUP:_x4
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;		if(y4>getmaxy())
+   ;	
+	call	far ptr _getmaxy
+	cmp	ax,word ptr DGROUP:_y4
+	jge	short @16@74
+   ;	
+   ;			ene2();
+   ;	
+	call	near ptr @ene2$qv
+@16@74:
+   ;	
+   ;	}
+   ;	
+	pop	si
+	pop	bp
+	ret	
+@car3$qv	endp
+   ;	
+   ;	void draw()
+   ;	
+	assume	cs:_TEXT
+@draw$qv	proc	near
+	push	bp
+	mov	bp,sp
+	dec	sp
+	dec	sp
+   ;	
+   ;	{
+   ;		BGround();
+   ;	
+	call	near ptr @BGround$qv
+   ;	
+   ;	
+   ;		outtextxy(465,100,"Press Esc to exit...");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+362
+	push	ax
+	mov	ax,100
+	push	ax
+	mov	ax,465
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		outtextxy(440,10,"Score: ");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+383
+	push	ax
+	mov	ax,10
+	push	ax
+	mov	ax,440
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		sprintf(value,"%d",score);
+   ;	
+	push	word ptr DGROUP:_score+2
+	push	word ptr DGROUP:_score
+	mov	ax,offset DGROUP:s@+391
+	push	ax
+	mov	ax,offset DGROUP:_value
+	push	ax
+	call	near ptr _sprintf
+	add	sp,8
+   ;	
+   ;		outtextxy(500,10,value);
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:_value
+	push	ax
+	mov	ax,10
+	push	ax
+	mov	ax,500
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;	
+   ;		car();
+   ;	
+	call	near ptr @car$qv
+   ;	
+   ;		car1();
+   ;	
+	call	near ptr @car1$qv
+   ;	
+   ;		car2();
+   ;	
+	call	near ptr @car2$qv
+   ;	
+   ;		car3();
+   ;	
+	call	near ptr @car3$qv
+   ;	
+   ;	
+   ;		setfillstyle(1,RED);
+   ;	
+	mov	ax,4
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;		bar3d(480,150,500,400,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,400
+	push	ax
+	mov	ax,500
+	push	ax
+	mov	ax,150
+	push	ax
+	mov	ax,480
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;		setfillstyle(1,WHITE);
+   ;	
+	mov	ax,15
+	push	ax
+	mov	ax,1
+	push	ax
+	call	far ptr _setfillstyle
+	pop	cx
+	pop	cx
+   ;	
+   ;	
+   ;		if(t>400)
+   ;	
+	FLD	dword ptr DGROUP:_t
+	FCOMP	dword ptr DGROUP:s@+394
+	FSTSW	word ptr [bp-2]
+	FWAIT	
+	mov	ax,word ptr [bp-2]
+	sahf	
+	jbe	short @17@98
+   ;	
+   ;		{
+   ;			score+=50;
+   ;	
+	add	word ptr DGROUP:_score,50
+	adc	word ptr DGROUP:_score+2,0
+   ;	
+   ;			t=150;
+   ;	
+	FLD	dword ptr DGROUP:s@
+	FSTP	dword ptr DGROUP:_t
+   ;	
+   ;			speed-=10;
+   ;	
+	FWAIT	
+	sub	word ptr DGROUP:_speed,10
+   ;	
+   ;			if(speed<0)
+   ;	
+	cmp	word ptr DGROUP:_speed,0
+	jge	short @17@98
+   ;	
+   ;				speed=0;
+   ;	
+	mov	word ptr DGROUP:_speed,0
+@17@98:
+   ;	
+   ;		}
+   ;		bar3d(480,t,500,400,0,0);
+   ;	
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,400
+	push	ax
+	mov	ax,500
+	push	ax
+	FLD	dword ptr DGROUP:_t
+	call	near ptr N_FTOL@
+	push	ax
+	mov	ax,480
+	push	ax
+	call	far ptr _bar3d
+	add	sp,12
+   ;	
+   ;	
+   ;	
+   ;	}
+   ;	
+	mov	sp,bp
+	pop	bp
+	ret	
+@draw$qv	endp
+   ;	
+   ;	int out()
+   ;	
+	assume	cs:_TEXT
+@out$qv	proc	near
+	push	bp
+	mov	bp,sp
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	
+   ;		int a1=x1-30,a2=x1+30;
+   ;	
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,65506
+	mov	di,ax
+	mov	ax,word ptr DGROUP:_x1
+	add	ax,30
+	mov	si,ax
+   ;	
+   ;		if((x1+7)<=(getmaxx()/3)||(x1)>=(2*(getmaxx()/3))-20)
+   ;	
+	call	far ptr _getmaxx
+	mov	bx,3
+	cwd	
+	idiv	bx
+	mov	dx,word ptr DGROUP:_x1
+	add	dx,7
+	cmp	ax,dx
+	jge	short @18@74
+	call	far ptr _getmaxx
+	mov	bx,3
+	cwd	
+	idiv	bx
+	shl	ax,1
+	add	ax,65516
+	cmp	ax,word ptr DGROUP:_x1
+	jg	short @18@170
+@18@74:
+   ;	
+   ;		{
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;				closegraph();
+   ;	
+	call	far ptr _closegraph
+   ;	
+   ;				cout<<"\nOh ! Ride only on roads !\nGame Over ! ;(\n\n\nPress any key to proceed....";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+398
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				ScoreSave();
+   ;	
+	call	near ptr @ScoreSave$qv
+   ;	
+   ;				cout<<"\n\nDo you wish to restart (Y/N)";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+471
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				cin>>ch1;
+   ;	
+	mov	ax,offset DGROUP:_ch1
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;				tolower(ch1);
+   ;	
+	mov	al,byte ptr DGROUP:_ch1
+	cbw	
+	push	ax
+	call	near ptr _tolower
+	pop	cx
+   ;	
+   ;				if(ch1=='y'||ch1=='Y')
+   ;	
+	cmp	byte ptr DGROUP:_ch1,121
+	je	short @18@122
+	cmp	byte ptr DGROUP:_ch1,89
+	jne	short @18@146
+@18@122:
+   ;	
+   ;					return 1;
+   ;	
+	mov	ax,1
+	jmp	@18@698
+@18@146:
+   ;	
+   ;				return 0;
+   ;	
+	xor	ax,ax
+	jmp	@18@698
+@18@170:
+   ;	
+   ;			}
+   ;		if(y2>=(getmaxy()-35))
+   ;	
+	call	far ptr _getmaxy
+	add	ax,65501
+	cmp	ax,word ptr DGROUP:_y2
+	jg	short @18@338
+   ;	
+   ;		{
+   ;			if(x2>a1 && x2<a2)
+   ;	
+	cmp	word ptr DGROUP:_x2,di
+	jle	short @18@338
+	cmp	word ptr DGROUP:_x2,si
+	jge	short @18@338
+   ;	
+   ;			{
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				closegraph();
+   ;	
+	call	far ptr _closegraph
+   ;	
+   ;				cout<<"\nOh ! You crashed on Truck 1!\nGame Over ! ;(\n\n\nPress any key to proceed....";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+502
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				ScoreSave();
+   ;	
+	call	near ptr @ScoreSave$qv
+   ;	
+   ;				cout<<"\n\nDo you wish to restart (Y/N)";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+578
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				cin>>ch1;
+   ;	
+	mov	ax,offset DGROUP:_ch1
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;				tolower(ch1);
+   ;	
+	mov	al,byte ptr DGROUP:_ch1
+	cbw	
+	push	ax
+	call	near ptr _tolower
+	pop	cx
+   ;	
+   ;				if(ch1=='y'||ch1=='Y')
+   ;	
+	cmp	byte ptr DGROUP:_ch1,121
+	je	short @18@290
+	cmp	byte ptr DGROUP:_ch1,89
+	jne	short @18@314
+@18@290:
+   ;	
+   ;					return 1;
+   ;	
+	mov	ax,1
+	jmp	@18@698
+@18@314:
+   ;	
+   ;				return 0;
+   ;	
+	xor	ax,ax
+	jmp	@18@698
+@18@338:
+   ;	
+   ;			}
+   ;		}
+   ;		if(y3>=(getmaxy()-35))
+   ;	
+	call	far ptr _getmaxy
+	add	ax,65501
+	cmp	ax,word ptr DGROUP:_y3
+	jg	short @18@506
+   ;	
+   ;		{
+   ;			if(x3>a1 && x3<a2)
+   ;	
+	cmp	word ptr DGROUP:_x3,di
+	jle	short @18@506
+	cmp	word ptr DGROUP:_x3,si
+	jge	short @18@506
+   ;	
+   ;			{
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				closegraph();
+   ;	
+	call	far ptr _closegraph
+   ;	
+   ;				cout<<"\nOh ! You crashed on Truck 2!\nGame Over ! ;(\n\n\nPress any key to proceed....";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+609
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				ScoreSave();
+   ;	
+	call	near ptr @ScoreSave$qv
+   ;	
+   ;				cout<<"\n\nDo you wish to restart (Y/N)";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+685
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				cin>>ch1;
+   ;	
+	mov	ax,offset DGROUP:_ch1
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;				tolower(ch1);
+   ;	
+	mov	al,byte ptr DGROUP:_ch1
+	cbw	
+	push	ax
+	call	near ptr _tolower
+	pop	cx
+   ;	
+   ;				if(ch1=='y'||ch1=='Y')
+   ;	
+	cmp	byte ptr DGROUP:_ch1,121
+	je	short @18@458
+	cmp	byte ptr DGROUP:_ch1,89
+	jne	short @18@482
+@18@458:
+   ;	
+   ;					return 1;
+   ;	
+	mov	ax,1
+	jmp	@18@698
+@18@482:
+   ;	
+   ;				return 0;
+   ;	
+	xor	ax,ax
+	jmp	@18@698
+@18@506:
+   ;	
+   ;			}
+   ;		}
+   ;		if(y4>=(getmaxy()-35))
+   ;	
+	call	far ptr _getmaxy
+	add	ax,65501
+	cmp	ax,word ptr DGROUP:_y4
+	jg	short @18@674
+   ;	
+   ;		{
+   ;			if(x4>a1 && x4<a2)
+   ;	
+	cmp	word ptr DGROUP:_x4,di
+	jle	short @18@674
+	cmp	word ptr DGROUP:_x4,si
+	jge	short @18@674
+   ;	
+   ;			{
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;				closegraph();
+   ;	
+	call	far ptr _closegraph
+   ;	
+   ;				cout<<"\nOh ! You crashed on Truck 3 !\nGame Over ! ;(\n\n\nPress any key to proceed....";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+716
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;				ScoreSave();
+   ;	
+	call	near ptr @ScoreSave$qv
+   ;	
+   ;				cout<<"\n\nDo you wish to restart (Y/N)";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+793
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;				cin>>ch1;
+   ;	
+	mov	ax,offset DGROUP:_ch1
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;				tolower(ch1);
+   ;	
+	mov	al,byte ptr DGROUP:_ch1
+	cbw	
+	push	ax
+	call	near ptr _tolower
+	pop	cx
+   ;	
+   ;				if(ch1=='y'||ch1=='Y')
+   ;	
+	cmp	byte ptr DGROUP:_ch1,121
+	je	short @18@626
+	cmp	byte ptr DGROUP:_ch1,89
+	jne	short @18@650
+@18@626:
+   ;	
+   ;					return 1;
+   ;	
+	mov	ax,1
+	jmp	short @18@698
+@18@650:
+   ;	
+   ;				return 0;
+   ;	
+	xor	ax,ax
+	jmp	short @18@698
+@18@674:
+   ;	
+   ;			}
+   ;		}
+   ;		return 0;
+   ;	
+	xor	ax,ax
+	jmp	short @18@698
+@18@698:
+   ;	
+   ;	
+   ;	
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	pop	bp
+	ret	
+@out$qv	endp
+   ;	
+   ;	void main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,16
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;		int gd= DETECT, gm, err,i;
+   ;	
+	mov	word ptr [bp-2],0
+   ;	
+   ;		clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		cout<<"\n\n Initiating Graphics....";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+824
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		delay(500);
+   ;	
+	mov	ax,500
+	push	ax
+	call	near ptr _delay
+	pop	cx
+@19@50:
+   ;	
+   ;	
+   ;	
+   ;		START:initgraph(&gd, &gm, "C:\\TC\\BGI");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+851
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-4]
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-2]
+	push	ax
+	call	far ptr _initgraph
+	add	sp,12
+   ;	
+   ;	
+   ;		err = graphresult();
+   ;	
+	call	far ptr _graphresult
+	mov	di,ax
+   ;	
+   ;		if (err!= grOk)
+   ;	
+	or	di,di
+	je	short @19@98
+   ;	
+   ;		{
+   ;			cout<<"\n\t\t\t  Error\n\t\t\t==========";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+861
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cout<<"\n Graphics error: "<<grapherrormsg(err);
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+887
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	word ptr [bp-6],offset DGROUP:_cout
+	xor	ax,ax
+	push	ax
+	push	di
+	call	far ptr _grapherrormsg
+	pop	cx
+	push	ax
+	push	word ptr [bp-6]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cout<<"\n\n Press any key to halt......";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+906
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;			exit(1);
+   ;	
+	mov	ax,1
+	push	ax
+	call	near ptr _exit
+	pop	cx
+@19@98:
+   ;	
+   ;		}
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		cout<<"\n Graphics Initiated...\n Graphic Result is "<<err;
+   ;	
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+937
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;		delay(1000);
+   ;	
+	mov	ax,1000
+	push	ax
+	call	near ptr _delay
+	pop	cx
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		Reset();
+   ;	
+	call	near ptr @Reset$qv
+   ;	
+   ;		title();
+   ;	
+	call	near ptr @title$qv
+   ;	
+   ;		settextstyle(DEFAULT_FONT,HORIZ_DIR,2);
+   ;	
+	mov	ax,2
+	push	ax
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy((getmaxx()/2)-120,(getmaxy()/2)+50,"Press Any key");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+981
+	push	ax
+	call	far ptr _getmaxy
+	mov	bx,2
+	cwd	
+	idiv	bx
+	add	ax,50
+	push	ax
+	call	far ptr _getmaxx
+	mov	bx,2
+	cwd	
+	idiv	bx
+	add	ax,65416
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		settextstyle(DEFAULT_FONT,HORIZ_DIR,1);
+   ;	
+	mov	ax,1
+	push	ax
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;		outtextxy((getmaxx()/2)-80,getmaxy()-30,"Hi-Score");
+   ;	
+	push	ds
+	mov	ax,offset DGROUP:s@+995
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65506
+	push	ax
+	call	far ptr _getmaxx
+	mov	bx,2
+	cwd	
+	idiv	bx
+	add	ax,65456
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		char HiScore[10];
+   ;		sprintf(HiScore,"%d",hiscore());
+   ;	
+	call	near ptr @hiscore$qv
+	push	ax
+	mov	ax,offset DGROUP:s@+1004
+	push	ax
+	lea	ax,word ptr [bp-16]
+	push	ax
+	call	near ptr _sprintf
+	add	sp,6
+   ;	
+   ;		outtextxy((getmaxx()/2),getmaxy()-30,HiScore);
+   ;	
+	push	ds
+	lea	ax,word ptr [bp-16]
+	push	ax
+	call	far ptr _getmaxy
+	add	ax,65506
+	push	ax
+	call	far ptr _getmaxx
+	mov	bx,2
+	cwd	
+	idiv	bx
+	push	ax
+	call	far ptr _outtextxy
+	add	sp,8
+   ;	
+   ;		getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		settextstyle(DEFAULT_FONT,HORIZ_DIR,1);
+   ;	
+	mov	ax,1
+	push	ax
+	xor	ax,ax
+	push	ax
+	xor	ax,ax
+	push	ax
+	call	far ptr _settextstyle
+	add	sp,6
+   ;	
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		Borders();
+   ;	
+	call	near ptr @Borders$qv
+   ;	
+   ;		cout<<"\n\n\n Use A and D to control ! Have Fun :D\n\n Press any key to continue...";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1007
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	
+   ;		cleardevice();
+   ;	
+	call	far ptr _cleardevice
+   ;	
+   ;		x1=(getmaxx()/2)-10;
+   ;	
+	call	far ptr _getmaxx
+	mov	bx,2
+	cwd	
+	idiv	bx
+	add	ax,65526
+	mov	word ptr DGROUP:_x1,ax
+   ;	
+   ;		ene12();
+   ;	
+	call	near ptr @ene12$qv
+   ;	
+   ;		for(i=0;ch!='x';i++)
+   ;	
+	xor	si,si
+	jmp	short @19@218
+@19@122:
+   ;	
+   ;		{
+   ;			draw();
+   ;	
+	call	near ptr @draw$qv
+   ;	
+   ;			Control();
+   ;	
+	call	near ptr @Control$qv
+   ;	
+   ;			move();
+   ;	
+	call	near ptr @move$qv
+   ;	
+   ;			if(out()==1)
+   ;	
+	call	near ptr @out$qv
+	cmp	ax,1
+	jne	short @19@170
+   ;	
+   ;				goto START;
+   ;	
+	jmp	@19@50
+@19@170:
+   ;	
+   ;	
+   ;			score+=10;
+   ;	
+	add	word ptr DGROUP:_score,10
+	adc	word ptr DGROUP:_score+2,0
+   ;	
+   ;			t+=(0.5);
+   ;	
+	FLD	dword ptr DGROUP:_t
+	FADD	dword ptr DGROUP:s@+1079
+	FSTP	dword ptr DGROUP:_t
+	FWAIT	
+	inc	si
+@19@218:
+	cmp	byte ptr DGROUP:_ch,120
+	jne	short @19@122
+   ;	
+   ;		}
+   ;		closegraph();
+   ;	
+	call	far ptr _closegraph
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+_TEXT	ends
+_INIT_	segment word public 'INITDATA'
+	db	0
+	db	32
+	dd	@_STCON_$qv
+_INIT_	ends
+_TEXT	segment byte public 'CODE'
+	assume	cs:_TEXT
+@_STCON_$qv	proc	near
+	push	bp
+	mov	bp,sp
+	mov	word ptr DGROUP:_sco1,0
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:_sco1+2
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+	mov	word ptr DGROUP:_sco2,0
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:_sco2+2
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+	pop	bp
+	ret	
+@_STCON_$qv	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	0
+	db	0
+	db	22
+	db	'CC:\TURBOC3\BGI'
+	db	0
+	db	'        Truck Rally'
+	db	0
+	db	'        Truck Rally'
+	db	0
+	db	'        Truck Rally'
+	db	0
+	db	'        Truck Rally'
+	db	0
+	db	10
+	db	'============================================================='
+	db	'=================='
+	db	10
+	db	10
+	db	0
+	db	9
+	db	9
+	db	9
+	db	'Scoreboard'
+	db	10
+	db	9
+	db	9
+	db	9
+	db	'-------------'
+	db	10
+	db	10
+	db	0
+	db	'Enter Name (Max. 20 characters): '
+	db	0
+	db	'Score_Truck.dat'
+	db	0
+	db	10
+	db	9
+	db	9
+	db	9
+	db	'  Summary'
+	db	10
+	db	9
+	db	9
+	db	9
+	db	'-----------'
+	db	0
+	db	10
+	db	10
+	db	'Name: '
+	db	0
+	db	10
+	db	'Score: '
+	db	0
+	db	10
+	db	10
+	db	10
+	db	'Press any key to exit.........'
+	db	0
+	db	'Score_Truck.dat'
+	db	0
+	db	'Press Esc to exit...'
+	db	0
+	db	'Score: '
+	db	0
+	db	'%d'
+	db	0
+	db	0
+	db	0
+	db	-56
+	db	'C'
+	db	10
+	db	'Oh ! Ride only on roads !'
+	db	10
+	db	'Game Over ! ;('
+	db	10
+	db	10
+	db	10
+	db	'Press any key to proceed....'
+	db	0
+	db	10
+	db	10
+	db	'Do you wish to restart (Y/N)'
+	db	0
+	db	10
+	db	'Oh ! You crashed on Truck 1!'
+	db	10
+	db	'Game Over ! ;('
+	db	10
+	db	10
+	db	10
+	db	'Press any key to proceed....'
+	db	0
+	db	10
+	db	10
+	db	'Do you wish to restart (Y/N)'
+	db	0
+	db	10
+	db	'Oh ! You crashed on Truck 2!'
+	db	10
+	db	'Game Over ! ;('
+	db	10
+	db	10
+	db	10
+	db	'Press any key to proceed....'
+	db	0
+	db	10
+	db	10
+	db	'Do you wish to restart (Y/N)'
+	db	0
+	db	10
+	db	'Oh ! You crashed on Truck 3 !'
+	db	10
+	db	'Game Over ! ;('
+	db	10
+	db	10
+	db	10
+	db	'Press any key to proceed....'
+	db	0
+	db	10
+	db	10
+	db	'Do you wish to restart (Y/N)'
+	db	0
+	db	10
+	db	10
+	db	' Initiating Graphics....'
+	db	0
+	db	'C:\TC\BGI'
+	db	0
+	db	10
+	db	9
+	db	9
+	db	9
+	db	'  Error'
+	db	10
+	db	9
+	db	9
+	db	9
+	db	'=========='
+	db	0
+	db	10
+	db	' Graphics error: '
+	db	0
+	db	10
+	db	10
+	db	' Press any key to halt......'
+	db	0
+	db	10
+	db	' Graphics Initiated...'
+	db	10
+	db	' Graphic Result is '
+	db	0
+	db	'Press Any key'
+	db	0
+	db	'Hi-Score'
+	db	0
+	db	'%d'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	' Use A and D to control ! Have Fun :D'
+	db	10
+	db	10
+	db	' Press any key to continue...'
+	db	0
+	db	0
+	db	0
+	db	0
+	db	'?'
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	$comm	@filebuf@openprot,near,2,1
+	public	_x1
+	public	_x2
+	public	_x3
+	public	_x4
+	public	_y2
+	public	_y3
+	public	_y4
+	public	_i
+	public	_speed
+	public	_score
+	public	_t
+	public	_value
+	public	_ch
+	public	_ch1
+	public	_sco1
+	public	_sco2
+	public	@Reset$qv
+	public	@Borders$qv
+	extrn	_cleardevice:far
+	extrn	_setfillstyle:far
+	extrn	_bar:far
+	extrn	_getmaxx:far
+	extrn	_getmaxy:far
+	public	@title$qv
+	extrn	_clrscr:near
+	extrn	_initgraph:far
+	extrn	_rectangle:far
+	extrn	_settextstyle:far
+	extrn	_outtextxy:far
+	extrn	_delay:near
+	public	@ScoreSave$qv
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	_gets:near
+	extrn	@ofstream@$bctr$qpxzcii:near
+	extrn	@ostream@write$qpxzci:near
+	extrn	_getch:near
+	extrn	@fstreambase@close$qv:near
+	extrn	@ofstream@$bdtr$qv:near
+	public	@hiscore$qv
+	extrn	@ifstream@$bctr$qpxzcii:near
+	extrn	@istream@read$qpzci:near
+	extrn	@ifstream@$bdtr$qv:near
+	public	@ene$qv
+	extrn	_srand:near
+	extrn	_time:near
+	extrn	_rand:near
+	public	@ene1$qv
+	extrn	N_LXMUL@:near
+	extrn	N_LDIV@:near
+	public	@ene2$qv
+	public	@ene12$qv
+	public	@move$qv
+	public	@Control$qv
+	extrn	_kbhit:near
+	extrn	_closegraph:far
+	extrn	_exit:near
+	public	@BGround$qv
+	extrn	_bar3d:far
+	public	@car$qv
+	public	@car1$qv
+	public	@car2$qv
+	public	@car3$qv
+	public	@draw$qv
+	extrn	_sprintf:near
+	extrn	N_FTOL@:near
+	public	@out$qv
+	extrn	@istream@$brsh$qrzc:near
+	extrn	_cin:word
+	extrn	_tolower:near
+	public	_main
+	extrn	_graphresult:far
+	extrn	_grapherrormsg:far
+	extrn	@ostream@$blsh$ql:near
+	extrn	_strcpy:near
+	end
+

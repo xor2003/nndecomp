@@ -1,0 +1,274 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWOBJECT.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNchkstk:NEAR
+EXTRN	_objbot:WORD
+EXTRN	_objtop:WORD
+EXTRN	_objfree:WORD
+EXTRN	_deltop:WORD
+EXTRN	_delbot:WORD
+EXTRN	_objsmax:WORD
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swobject -      SW object allocation and deallocation
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-07        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         84-10-31        Atari
+;|***                         87-03-09        Microsoft compiler.
+;|*** */
+;|*** #include        "sw.h"
+; Line 19
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** 
+;|*** extern  OBJECTS *nobjects;              /* Objects list.                    */
+;|*** extern  OBJECTS *objbot, *objtop,       /* Top and bottom of object list    */
+;|***                 *objfree,               /* Free list                        */
+;|***                 *deltop, *delbot;       /* Newly deallocated objects        */
+;|*** extern  OBJECTS *objsmax;               /* Maximum allocated object         */
+;|*** 
+;|*** 
+;|*** 
+;|*** OBJECTS *allocobj()
+;|*** {
+; Line 32
+	PUBLIC	_allocobj
+_allocobj	PROC NEAR
+	*** 000000	33 c0 			xor	ax,ax
+	*** 000002	e8 00 00 		call	__aNchkstk
+	*** 000005	56 			push	si
+;	register si = ob
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         if ( !objfree )
+; Line 35
+	*** 000006	83 3e 00 00 00 		cmp	WORD PTR _objfree,0
+	*** 00000b	75 05 			jne	$I156
+;|***                 return( NULL );
+; Line 36
+	*** 00000d	2b c0 			sub	ax,ax
+	*** 00000f	5e 			pop	si
+	*** 000010	c3 			ret	
+;|*** 
+;|***         ob = objfree;
+; Line 38
+	*** 000011	90 			nop	
+					$I156:
+;|***         objfree = ob->ob_next;
+; Line 39
+	*** 000012	8b 36 00 00 		mov	si,WORD PTR _objfree
+	*** 000016	8b 44 34 		mov	ax,WORD PTR [si+52]
+	*** 000019	a3 00 00 		mov	WORD PTR _objfree,ax
+;|*** 
+;|***         ob->ob_next = NULL;
+; Line 41
+	*** 00001c	c7 44 34 00 00 		mov	WORD PTR [si+52],0
+;|***         ob->ob_prev = objbot;
+; Line 42
+	*** 000021	a1 00 00 		mov	ax,WORD PTR _objbot
+	*** 000024	89 44 36 		mov	WORD PTR [si+54],ax
+;|*** 
+;|***         if ( objbot )
+; Line 44
+	*** 000027	83 3e 00 00 00 		cmp	WORD PTR _objbot,0
+	*** 00002c	74 0a 			je	$I157
+;|***                 objbot->ob_next = ob;
+; Line 45
+	*** 00002e	8b 1e 00 00 		mov	bx,WORD PTR _objbot
+	*** 000032	89 77 34 		mov	WORD PTR [bx+52],si
+;|***         else
+; Line 46
+	*** 000035	eb 05 			jmp	SHORT $I158
+	*** 000037	90 			nop	
+					$I157:
+;|***                 objtop = ob;
+; Line 47
+	*** 000038	89 36 00 00 		mov	WORD PTR _objtop,si
+					$I158:
+;|*** 
+;|***         ob->ob_sound = NULL;
+; Line 49
+	*** 00003c	c7 44 66 00 00 		mov	WORD PTR [si+102],0
+;|***         ob->ob_drwflg = ob->ob_delflg = 0;
+; Line 50
+	*** 000041	2b c0 			sub	ax,ax
+	*** 000043	89 44 40 		mov	WORD PTR [si+64],ax
+	*** 000046	89 44 3e 		mov	WORD PTR [si+62],ax
+;|***         if ( ob > objsmax )
+; Line 51
+	*** 000049	39 36 00 00 		cmp	WORD PTR _objsmax,si
+	*** 00004d	73 04 			jae	$I159
+;|***                 objsmax = ob;
+; Line 52
+	*** 00004f	89 36 00 00 		mov	WORD PTR _objsmax,si
+;|***         return( objbot = ob );
+; Line 53
+					$I159:
+	*** 000053	89 36 00 00 		mov	WORD PTR _objbot,si
+	*** 000057	8b c6 			mov	ax,si
+;|*** }
+; Line 54
+	*** 000059	5e 			pop	si
+	*** 00005a	c3 			ret	
+	*** 00005b	90 			nop	
+
+_allocobj	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** deallobj( obp )
+;|*** OBJECTS *obp;
+; Line 59
+	PUBLIC	_deallobj
+_deallobj	PROC NEAR
+	*** 00005c	55 			push	bp
+	*** 00005d	8b ec 			mov	bp,sp
+	*** 00005f	33 c0 			xor	ax,ax
+	*** 000061	e8 00 00 		call	__aNchkstk
+	*** 000064	57 			push	di
+	*** 000065	56 			push	si
+;	register si = ob
+;	register di = obb
+;	obp = 4
+;|*** {
+;|*** register OBJECTS *ob, *obb;
+;|*** 
+;|***         ob =obp;
+;|***         if ( obb = ob->ob_prev )
+; Line 64
+	*** 000066	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 000069	8b 7c 36 		mov	di,WORD PTR [si+54]
+	*** 00006c	0b ff 			or	di,di
+	*** 00006e	74 08 			je	$I165
+;|***                 obb->ob_next = ob->ob_next;
+; Line 65
+	*** 000070	8b 44 34 		mov	ax,WORD PTR [si+52]
+	*** 000073	89 45 34 		mov	WORD PTR [di+52],ax
+;|***         else
+; Line 66
+	*** 000076	eb 06 			jmp	SHORT $I166
+					$I165:
+;|***                 objtop = ob->ob_next;
+; Line 67
+	*** 000078	8b 44 34 		mov	ax,WORD PTR [si+52]
+	*** 00007b	a3 00 00 		mov	WORD PTR _objtop,ax
+					$I166:
+;|*** 
+;|***         if ( obb = ob->ob_next )
+; Line 69
+	*** 00007e	8b 7c 34 		mov	di,WORD PTR [si+52]
+	*** 000081	0b ff 			or	di,di
+	*** 000083	74 09 			je	$I167
+;|***                 obb->ob_prev = ob->ob_prev;
+; Line 70
+	*** 000085	8b 44 36 		mov	ax,WORD PTR [si+54]
+	*** 000088	89 45 36 		mov	WORD PTR [di+54],ax
+;|***         else
+; Line 71
+	*** 00008b	eb 07 			jmp	SHORT $I168
+	*** 00008d	90 			nop	
+					$I167:
+;|***                 objbot = ob->ob_prev;
+; Line 72
+	*** 00008e	8b 44 36 		mov	ax,WORD PTR [si+54]
+	*** 000091	a3 00 00 		mov	WORD PTR _objbot,ax
+					$I168:
+;|*** 
+;|***         ob->ob_next = 0;
+; Line 74
+	*** 000094	c7 44 34 00 00 		mov	WORD PTR [si+52],0
+;|***         if ( delbot )
+; Line 75
+	*** 000099	83 3e 00 00 00 		cmp	WORD PTR _delbot,0
+	*** 00009e	74 0a 			je	$I169
+;|***                 delbot->ob_next = ob;
+; Line 76
+	*** 0000a0	8b 1e 00 00 		mov	bx,WORD PTR _delbot
+	*** 0000a4	89 77 34 		mov	WORD PTR [bx+52],si
+;|***         else
+; Line 77
+	*** 0000a7	eb 05 			jmp	SHORT $I170
+	*** 0000a9	90 			nop	
+					$I169:
+;|***                 deltop = ob;
+; Line 78
+	*** 0000aa	89 36 00 00 		mov	WORD PTR _deltop,si
+					$I170:
+;|*** 
+;|***         delbot = ob;
+; Line 80
+	*** 0000ae	89 36 00 00 		mov	WORD PTR _delbot,si
+;|*** 
+;|*** 
+;|*** }
+; Line 83
+	*** 0000b2	5e 			pop	si
+	*** 0000b3	5f 			pop	di
+	*** 0000b4	8b e5 			mov	sp,bp
+	*** 0000b6	5d 			pop	bp
+	*** 0000b7	c3 			ret	
+
+_deallobj	ENDP
+_TEXT	ENDS
+END

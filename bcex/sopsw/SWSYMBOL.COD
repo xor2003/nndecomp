@@ -1,0 +1,1980 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWSYMBOL.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _swbmbsym
+PUBLIC  _swtrgsym
+PUBLIC  _swhtrsym
+PUBLIC  _swexpsym
+PUBLIC  _swflksym
+PUBLIC  _swbrdsym
+PUBLIC  _swoxsym
+PUBLIC  _swghtsym
+PUBLIC  _swshtsym
+PUBLIC  _swsplsym
+PUBLIC  _swmscsym
+PUBLIC  _swbstsym
+_DATA      SEGMENT
+_swbmbsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	051H
+	DB	054H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	051H
+	DB	054H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	054H
+	DB	01H
+	DB	055H
+	DB	05H
+	DB	055H
+	DB	011H
+	DB	054H
+	DB	055H
+	DB	010H
+	DB	015H
+	DB	040H
+	DB	01H
+	DB	00H
+	DB	01H
+	DB	040H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	00H
+	DB	00H
+	DB	015H
+	DB	00H
+	DB	055H
+	DB	040H
+	DB	055H
+	DB	050H
+	DB	015H
+	DB	044H
+	DB	04H
+	DB	055H
+	DB	01H
+	DB	054H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	015H
+	DB	045H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	015H
+	DB	045H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	040H
+	DB	01H
+	DB	054H
+	DB	04H
+	DB	055H
+	DB	015H
+	DB	044H
+	DB	055H
+	DB	050H
+	DB	055H
+	DB	040H
+	DB	015H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	00H
+	DB	015H
+	DB	040H
+	DB	055H
+	DB	010H
+	DB	011H
+	DB	054H
+	DB	05H
+	DB	055H
+	DB	01H
+	DB	055H
+	DB	00H
+	DB	054H
+	DB	00H
+	DB	00H
+_swtrgsym	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	0aaH
+	DB	0aaH
+	DB	0a5H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	065H
+	DB	00H
+	DB	00H
+	DB	0aH
+	DB	0aH
+	DB	00H
+	DB	00H
+	DB	0aH
+	DB	0aH
+	DB	00H
+	DB	00H
+	DB	0aH
+	DB	0aH
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	0aH
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	0aH
+	DB	056H
+	DB	066H
+	DB	05aH
+	DB	0aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	056H
+	DB	066H
+	DB	055H
+	DB	05aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	056H
+	DB	066H
+	DB	066H
+	DB	05aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	056H
+	DB	066H
+	DB	066H
+	DB	05aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	056H
+	DB	066H
+	DB	066H
+	DB	05aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	055H
+	DB	055H
+	DB	040H
+	DB	015H
+	DB	055H
+	DB	055H
+	DB	054H
+	DB	055H
+	DB	059H
+	DB	095H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	095H
+	DB	055H
+	DB	055H
+	DB	059H
+	DB	095H
+	DB	055H
+	DB	055H
+	DB	05aH
+	DB	095H
+	DB	055H
+	DB	015H
+	DB	059H
+	DB	095H
+	DB	054H
+	DB	05H
+	DB	05aH
+	DB	095H
+	DB	050H
+	DB	0aH
+	DB	08H
+	DB	080H
+	DB	0a0H
+	DB	0aH
+	DB	0aH
+	DB	080H
+	DB	0a0H
+	DB	0aH
+	DB	08H
+	DB	080H
+	DB	0a0H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	015H
+	DB	054H
+	DB	00H
+	DB	00H
+	DB	015H
+	DB	055H
+	DB	055H
+	DB	00H
+	DB	015H
+	DB	054H
+	DB	00H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	06aH
+	DB	0aaH
+	DB	0aaH
+	DB	0a9H
+	DB	095H
+	DB	055H
+	DB	055H
+	DB	056H
+	DB	095H
+	DB	055H
+	DB	055H
+	DB	056H
+	DB	02aH
+	DB	0aaH
+	DB	0aaH
+	DB	0a8H
+_swhtrsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	05H
+	DB	050H
+	DB	010H
+	DB	02H
+	DB	015H
+	DB	051H
+	DB	050H
+	DB	052H
+	DB	055H
+	DB	055H
+	DB	0a5H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	0a5H
+	DB	065H
+	DB	055H
+_swexpsym	DB	054H
+	DB	080H
+	DB	054H
+	DB	080H
+	DB	056H
+	DB	00H
+	DB	0aH
+	DB	095H
+	DB	0a2H
+	DB	055H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	015H
+	DB	054H
+	DB	056H
+	DB	095H
+	DB	05aH
+	DB	0a5H
+	DB	05aH
+	DB	0a5H
+	DB	056H
+	DB	095H
+	DB	015H
+	DB	054H
+	DB	01H
+	DB	040H
+	DB	00H
+	DB	020H
+	DB	00H
+	DB	0a8H
+	DB	02H
+	DB	0aaH
+	DB	0aH
+	DB	0a8H
+	DB	02aH
+	DB	0a0H
+	DB	0aaH
+	DB	080H
+	DB	02aH
+	DB	00H
+	DB	08H
+	DB	00H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	050H
+	DB	015H
+	DB	054H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	055H
+	DB	015H
+	DB	044H
+	DB	05H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01aH
+	DB	080H
+	DB	015H
+	DB	050H
+	DB	0aH
+	DB	064H
+	DB	096H
+	DB	0a4H
+	DB	00H
+	DB	05H
+	DB	018H
+	DB	06H
+	DB	05H
+	DB	09H
+	DB	06H
+	DB	01H
+	DB	050H
+	DB	00H
+	DB	050H
+	DB	060H
+	DB	00H
+	DB	090H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	028H
+	DB	028H
+	DB	028H
+	DB	028H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	05H
+	DB	01H
+	DB	040H
+	DB	061H
+	DB	040H
+	DB	090H
+	DB	00H
+	DB	00H
+	DB	028H
+	DB	00H
+	DB	028H
+	DB	00H
+	DB	00H
+	DB	010H
+	DB	010H
+	DB	01H
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	044H
+	DB	00H
+	DB	00H
+	DB	041H
+	DB	04H
+	DB	00H
+	DB	00H
+	DB	04H
+_swflksym	DB	030H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0ccH
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	03H
+	DB	030H
+	DB	0cH
+	DB	03H
+	DB	00H
+	DB	0c0H
+	DB	033H
+	DB	0cH
+	DB	0c0H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0ccH
+	DB	033H
+	DB	00H
+	DB	0c0H
+	DB	030H
+	DB	0cH
+	DB	03H
+	DB	030H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0cH
+	DB	0c3H
+	DB	00H
+	DB	0ccH
+	DB	03H
+	DB	0cH
+	DB	0c0H
+	DB	030H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	03H
+	DB	00H
+	DB	0cH
+	DB	00H
+	DB	0cH
+	DB	0c0H
+	DB	033H
+	DB	00H
+	DB	00H
+	DB	0cH
+	DB	0c0H
+	DB	00H
+	DB	00H
+	DB	03H
+	DB	00H
+	DB	00H
+	DB	0ccH
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	030H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0c0H
+	DB	033H
+	DB	0cH
+	DB	0c3H
+	DB	030H
+	DB	0cH
+	DB	03H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	030H
+	DB	0cH
+	DB	03H
+	DB	030H
+	DB	0ccH
+	DB	033H
+	DB	00H
+	DB	0c0H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	03H
+	DB	0cH
+	DB	0c0H
+	DB	030H
+	DB	0cH
+	DB	0c3H
+	DB	00H
+	DB	0ccH
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0cH
+	DB	0c0H
+	DB	033H
+	DB	00H
+	DB	03H
+	DB	00H
+	DB	0cH
+	DB	00H
+	DB	00H
+	DB	03H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0cH
+	DB	0c0H
+	DB	00H
+_swbrdsym	DB	030H
+	DB	0ccH
+	DB	0ccH
+	DB	030H
+_swoxsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0cH
+	DB	030H
+	DB	00H
+	DB	00H
+	DB	0eH
+	DB	0a0H
+	DB	00H
+	DB	00H
+	DB	0bH
+	DB	07cH
+	DB	02H
+	DB	0aaH
+	DB	0baH
+	DB	0fcH
+	DB	02aH
+	DB	0aaH
+	DB	0baH
+	DB	0fbH
+	DB	0eaH
+	DB	0aaH
+	DB	0baH
+	DB	0bcH
+	DB	0eaH
+	DB	0aaH
+	DB	0afH
+	DB	00H
+	DB	0eaH
+	DB	0aaH
+	DB	0aaH
+	DB	00H
+	DB	0e8H
+	DB	0a0H
+	DB	0a2H
+	DB	080H
+	DB	028H
+	DB	0a0H
+	DB	0a2H
+	DB	080H
+	DB	03cH
+	DB	0f0H
+	DB	0f3H
+	DB	0c0H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	0c0H
+	DB	0aH
+	DB	0aaH
+	DB	0a2H
+	DB	0a0H
+	DB	0efH
+	DB	0aaH
+	DB	0faH
+	DB	0bcH
+	DB	0eaH
+	DB	0aaH
+	DB	0aaH
+	DB	0bcH
+	DB	0ebH
+	DB	0ebH
+	DB	0e2H
+	DB	0b0H
+_swghtsym	DB	05H
+	DB	050H
+	DB	015H
+	DB	054H
+	DB	059H
+	DB	065H
+	DB	06aH
+	DB	0a9H
+	DB	059H
+	DB	065H
+	DB	055H
+	DB	055H
+	DB	06aH
+	DB	0a9H
+	DB	055H
+	DB	055H
+_swshtsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	01H
+	DB	00H
+	DB	00H
+	DB	050H
+	DB	01H
+	DB	00H
+	DB	015H
+	DB	00H
+	DB	00H
+	DB	040H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	041H
+	DB	05H
+	DB	00H
+	DB	00H
+	DB	015H
+	DB	010H
+	DB	040H
+	DB	055H
+	DB	016H
+	DB	040H
+	DB	014H
+	DB	00H
+	DB	056H
+	DB	090H
+	DB	01H
+	DB	00H
+	DB	056H
+	DB	050H
+	DB	00H
+	DB	00H
+	DB	01aH
+	DB	045H
+	DB	00H
+	DB	00H
+	DB	045H
+	DB	00H
+	DB	040H
+	DB	01H
+	DB	01H
+	DB	00H
+	DB	040H
+	DB	04H
+	DB	01H
+	DB	00H
+	DB	040H
+	DB	04H
+	DB	015H
+	DB	01H
+	DB	00H
+	DB	04H
+	DB	040H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	010H
+_swsplsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02aH
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	025H
+	DB	0a0H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	09H
+	DB	058H
+	DB	00H
+	DB	010H
+	DB	05H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	056H
+	DB	00H
+	DB	010H
+	DB	01H
+	DB	040H
+	DB	04H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	080H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	015H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	060H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	01H
+	DB	02H
+	DB	055H
+	DB	058H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	09H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	025H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	010H
+	DB	095H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	04H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	055H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	0aaH
+	DB	089H
+	DB	055H
+	DB	055H
+	DB	058H
+	DB	00H
+	DB	00H
+	DB	09H
+	DB	055H
+	DB	065H
+	DB	055H
+	DB	055H
+	DB	060H
+	DB	00H
+	DB	00H
+	DB	026H
+	DB	056H
+	DB	059H
+	DB	055H
+	DB	055H
+	DB	080H
+	DB	014H
+	DB	00H
+	DB	098H
+	DB	098H
+	DB	096H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	098H
+	DB	098H
+	DB	096H
+	DB	0a5H
+	DB	0a8H
+	DB	04H
+	DB	00H
+	DB	00H
+	DB	096H
+	DB	056H
+	DB	056H
+	DB	05aH
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	00H
+	DB	095H
+	DB	055H
+	DB	056H
+	DB	056H
+	DB	00H
+	DB	04H
+	DB	040H
+	DB	00H
+	DB	09aH
+	DB	065H
+	DB	056H
+	DB	055H
+	DB	080H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	029H
+	DB	095H
+	DB	05aH
+	DB	055H
+	DB	060H
+	DB	00H
+	DB	010H
+	DB	00H
+	DB	0a6H
+	DB	055H
+	DB	062H
+	DB	055H
+	DB	05aH
+	DB	0a8H
+	DB	00H
+	DB	02H
+	DB	09aH
+	DB	0aaH
+	DB	080H
+	DB	095H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	0aH
+	DB	060H
+	DB	00H
+	DB	0a0H
+	DB	025H
+	DB	055H
+	DB	055H
+	DB	080H
+	DB	09H
+	DB	080H
+	DB	00H
+	DB	088H
+	DB	09H
+	DB	055H
+	DB	055H
+	DB	060H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	082H
+	DB	02H
+	DB	055H
+	DB	055H
+	DB	058H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	080H
+	DB	080H
+	DB	095H
+	DB	055H
+	DB	056H
+	DB	00H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	020H
+	DB	025H
+	DB	055H
+	DB	056H
+	DB	01H
+	DB	00H
+	DB	0aaH
+	DB	080H
+	DB	020H
+	DB	0aH
+	DB	0a9H
+	DB	056H
+	DB	014H
+	DB	04H
+	DB	08H
+	DB	0aH
+	DB	0aaH
+	DB	00H
+	DB	02H
+	DB	056H
+	DB	054H
+	DB	015H
+	DB	08H
+	DB	00H
+	DB	080H
+	DB	010H
+	DB	00H
+	DB	098H
+	DB	050H
+	DB	04H
+	DB	00H
+	DB	02H
+	DB	00H
+	DB	00H
+	DB	040H
+	DB	020H
+_swmscsym	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	015H
+	DB	054H
+	DB	015H
+	DB	054H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	01H
+	DB	054H
+	DB	055H
+	DB	040H
+	DB	015H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	054H
+	DB	01H
+	DB	050H
+	DB	015H
+	DB	040H
+	DB	05H
+	DB	00H
+	DB	01H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	015H
+	DB	00H
+	DB	05H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	054H
+	DB	00H
+	DB	054H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	015H
+	DB	00H
+	DB	05H
+	DB	040H
+	DB	01H
+	DB	054H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	015H
+	DB	044H
+	DB	01H
+	DB	054H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	010H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	014H
+	DB	015H
+	DB	054H
+	DB	015H
+	DB	054H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	054H
+	DB	01H
+	DB	055H
+	DB	015H
+	DB	040H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	040H
+	DB	00H
+	DB	050H
+	DB	01H
+	DB	054H
+	DB	05H
+	DB	040H
+	DB	015H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	050H
+	DB	00H
+	DB	054H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	05H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	05H
+	DB	050H
+	DB	05H
+	DB	050H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	015H
+	DB	00H
+	DB	015H
+	DB	040H
+	DB	01H
+	DB	040H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	050H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	01H
+	DB	00H
+	DB	05H
+	DB	00H
+	DB	015H
+	DB	040H
+	DB	01H
+	DB	050H
+	DB	00H
+	DB	054H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	04H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	015H
+	DB	040H
+	DB	011H
+	DB	054H
+	DB	00H
+	DB	014H
+	DB	00H
+	DB	00H
+	DB	00H
+	DB	00H
+_swbstsym	DB	00H
+	DB	040H
+	DB	010H
+	DB	044H
+	DB	04H
+	DB	050H
+	DB	055H
+	DB	040H
+	DB	01H
+	DB	055H
+	DB	05H
+	DB	010H
+	DB	011H
+	DB	04H
+	DB	01H
+	DB	00H
+	DB	01H
+	DB	04H
+	DB	041H
+	DB	010H
+	DB	011H
+	DB	040H
+	DB	05H
+	DB	055H
+	DB	055H
+	DB	050H
+	DB	01H
+	DB	044H
+	DB	04H
+	DB	041H
+	DB	010H
+	DB	040H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** #include        "sw.h"
+; Line 1
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+_TEXT	ENDS
+END
+;|*** 
+;|*** /*
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** */
+;|*** 
+;|*** 
+;|*** char    swbmbsym[BOMBANGS][BOMBBYTES] = {
+;|*** 
+;|*** /*  bomb symbols based on the following template file:
+;|*** 08
+;|*** . . . . . . . .
+;|*** . . . . . . . .
+;|*** 1 1 . 1 1 1 1 .
+;|*** 1 1 1 1 1 1 1 1
+;|*** 1 1 1 1 1 1 1 1
+;|*** 1 1 . 1 1 1 1 .
+;|*** . .  .. . . . .
+;|*** . . . . . . . .
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x51, 0x54, 0x55, 0x55, 0x55, 0x55,
+;|***        0x51, 0x54, 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x54, 0x1 , 0x55, 0x5 , 0x55, 0x11, 0x54,
+;|***        0x55, 0x10, 0x15, 0x40, 0x1 , 0x0 ,
+;|***        0x1 , 0x40, 0x5 , 0x50, 0x5 , 0x50, 0x5 , 0x50, 0x5 , 0x50,
+;|***        0x1 , 0x40, 0x5 , 0x50, 0x5 , 0x50,
+;|***        0x0 , 0x0 , 0x15, 0x0 , 0x55, 0x40, 0x55, 0x50, 0x15, 0x44,
+;|***        0x4 , 0x55, 0x1 , 0x54, 0x0 , 0x40,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x15, 0x45, 0x55, 0x55, 0x55, 0x55,
+;|***        0x15, 0x45, 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x40, 0x1 , 0x54, 0x4 , 0x55, 0x15, 0x44, 0x55, 0x50,
+;|***        0x55, 0x40, 0x15, 0x0 , 0x0 , 0x0 ,
+;|***        0x5 , 0x50, 0x5 , 0x50, 0x1 , 0x40, 0x5 , 0x50, 0x5 , 0x50,
+;|***        0x5 , 0x50, 0x5 , 0x50, 0x1 , 0x40,
+;|***        0x1 , 0x0 , 0x15, 0x40, 0x55, 0x10, 0x11, 0x54, 0x5 , 0x55,
+;|***        0x1 , 0x55, 0x0 , 0x54, 0x0 , 0x0
+;|*** };
+;|*** 
+;|*** char    swtrgsym[TARGORIENTS][TARGBYTES] = {
+;|*** 
+;|*** /*  target symbols based on the following template files:
+;|*** 16                                    16
+;|*** . . . . . . . . . . . 2 . . . .       . . . . . . . . . . 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 1 1 1 1       . . . . . . . . . . 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 1 1 1 1       . . . . . . . . . . 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 . . . .       1 1 1 1 1 1 1 1 1 1 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 . . . .       1 1 1 1 1 1 1 1 1 1 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 . . . .       1 1 1 2 1 2 1 2 1 1 2 2 . . 2 2
+;|*** . . . . . . . . . . . 2 . . . .       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1       1 1 1 2 1 2 1 2 1 1 1 1 1 1 2 2
+;|*** 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 1 1 2 2 2 2 2 2 2 2 2 2 2 2 1 1       1 1 1 2 1 2 1 2 1 2 1 2 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 2 1 2 1 2 1 2 1 2 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 2 1 2 1 2 1 2 1 2 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 1 1 2 1 1 1 1 1 1 1 1 1 1 2 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
+;|*** 
+;|*** 
+;|*** 16                                    16
+;|*** . . . . . . . . . . . . . . . .       . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .       . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .       . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .       . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .       . . . . . . . . . . . . . . . .
+;|*** . . . 1 1 1 1 1 1 1 1 1 1 . . .       . . . . . . . . . . . . . . . .
+;|*** . 1 1 1 1 1 1 1 1 1 1 1 1 1 1 .       . . . . . . . . . . . . . . . .
+;|*** 1 1 1 1 1 1 2 1 2 1 1 1 1 1 1 1       . . . . . 1 1 1 1 1 1 . . . . .
+;|*** 1 1 1 1 1 1 2 2 2 1 1 1 1 1 1 1       . . . . . 1 1 1 1 1 1 1 1 1 1 1
+;|*** 1 1 1 1 1 1 2 1 2 1 1 1 1 1 1 1       . . . . . 1 1 1 1 1 1 . . . . .
+;|*** 1 1 1 1 1 1 2 2 2 1 1 1 1 1 1 1       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+;|*** . 1 1 1 1 1 2 1 2 1 1 1 1 1 1 .       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+;|*** . . 1 1 1 1 2 2 2 1 1 1 1 1 . .       1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1
+;|*** . . 2 2 . . 2 . 2 . . . 2 2 . .       2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2
+;|*** . . 2 2 . . 2 2 2 . . . 2 2 . .       2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2
+;|*** . . 2 2 . . 2 . 2 . . . 2 2 . .       . 2 2 2 2 2 2 2 2 2 2 2 2 2 2 .
+;|*** */
+;|***        0x0 , 0x0 , 0x2 , 0x0 , 0x0 , 0x0 , 0x2 , 0x55, 0x0 , 0x0 ,
+;|***        0x2 , 0x55, 0x0 , 0x0 , 0x2 , 0x0 , 0x0 , 0x0 , 0x2 , 0x0 ,
+;|***        0x0 , 0x0 , 0x2 , 0x0 , 0x0 , 0x0 , 0x2 , 0x0 , 0x55, 0x55,
+;|***        0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x5A, 0xAA, 0xAA, 0xA5,
+;|***        0x59, 0x55, 0x55, 0x65, 0x59, 0x55, 0x55, 0x65, 0x59, 0x55,
+;|***        0x55, 0x65, 0x59, 0x55, 0x55, 0x65, 0x59, 0x55, 0x55, 0x65,
+;|***        0x59, 0x55, 0x55, 0x65,
+;|***        0x0 , 0x0 , 0xA , 0xA , 0x0 , 0x0 , 0xA , 0xA , 0x0 , 0x0 ,
+;|***        0xA , 0xA , 0x55, 0x55, 0x5A, 0xA , 0x55, 0x55, 0x5A, 0xA ,
+;|***        0x56, 0x66, 0x5A, 0xA , 0x55, 0x55, 0x55, 0x5A, 0x56, 0x66,
+;|***        0x55, 0x5A, 0x55, 0x55, 0x55, 0x5A, 0x56, 0x66, 0x66, 0x5A,
+;|***        0x55, 0x55, 0x55, 0x5A, 0x56, 0x66, 0x66, 0x5A, 0x55, 0x55,
+;|***        0x55, 0x5A, 0x56, 0x66, 0x66, 0x5A, 0x55, 0x55, 0x55, 0x5A,
+;|***        0x55, 0x55, 0x55, 0x5A,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x1 , 0x55, 0x55, 0x40, 0x15, 0x55, 0x55, 0x54, 0x55, 0x59,
+;|***        0x95, 0x55, 0x55, 0x5A, 0x95, 0x55, 0x55, 0x59, 0x95, 0x55,
+;|***        0x55, 0x5A, 0x95, 0x55, 0x15, 0x59, 0x95, 0x54, 0x5 , 0x5A,
+;|***        0x95, 0x50, 0xA , 0x8 , 0x80, 0xA0, 0xA , 0xA , 0x80, 0xA0,
+;|***        0xA , 0x8 , 0x80, 0xA0,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x15,
+;|***        0x54, 0x0 , 0x0 , 0x15, 0x55, 0x55, 0x0 , 0x15, 0x54, 0x0 ,
+;|***        0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x6A, 0xAA,
+;|***        0xAA, 0xA9, 0x95, 0x55, 0x55, 0x56, 0x95, 0x55, 0x55, 0x56,
+;|***        0x2A, 0xAA, 0xAA, 0xA8
+;|*** };
+;|*** 
+;|*** char    swhtrsym[TARGBYTES] = {
+;|*** 
+;|*** /*  hit target symbols based on the following template file:
+;|*** 16
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . 1 .
+;|*** 1 . . . . . . . . . . . . . 1 1
+;|*** 1 1 . . . 1 . . . . . 2 . 1 1 1
+;|*** 1 1 . 1 1 1 . . 1 1 . 2 1 1 1 1
+;|*** 1 1 1 1 2 2 1 1 1 1 2 1 1 1 1 1
+;|*** 1 1 1 1 2 2 1 1 1 2 1 1 1 1 1 1
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x4 , 0x40, 0x0 , 0x0 , 0x5 , 0x50, 0x10,
+;|***        0x2 , 0x15, 0x51, 0x50, 0x52, 0x55, 0x55, 0xA5, 0x59, 0x55,
+;|***        0x55, 0xA5, 0x65, 0x55
+;|*** };
+;|*** 
+;|*** char    swexpsym[EXPLSYMS][EXPBYTES] = {
+;|*** 
+;|*** /*  explosion symbols based on the following template files:
+;|*** 08                 08                08                08
+;|*** 1 1 1 . 2 . . .    . . . 1 1 . . .   . . . . . 2 . .   . . . 1 1 . . .
+;|*** 1 1 1 . 2 . . .    . 1 1 1 1 1 1 .   . . . . 2 2 2 .   . . . 1 1 1 . .
+;|*** 1 1 1 2 . . . .    1 1 1 2 2 1 1 1   . . . 2 2 2 2 2   . 1 1 1 1 1 1 .
+;|*** . . 2 2 2 1 1 1    1 1 2 2 2 2 1 1   . . 2 2 2 2 2 .   1 1 1 1 1 1 1 1
+;|*** 2 2 . 2 1 1 1 1    1 1 2 2 2 2 1 1   . 2 2 2 2 2 . .   1 1 1 1 1 1 1 1
+;|*** . . . 1 1 . . .    1 1 1 2 2 1 1 1   2 2 2 2 2 . . .   . 1 1 1 1 . 1 .
+;|*** . . . 1 1 . . .    . 1 1 1 1 1 1 .   . 2 2 2 . . . .   . . 1 1 1 . . .
+;|*** . . . 1 1 . . .    . . . 1 1 . . .   . . 2 . . . . .   . . . 1 1 . . .
+;|*** 
+;|*** 08                 08                08                08
+;|*** . 1 2 2 2 . . .    1 1 . . . . . .   . . . . . . . .   . . . . . . . .
+;|*** . 1 1 1 1 1 . .    1 1 . . 1 2 . .   . . . . . . 1 1   . 1 . . . 1 . .
+;|*** . . 2 2 1 2 1 .    . . . . 2 1 . .   . . . . . . 1 1   . . . 1 . . . .
+;|*** 2 1 1 2 2 2 1 .    . . . . . . . .   . . . 1 1 . . .   . . . . . . 1 .
+;|*** . . . . . . 1 1    . . . . . 2 2 .   1 2 . 1 1 . . .   1 . 1 . . . . .
+;|*** . 1 2 . . . 1 2    . 2 2 . . 2 2 .   2 1 . . . . . .   . . . . 1 . . 1
+;|*** . . 1 1 . . 2 1    . 2 2 . . . . .   . . . . . 2 2 .   . . 1 . . . . .
+;|*** . . 1 2 . . . 1    . . . . . . . .   . . . . . 2 2 .   . . . . . . 1 .
+;|*** */
+;|*** 
+;|***        0x54, 0x80, 0x54, 0x80, 0x56, 0x0 , 0xA , 0x95, 0xA2, 0x55,
+;|***        0x1 , 0x40, 0x1 , 0x40, 0x1 , 0x40,
+;|***        0x1 , 0x40, 0x15, 0x54, 0x56, 0x95, 0x5A, 0xA5, 0x5A, 0xA5,
+;|***        0x56, 0x95, 0x15, 0x54, 0x1 , 0x40,
+;|***        0x0 , 0x20, 0x0 , 0xA8, 0x2 , 0xAA, 0xA , 0xA8, 0x2A, 0xA0,
+;|***        0xAA, 0x80, 0x2A, 0x0 , 0x8 , 0x0 ,
+;|***        0x1 , 0x40, 0x1 , 0x50, 0x15, 0x54, 0x55, 0x55, 0x55, 0x55,
+;|***        0x15, 0x44, 0x5 , 0x40, 0x1 , 0x40,
+;|***        0x1A, 0x80, 0x15, 0x50, 0xA , 0x64, 0x96, 0xA4, 0x0 , 0x5 ,
+;|***        0x18, 0x6 , 0x5 , 0x9 , 0x6 , 0x1 ,
+;|***        0x50, 0x0 , 0x50, 0x60, 0x0 , 0x90, 0x0 , 0x0 , 0x0 , 0x28,
+;|***        0x28, 0x28, 0x28, 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x5 , 0x0 , 0x5 , 0x1 , 0x40, 0x61, 0x40,
+;|***        0x90, 0x0 , 0x0 , 0x28, 0x0 , 0x28,
+;|***        0x0 , 0x0 , 0x10, 0x10, 0x1 , 0x0 , 0x0 , 0x4 , 0x44, 0x0 ,
+;|***        0x0 , 0x41, 0x4 , 0x0 , 0x0 , 0x4
+;|*** };
+;|*** 
+;|*** char    swflksym[FLCKSYMS][FLKBYTES] = {
+;|*** 
+;|*** /*  flock symbols based on the following template files:
+;|*** 16                                16
+;|*** . 3 . . . . . . . . . . . . . .   3 . 3 . . . . . . . . . . . . .
+;|*** 3 . 3 . . . . . . . . . . . . .   . 3 . . . . . . . . . . . . . .
+;|*** . . . . . . . 3 . 3 . . . . 3 .   . . . . . . . . 3 . . . . 3 . 3
+;|*** . . . 3 . . . . 3 . . . . 3 . 3   . . 3 . 3 . . 3 . 3 . . . . 3 .
+;|*** . . 3 . 3 . . . . . . . . . . .   . . . 3 . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** 3 . 3 . . 3 . 3 . . . . 3 . . .   . 3 . . . . 3 . . . . 3 . 3 . .
+;|*** . 3 . . . . 3 . . . . 3 . 3 . .   3 . 3 . . 3 . 3 . . . . 3 . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . 3 . 3 . . 3 . . . . 3 . 3 .   . . . 3 . . 3 . 3 . . . . 3 . .
+;|*** . . . 3 . . 3 . 3 . . . . 3 . .   . . 3 . 3 . . 3 . . . . 3 . 3 .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . 3 . . . . . . 3 . . . . .   . . 3 . 3 . . . . 3 . 3 . . . .
+;|*** . . 3 . 3 . . . . 3 . 3 . . . .   . . . 3 . . . . . . 3 . . . . .
+;|*** . . . . . . 3 . 3 . . . . . . .   . . . . . . . 3 . . . . . . . .
+;|*** . . . . . . . 3 . . . . . . . .   . . . . . . 3 . 3 . . . . . . .
+;|*** */
+;|***        0x30, 0x0 , 0x0 , 0x0 , 0xCC, 0x0 , 0x0 , 0x0 , 0x0 , 0x3 ,
+;|***        0x30, 0xC , 0x3 , 0x0 , 0xC0, 0x33, 0xC , 0xC0, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0xCC, 0x33, 0x0 , 0xC0, 0x30, 0xC ,
+;|***        0x3 , 0x30, 0x0 , 0x0 , 0x0 , 0x0 , 0xC , 0xC3, 0x0 , 0xCC,
+;|***        0x3 , 0xC , 0xC0, 0x30, 0x0 , 0x0 , 0x0 , 0x0 , 0x3 , 0x0 ,
+;|***        0xC , 0x0 , 0xC , 0xC0, 0x33, 0x0 , 0x0 , 0xC , 0xC0, 0x0 ,
+;|***        0x0 , 0x3 , 0x0 , 0x0 ,
+;|***        0xCC, 0x0 , 0x0 , 0x0 , 0x30, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0xC0, 0x33, 0xC , 0xC3, 0x30, 0xC , 0x3 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x30, 0xC , 0x3 , 0x30, 0xCC, 0x33,
+;|***        0x0 , 0xC0, 0x0 , 0x0 , 0x0 , 0x0 , 0x3 , 0xC , 0xC0, 0x30,
+;|***        0xC , 0xC3, 0x0 , 0xCC, 0x0 , 0x0 , 0x0 , 0x0 , 0xC , 0xC0,
+;|***        0x33, 0x0 , 0x3 , 0x0 , 0xC , 0x0 , 0x0 , 0x3 , 0x0 , 0x0 ,
+;|***        0x0 , 0xC , 0xC0, 0x0
+;|*** };
+;|*** 
+;|*** char    swbrdsym[BIRDSYMS][BRDBYTES] = {
+;|*** 
+;|*** /*  bird symbols based on the following template files:
+;|*** 4         4
+;|*** . 3 . .   3 . 3 .
+;|*** 3 . 3 .   . 3 . .
+;|*** */
+;|***        0x30, 0xCC, 0xCC, 0x30
+;|*** };
+;|*** 
+;|*** char    swoxsym[OXSYMS][OXBYTES] = {
+;|*** 
+;|*** /*  ox symbols based on the following template files:
+;|*** 16                                16
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . 3 . . 3 . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . 3 2 2 2 . .   . . . . . . . . . . . . . . . .
+;|*** . . . . . . . . . . 2 3 1 3 3 .   . . . . . . . . . . . . . . . .
+;|*** . . . 2 2 2 2 2 2 3 2 2 3 3 3 .   . . . . . . . . . . . . . . . .
+;|*** . 2 2 2 2 2 2 2 2 3 2 2 3 3 2 3   . . . . . . . . . . . . . . . .
+;|*** 3 2 2 2 2 2 2 2 2 3 2 2 2 3 3 .   . . . . . . . . . . . . . . . .
+;|*** 3 2 2 2 2 2 2 2 2 2 3 3 . . . .   . . . . . . . . . . . . 3 . . .
+;|*** 3 2 2 2 2 2 2 2 2 2 2 2 . . . .   . . 2 2 2 2 2 2 2 2 . 2 2 2 . .
+;|*** 3 2 2 . 2 2 . . 2 2 . 2 2 . . .   3 2 3 3 2 2 2 2 3 3 2 2 2 3 3 .
+;|*** . 2 2 . 2 2 . . 2 2   2 2 . . .   3 2 2 2 2 2 2 2 2 2 2 2 2 3 3 .
+;|*** . 3 3 . 3 3 . . 3 3 . 3 3 . . .   3 2 2 3 3 2 2 3 3 2 . 2 2 3 . .
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0xC , 0x30, 0x0 , 0x0 , 0xE , 0xA0, 0x0 , 0x0 ,
+;|***        0xB , 0x7C, 0x2 , 0xAA, 0xBA, 0xFC, 0x2A, 0xAA, 0xBA, 0xFB,
+;|***        0xEA, 0xAA, 0xBA, 0xBC, 0xEA, 0xAA, 0xAF, 0x0 , 0xEA, 0xAA,
+;|***        0xAA, 0x0 , 0xE8, 0xA0, 0xA2, 0x80, 0x28, 0xA0, 0xA2, 0x80,
+;|***        0x3C, 0xF0, 0xF3, 0xC0,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0xC0, 0xA , 0xAA,
+;|***        0xA2, 0xA0, 0xEF, 0xAA, 0xFA, 0xBC, 0xEA, 0xAA, 0xAA, 0xBC,
+;|***        0xEB, 0xEB, 0xE2, 0xB0
+;|*** };
+;|*** 
+;|*** char    swghtsym[GHSTBYTES] = {
+;|*** 
+;|*** /*  ghost symbol based on the following template file:
+;|*** 08
+;|*** 0 0 1 1 1 1 0 0
+;|*** 0 1 1 1 1 1 1 0
+;|*** 1 1 2 1 1 2 1 1
+;|*** 1 2 2 2 2 2 2 1
+;|*** 1 1 2 1 1 2 1 1
+;|*** 1 1 1 1 1 1 1 1
+;|*** 1 2 2 2 2 2 2 1
+;|*** 1 1 1 1 1 1 1 1
+;|*** */
+;|***        0x5 , 0x50, 0x15, 0x54, 0x59, 0x65, 0x6A, 0xA9, 0x59, 0x65,
+;|***        0x55, 0x55, 0x6A, 0xA9, 0x55, 0x55
+;|*** };
+;|*** 
+;|*** char    swshtsym[SHOTBYTES] = {
+;|*** 
+;|*** /*  shot window symbol based on the following template file:
+;|*** 16
+;|*** . . . . . . . . . . . . . . 1 .
+;|*** . . . 1 . . . . . . . . 1 1 . .
+;|*** . . . 1 . . . . . 1 1 1 . . . .
+;|*** . . . . 1 . . . 1 . . . . . . .
+;|*** . . . . 1 . . 1 . . 1 1 . . . .
+;|*** . . . . . 1 1 1 . 1 . . 1 . . .
+;|*** 1 1 1 1 . 1 1 2 1 . . . . 1 1 .
+;|*** . . . . 1 1 1 2 2 1 . . . . . 1
+;|*** . . . . 1 1 1 2 1 1 . . . . . .
+;|*** . . . . . 1 2 2 1 . 1 1 . . . .
+;|*** . . . . 1 . 1 1 . . . . 1 . . .
+;|*** . . . 1 . . . 1 . . . . 1 . . .
+;|*** . . 1 . . . . 1 . . . . 1 . . .
+;|*** . . 1 . . 1 1 1 . . . 1 . . . .
+;|*** . . 1 . 1 . . . . . . . 1 . . .
+;|*** . . . . . 1 1 . . . . . . 1 . .
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x4 , 0x1 , 0x0 , 0x0 , 0x50, 0x1 , 0x0 ,
+;|***        0x15, 0x0 , 0x0 , 0x40, 0x40, 0x0 , 0x0 , 0x41, 0x5 , 0x0 ,
+;|***        0x0 , 0x15, 0x10, 0x40, 0x55, 0x16, 0x40, 0x14, 0x0 , 0x56,
+;|***        0x90, 0x1 , 0x0 , 0x56, 0x50, 0x0 , 0x0 , 0x1A, 0x45, 0x0 ,
+;|***        0x0 , 0x45, 0x0 , 0x40, 0x1 , 0x1 , 0x0 , 0x40, 0x4 , 0x1 ,
+;|***        0x0 , 0x40, 0x4 , 0x15, 0x1 , 0x0 , 0x4 , 0x40, 0x0 , 0x40,
+;|***        0x0 , 0x14, 0x0 , 0x10
+;|*** };
+;|*** 
+;|*** char    swsplsym[SPLTBYTES] = {
+;|*** 
+;|*** /*  splatted bird symbol based on the following template file:
+;|*** 32
+;|*** . . . . . . . . . . . . . . . . . 2 2 2 . . . . . . . . . . . .
+;|*** . . . . . . . . . . . . . . . . . 2 1 1 2 2 . . . . . . . . . .
+;|*** . . . 1 . . . . . . . . . . . . . . 2 1 1 1 2 . . . . . . 1 . .
+;|*** . . 1 1 1 . . . . . . . . . . . . . . 2 1 1 1 2 . . . . . 1 . .
+;|*** . . . 1 1 . . . . . 1 . . . . . . . . 2 1 1 1 1 2 . . . 1 1 . .
+;|*** . . . 1 1 . . . . 1 1 1 . . . . . . . 2 1 1 1 1 1 2 . . . . . .
+;|*** . . . . . . . . . . 1 . . . . 1 . . . 2 1 1 1 1 1 1 2 . . . . .
+;|*** . . . . . . . . . . . . . . . . . . . 2 1 1 1 1 1 1 1 2 . . . .
+;|*** . . . . 1 . . . . . . . . . . . . . 2 1 1 1 1 1 1 1 1 2 . . . .
+;|*** . . . . . . . . . . . . . . . . . 2 1 1 1 1 1 1 1 1 1 2 . . . .
+;|*** . . . . . . . . . . . . . 1 . . 2 1 1 1 1 1 1 1 1 1 1 2 . . . .
+;|*** . . 1 . . . . . . . . . . . . 2 1 1 1 1 1 1 1 1 1 1 1 2 . . . .
+;|*** . . . . . . . 2 2 2 2 2 2 . 2 1 1 1 1 1 1 1 1 1 1 1 2 . . . . .
+;|*** . . . . . . 2 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 2 . . . . . .
+;|*** . . . . . 2 1 2 1 1 1 2 1 1 2 1 1 1 1 1 1 1 1 1 2 . . . . 1 1 .
+;|*** . . . . 2 1 2 . 2 1 2.. 2 1 1 2 1 1 1 1 1 1 1 2 . . . . . . . .
+;|*** . . . . 2 1 2 . 2 1 2 . 2 1 1 2 2 2 1 1 2 2 2 . . . 1 . . . . .
+;|*** . . . . 2 1 1 2 1 1 1 2 1 1 1 2 1 1 2 2 . . . . . . . . . . 1 .
+;|*** . . . . 2 1 1 1 1 1 1 1 1 1 1 2 1 1 1 2 . . . . . . 1 . 1 . . .
+;|*** . . . . 2 1 2 2 1 2 1 1 1 1 1 2 1 1 1 1 2 . . . . . . . . . . .
+;|*** . . . . . 2 2 1 2 1 1 1 1 1 2 2 1 1 1 1 1 2 . . . . . . . 1 . .
+;|*** . . . . 2 2 1 2 1 1 1 1 1 2 . 2 1 1 1 1 1 1 2 2 2 2 2 . . . . .
+;|*** . . . 2 2 1 2 2 2 2 2 2 2 . . . 2 1 1 1 1 1 1 1 1 1 1 2 . . . .
+;|*** . . 2 2 1 2 . . . . . . 2 2 . . . 2 1 1 1 1 1 1 1 1 1 1 2 . . .
+;|*** . . 2 1 2 . . . . . . . 2 . 2 . . . 2 1 1 1 1 1 1 1 1 1 1 2 . .
+;|*** . . . . . . . . . . . . 2 . . 2 . . . 2 1 1 1 1 1 1 1 1 1 1 2 .
+;|*** . . . . . . . . . . . . 2 . . . 2 . . . 2 1 1 1 1 1 1 1 1 1 1 2
+;|*** . . . . . . . . . . . 2 . . . . . 2 . . . 2 1 1 1 1 1 1 1 1 1 2
+;|*** . . . 1 . . . . 2 2 2 2 2 . . . . 2 . . . . 2 2 2 2 2 1 1 1 1 2
+;|*** . 1 1 . . . 1 . . . 2 . . . 2 2 2 2 2 2 . . . . . . . 2 1 1 1 2
+;|*** 1 1 1 . . 1 1 1 . . 2 . . . . . 2 . . . . 1 . . . . . . 2 1 2 .
+;|*** 1 1 . . . . 1 . . . . . . . . 2 . . . . . . . . 1 . . . . 2 . .
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x2A, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x25, 0xA0, 0x0 , 0x0 , 0x1 , 0x0 , 0x0 , 0x0 ,
+;|***        0x9 , 0x58, 0x0 , 0x10, 0x5 , 0x40, 0x0 , 0x0 , 0x2 , 0x56,
+;|***        0x0 , 0x10, 0x1 , 0x40, 0x4 , 0x0 , 0x2 , 0x55, 0x80, 0x50,
+;|***        0x1 , 0x40, 0x15, 0x0 , 0x2 , 0x55, 0x60, 0x0 , 0x0 , 0x0 ,
+;|***        0x4 , 0x1 , 0x2 , 0x55, 0x58, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x2 , 0x55, 0x56, 0x0 , 0x0 , 0x40, 0x0 , 0x0 , 0x9 , 0x55,
+;|***        0x56, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x25, 0x55, 0x56, 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x10, 0x95, 0x55, 0x56, 0x0 , 0x4 , 0x0 ,
+;|***        0x0 , 0x2 , 0x55, 0x55, 0x56, 0x0 , 0x0 , 0x2 , 0xAA, 0x89,
+;|***        0x55, 0x55, 0x58, 0x0 , 0x0 , 0x9 , 0x55, 0x65, 0x55, 0x55,
+;|***        0x60, 0x0 , 0x0 , 0x26, 0x56, 0x59, 0x55, 0x55, 0x80, 0x14,
+;|***        0x0 , 0x98, 0x98, 0x96, 0x55, 0x56, 0x0 , 0x0 , 0x0 , 0x98,
+;|***        0x98, 0x96, 0xA5, 0xA8, 0x4 , 0x0 , 0x0 , 0x96, 0x56, 0x56,
+;|***        0x5A, 0x0 , 0x0 , 0x4 , 0x0 , 0x95, 0x55, 0x56, 0x56, 0x0 ,
+;|***        0x4 , 0x40, 0x0 , 0x9A, 0x65, 0x56, 0x55, 0x80, 0x0 , 0x0 ,
+;|***        0x0 , 0x29, 0x95, 0x5A, 0x55, 0x60, 0x0 , 0x10, 0x0 , 0xA6,
+;|***        0x55, 0x62, 0x55, 0x5A, 0xA8, 0x0 , 0x2 , 0x9A, 0xAA, 0x80,
+;|***        0x95, 0x55, 0x56, 0x0 , 0xA , 0x60, 0x0 , 0xA0, 0x25, 0x55,
+;|***        0x55, 0x80, 0x9 , 0x80, 0x0 , 0x88, 0x9 , 0x55, 0x55, 0x60,
+;|***        0x0 , 0x0 , 0x0 , 0x82, 0x2 , 0x55, 0x55, 0x58, 0x0 , 0x0 ,
+;|***        0x0 , 0x80, 0x80, 0x95, 0x55, 0x56, 0x0 , 0x0 , 0x2 , 0x0 ,
+;|***        0x20, 0x25, 0x55, 0x56, 0x1 , 0x0 , 0xAA, 0x80, 0x20, 0xA ,
+;|***        0xA9, 0x56, 0x14, 0x4 , 0x8 , 0xA , 0xAA, 0x0 , 0x2 , 0x56,
+;|***        0x54, 0x15, 0x8 , 0x0 , 0x80, 0x10, 0x0 , 0x98, 0x50, 0x4 ,
+;|***        0x0 , 0x2 , 0x0 , 0x0 , 0x40, 0x20
+;|*** };
+;|*** 
+;|*** char    swmscsym[MISCANGS][MISCBYTES] = {
+;|*** 
+;|*** /*  bomb symbols based on the following template file:
+;|*** 
+;|*** 
+;|*** 08                08                08                08
+;|*** . . . . . . . .   . . . . . . . .   . . . . . . . .   . . . . . . . .
+;|*** . . . . . . . .   . . . . . . . .   . . . . . 1 1 .   . . . . 1 1 . .
+;|*** . 1 1 . . . . .   . . . . . 1 1 .   . . . . 1 1 1 .   . . . . 1 1 . .
+;|*** . 1 1 1 1 1 1 .   . . . 1 1 1 1 .   . . . 1 1 1 . .   . . . 1 1 . . .
+;|*** . 1 1 1 1 1 1 .   1 1 1 1 1 . . .   . 1 1 1 1 . . .   . . . 1 1 . . .
+;|*** . 1 1 . . . . .   . 1 1 1 . . . .   . . 1 1 . . . .   . 1 1 1 . . . .
+;|*** . . . . . . . .   . . 1 1 . . . .   . . . 1 . . . .   . . 1 1 1 . . .
+;|*** . . . . . . . .   . . . . . . . .   . . . . . . . .   . . . . . . . .
+;|*** */
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x14, 0x0 , 0x15, 0x54, 0x15, 0x54,
+;|***        0x14, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x14, 0x1 , 0x54, 0x55, 0x40,
+;|***        0x15, 0x0 , 0x5 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x14, 0x0 , 0x54, 0x1 , 0x50, 0x15, 0x40,
+;|***        0x5 , 0x0 , 0x1 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x50, 0x0 , 0x50, 0x1 , 0x40, 0x1 , 0x40,
+;|***        0x15, 0x0 , 0x5 , 0x40, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x1 , 0x40, 0x1 , 0x40, 0x1 , 0x40, 0x1 , 0x40,
+;|***        0x5 , 0x50, 0x5 , 0x50, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x5 , 0x0 , 0x5 , 0x0 , 0x1 , 0x40, 0x1 , 0x54,
+;|***        0x0 , 0x54, 0x0 , 0x50, 0x0 , 0x40,
+;|***        0x0 , 0x0 , 0x14, 0x0 , 0x15, 0x0 , 0x5 , 0x40, 0x1 , 0x54,
+;|***        0x0 , 0x50, 0x0 , 0x40, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x14, 0x0 , 0x15, 0x44, 0x1 , 0x54,
+;|***        0x0 , 0x14, 0x0 , 0x10, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x0 , 0x0 , 0x14, 0x15, 0x54, 0x15, 0x54,
+;|***        0x0 , 0x14, 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x50, 0x0 , 0x54, 0x1 , 0x55, 0x15, 0x40,
+;|***        0x14, 0x0 , 0x0 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x0 , 0x40, 0x0 , 0x50, 0x1 , 0x54, 0x5 , 0x40,
+;|***        0x15, 0x0 , 0x14, 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x1 , 0x50, 0x0 , 0x54, 0x1 , 0x40, 0x1 , 0x40,
+;|***        0x5 , 0x0 , 0x5 , 0x0 , 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x5 , 0x50, 0x5 , 0x50, 0x1 , 0x40, 0x1 , 0x40,
+;|***        0x1 , 0x40, 0x1 , 0x40, 0x0 , 0x0 ,
+;|***        0x1 , 0x0 , 0x5 , 0x0 , 0x15, 0x0 , 0x15, 0x40, 0x1 , 0x40,
+;|***        0x0 , 0x50, 0x0 , 0x50, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x1 , 0x0 , 0x5 , 0x0 , 0x15, 0x40, 0x1 , 0x50,
+;|***        0x0 , 0x54, 0x0 , 0x14, 0x0 , 0x0 ,
+;|***        0x0 , 0x0 , 0x4 , 0x0 , 0x14, 0x0 , 0x15, 0x40, 0x11, 0x54,
+;|***        0x0 , 0x14, 0x0 , 0x0 , 0x0 , 0x0
+;|*** };
+;|*** 
+;|*** char    swbstsym[BRSTSYMS][BRSTBYTES] = {
+;|*** 
+;|*** 
+;|*** /*  starburst symbols based on the following template file:
+;|*** 
+;|*** 08                 08
+;|*** . . . . 1 . . .    . . . 1 . . 1 .
+;|*** . 1 . . 1 . 1 .    1 . . 1 . 1 . .
+;|*** . . 1 . 1 1 . .    . 1 . 1 1 . . .
+;|*** 1 1 1 1 1 . . .    . . 1 1 1 1 1 1
+;|*** . . . 1 1 1 1 1    1 1 1 1 1 1 . .
+;|*** . . 1 1 . 1 . .    . . . 1 1 . 1 .
+;|*** . 1 . 1 . . 1 .    . . 1 . 1 . . 1
+;|*** . . . 1 . . . .    . 1 . . 1 . . .
+;|*** */
+;|***        0x0 , 0x40, 0x10, 0x44, 0x4 , 0x50, 0x55, 0x40, 0x1 , 0x55,
+;|***        0x5 , 0x10, 0x11, 0x4 , 0x1 , 0x0 ,
+;|***        0x1 , 0x4 , 0x41, 0x10, 0x11, 0x40, 0x5 , 0x55, 0x55, 0x50,
+;|***        0x1 , 0x44, 0x4 , 0x41, 0x10, 0x40
+;|*** };

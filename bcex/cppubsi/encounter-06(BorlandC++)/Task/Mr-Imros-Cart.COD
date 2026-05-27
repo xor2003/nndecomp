@@ -1,0 +1,909 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9117DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+	?debug	C E95337528114443A5C494E434C5544455C696F6D616E69702E68
+	?debug	C E95337528114443A5C494E434C5544455C67656E657269632E68
+	?debug	C E95337528113443A5C494E434C5544455C737472696E672E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,64
+	push	si
+	push	di
+@1@26:
+   ;	
+   ;	{
+   ;	int i,j;
+   ;	char kode[6], *jenis[6], lagi;
+   ;	int banyak[6],harga[6],jumlah[6],total,pajak,tb;
+   ;	atas:
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"==================================="<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"  ^GEROBAK FRIED CHICKEN^  "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+36
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"   Kode    jenis   Harga   "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+64
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"   [D]     Dada    Rp.2500 "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+92
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"   [P]     Paha    Rp.2000 "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+120
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"   [S]     Sayap   Rp.1500 "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+148
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"==================================="<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+176
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	
+   ;	cout<<"Banyak Jenis         : ";cin>>j;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+212
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-2]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;	for (i=1;i<=j;i++)
+   ;	
+	mov	si,1
+	jmp	@1@266
+@1@50:
+   ;	
+   ;	{
+   ;	cout<<"jenis ke- "<<i<<endl;
+   ;	
+	mov	ax,si
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+236
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Jenis Potong [D/P/S] : ";cin>>kode[i];
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+247
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-8]
+	add	ax,si
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	cout<<"Banyak Potong        : ";cin>>banyak[i];
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+271
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	shl	ax,1
+	lea	dx,word ptr [bp-40]
+	add	dx,ax
+	push	dx
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;	
+   ;	if(kode[i]=='D'||kode[i]=='d')
+   ;	
+	cmp	byte ptr [bp+si-8],68
+	je	short @1@98
+	cmp	byte ptr [bp+si-8],100
+	jne	short @1@122
+@1@98:
+   ;	
+   ;	 {jenis[i]="Dada";harga[i]=2500;}
+   ;	
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-28]
+	add	bx,ax
+	mov	word ptr [bx],offset DGROUP:s@+295
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-52]
+	add	bx,ax
+	mov	word ptr [bx],2500
+	jmp	short @1@218
+@1@122:
+   ;	
+   ;	else if(kode[i]=='S'||kode[i]=='s')
+   ;	
+	cmp	byte ptr [bp+si-8],83
+	je	short @1@170
+	cmp	byte ptr [bp+si-8],115
+	jne	short @1@194
+@1@170:
+   ;	
+   ;	 {jenis[i]="Sayap";harga[i]=2000;}
+   ;	
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-28]
+	add	bx,ax
+	mov	word ptr [bx],offset DGROUP:s@+300
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-52]
+	add	bx,ax
+	mov	word ptr [bx],2000
+	jmp	short @1@218
+@1@194:
+   ;	
+   ;	else
+   ;	 {jenis[i]="Paha";harga[i]=1500;}
+   ;	
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-28]
+	add	bx,ax
+	mov	word ptr [bx],offset DGROUP:s@+306
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-52]
+	add	bx,ax
+	mov	word ptr [bx],1500
+@1@218:
+   ;	
+   ;	jumlah[i]=harga[i]*banyak[i];
+   ;	
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-52]
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	mov	dx,si
+	shl	dx,1
+	lea	bx,word ptr [bp-40]
+	add	bx,dx
+	imul	word ptr [bx]
+	mov	dx,si
+	shl	dx,1
+	lea	bx,word ptr [bp-64]
+	add	bx,dx
+	mov	word ptr [bx],ax
+	inc	si
+@1@266:
+	cmp	si,word ptr [bp-2]
+	jg	@@0
+	jmp	@1@50
+@@0:
+   ;	
+   ;	}
+   ;	
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"------------------------------------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+311
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"        ^GEROBAK FRIED CHICKEN^           "<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+354
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"------------------------------------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+397
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"No.  Jenis   Harga   Banyak ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+440
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	cout<<" Jumlah"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+469
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"     Potong  Satuan   Beli  ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+477
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	cout<<" Harga"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+506
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"------------------------------------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+513
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	for(i=1;i<=j;i++)
+   ;	
+	mov	si,1
+	jmp	@1@362
+@1@314:
+   ;	
+   ;	    //Pembatas
+   ;	
+   ;	{
+   ;	gotoxy(1,6+i);cout<<i;
+   ;	
+	mov	ax,si
+	add	ax,6
+	push	ax
+	mov	ax,1
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,si
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	gotoxy(7,6+i);cout<<jenis[i];
+   ;	
+	mov	ax,si
+	add	ax,6
+	push	ax
+	mov	ax,7
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-28]
+	add	bx,ax
+	push	word ptr [bx]
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	gotoxy(15,6+i);cout<<harga[i];
+   ;	
+	mov	ax,si
+	add	ax,6
+	push	ax
+	mov	ax,15
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-52]
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	gotoxy(23,6+i);cout<<banyak[i];
+   ;	
+	mov	ax,si
+	add	ax,6
+	push	ax
+	mov	ax,23
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-40]
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	gotoxy(32,6+i);cout<<jumlah[i];
+   ;	
+	mov	ax,si
+	add	ax,6
+	push	ax
+	mov	ax,32
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-64]
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	
+   ;	total=jumlah[i];
+   ;	
+	mov	ax,si
+	shl	ax,1
+	lea	bx,word ptr [bp-64]
+	add	bx,ax
+	mov	di,word ptr [bx]
+   ;	
+   ;	pajak=total*0.1;
+   ;	
+	mov	word ptr [bp-16],di
+	FILD	word ptr [bp-16]
+	FMUL	qword ptr DGROUP:s@+556
+	call	near ptr N_FTOL@
+	mov	word ptr [bp-12],ax
+   ;	
+   ;	tb=total+pajak;
+   ;	
+	mov	ax,di
+	add	ax,word ptr [bp-12]
+	mov	word ptr [bp-14],ax
+	inc	si
+@1@362:
+	cmp	si,word ptr [bp-2]
+	jg	@@1
+	jmp	@1@314
+@@1:
+   ;	
+   ;	
+   ;	}
+   ;	cout<<endl;
+   ;	
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"------------------------------------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+564
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	gotoxy(29,7+i);cout<<"Jumlah Bayar Rp."<<total<<endl;
+   ;	
+	mov	ax,si
+	add	ax,7
+	push	ax
+	mov	ax,29
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+607
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	gotoxy(29,8+i);cout<<"Pajak 10%    Rp."<<pajak<<endl;
+   ;	
+	mov	ax,si
+	add	ax,8
+	push	ax
+	mov	ax,29
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,word ptr [bp-12]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+624
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	gotoxy(29,9+i);cout<<"Total Bayar  Rp."<<tb<<endl;
+   ;	
+	mov	ax,si
+	add	ax,9
+	push	ax
+	mov	ax,29
+	push	ax
+	call	near ptr _gotoxy
+	pop	cx
+	pop	cx
+	mov	ax,word ptr [bp-14]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+641
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	
+   ;	cout<<"\n\tIngin Input Lagi?[Y/T]:";cin>>lagi;//Looping
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+658
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-9]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	clrscr();//Untuk menghapus bagian atas.
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	if(lagi=='Y' || lagi=='y')
+   ;	
+	cmp	byte ptr [bp-9],89
+	je	short @1@434
+	cmp	byte ptr [bp-9],121
+	jne	short @1@458
+@1@434:
+   ;	
+   ;	{goto atas;}
+   ;	
+	jmp	@1@26
+@1@458:
+   ;	
+   ;	if(lagi=='T' || lagi=='t')
+   ;	
+	cmp	byte ptr [bp-9],84
+	je	short @1@506
+	cmp	byte ptr [bp-9],116
+	jne	short @1@530
+@1@506:
+   ;	
+   ;	{goto selesai;}
+   ;	
+	jmp	short @1@530
+@1@530:
+   ;	
+   ;	selesai:
+   ;	cout<<endl;
+   ;	
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"\t******* Terima Kasih *******"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+684
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"\t******* Tekan  Enter *******"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+714
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'==================================='
+	db	0
+	db	'  ^GEROBAK FRIED CHICKEN^  '
+	db	0
+	db	'   Kode    jenis   Harga   '
+	db	0
+	db	'   [D]     Dada    Rp.2500 '
+	db	0
+	db	'   [P]     Paha    Rp.2000 '
+	db	0
+	db	'   [S]     Sayap   Rp.1500 '
+	db	0
+	db	'==================================='
+	db	0
+	db	'Banyak Jenis         : '
+	db	0
+	db	'jenis ke- '
+	db	0
+	db	'Jenis Potong [D/P/S] : '
+	db	0
+	db	'Banyak Potong        : '
+	db	0
+	db	'Dada'
+	db	0
+	db	'Sayap'
+	db	0
+	db	'Paha'
+	db	0
+	db	'------------------------------------------'
+	db	0
+	db	'        ^GEROBAK FRIED CHICKEN^           '
+	db	0
+	db	'------------------------------------------'
+	db	0
+	db	'No.  Jenis   Harga   Banyak '
+	db	0
+	db	' Jumlah'
+	db	0
+	db	'     Potong  Satuan   Beli  '
+	db	0
+	db	' Harga'
+	db	0
+	db	'------------------------------------------'
+	db	0
+	db	-102
+	db	-103
+	db	-103
+	db	-103
+	db	-103
+	db	-103
+	db	-71
+	db	'?------------------------------------------'
+	db	0
+	db	'Jumlah Bayar Rp.'
+	db	0
+	db	'Pajak 10%    Rp.'
+	db	0
+	db	'Total Bayar  Rp.'
+	db	0
+	db	10
+	db	9
+	db	'Ingin Input Lagi?[Y/T]:'
+	db	0
+	db	9
+	db	'******* Terima Kasih *******'
+	db	0
+	db	9
+	db	'******* Tekan  Enter *******'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	_clrscr:near
+	extrn	@endl$qr7ostream:near
+	extrn	_cout:word
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	@istream@$brsh$qri:near
+	extrn	_cin:word
+	extrn	@ostream@$blsh$ql:near
+	extrn	@istream@$brsh$qrzc:near
+	extrn	_gotoxy:near
+	extrn	N_FTOL@:near
+	extrn	_getch:near
+	end
+

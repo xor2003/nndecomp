@@ -1,0 +1,49 @@
+# Generating .COD Files for SLASHEM
+
+This document explains how to generate .COD files (mixed C/assembly listings) for the SLASHEM project.
+
+## Changes Made
+
+The Makefile.MSC file in `msex/slashem/sys/msdos/` has been modified to include the `/Fc` compiler flag, which instructs the Microsoft C compiler to generate mixed C/assembly listings.
+
+### Specific Change
+
+Line 194 of Makefile.MSC was modified from:
+```
+CDFLAGS   = /Zi			# use debug info (compiler)
+```
+
+To:
+```
+CDFLAGS   = /Zi /Fc		# use debug info (compiler) and generate .cod files
+```
+
+## How It Works
+
+The `/Fc` flag causes the compiler to generate a .COD file for each compiled .C file. These files contain:
+- The original C source code
+- The corresponding assembly language instructions
+- Memory addresses for instructions and data
+
+## Usage
+
+To build SLASHEM with .COD file generation:
+
+1. Navigate to the `msex/slashem` directory
+2. Run `compile_all.bat` or execute `nmake /f Makefile.MSC` from the `sys/msdos` directory
+3. After compilation, .COD files will be generated in the `o` directory alongside the .OBJ files
+
+## Comparison with Other Projects
+
+This approach follows the same pattern used in the `motf` project:
+- Like `motf`, SLASHEM now uses makefiles (not direct compiler commands like `labfl`)
+- The `/Fc` flag is added to the general compiler flags (CFLAGS) in the makefile
+- This is different from `labfl` which uses direct compiler commands with `/Fc` flags
+
+## Benefits
+
+Generating .COD files is useful for:
+- Performance analysis and optimization
+- Understanding how the compiler translates C code to assembly
+- Debugging low-level issues
+- Learning about code generation and optimization techniques

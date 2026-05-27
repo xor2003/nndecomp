@@ -1,0 +1,854 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SRC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_actor_visible:NEAR
+EXTRN	_delete_object:NEAR
+EXTRN	_odin_speaks:NEAR
+EXTRN	_memset:NEAR
+EXTRN	_xcopyd2d:NEAR
+EXTRN	_display_jewels:NEAR
+EXTRN	_display_keys:NEAR
+EXTRN	_play_sound:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_xfput:NEAR
+EXTRN	_new_level:WORD
+EXTRN	_new_level_tile:WORD
+EXTRN	_warp_flag:WORD
+EXTRN	_scrn:BYTE
+EXTRN	_thor:WORD
+EXTRN	_bg_pics:DWORD
+EXTRN	_thor_info:BYTE
+EXTRN	_thor_x1:WORD
+EXTRN	_thor_real_y1:WORD
+EXTRN	_display_page:WORD
+EXTRN	_draw_page:WORD
+EXTRN	_cash1_inform:WORD
+EXTRN	_cash2_inform:WORD
+EXTRN	_door_inform:WORD
+EXTRN	_diag:BYTE
+EXTRN	_warp_scroll:BYTE
+EXTRN	_setup:BYTE
+EXTRN	_slip_flag:BYTE
+EXTRN	_thunder_flag:WORD
+EXTRN	_end_tile:BYTE
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 4
+; Line 5
+; Line 6
+; Line 7
+; Line 9
+; Line 10
+; Line 34
+	PUBLIC	_special_tile_thor
+_special_tile_thor	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,8
+	call	__aNchkstk
+	push	si
+;	cx = -6
+;	cy = -8
+;	nt = -2
+;	f = -4
+;	icon = 8
+;	y = 6
+;	x = 4
+; Line 37
+	mov	WORD PTR [bp-4],0	;f
+; Line 38
+	mov	ax,WORD PTR [bp+8]	;icon
+	jmp	$S882
+; Line 39
+	nop	
+$SC886:
+; Line 40
+	push	WORD PTR [bp+6]	;y
+	push	WORD PTR [bp+4]	;x
+	call	_open_door1
+	add	sp,4
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 41
+	nop	
+$SC887:
+; Line 42
+	mov	bx,WORD PTR _thor
+	cmp	WORD PTR [bx+172],300
+	jle	$I888
+	mov	BYTE PTR _end_tile,1
+; Line 43
+$I888:
+	mov	ax,1
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 44
+	nop	
+$SC889:
+; Line 45
+	test	BYTE PTR _thor_info+8,64
+	je	$I890
+	cmp	BYTE PTR _thor_info+30,5
+	jne	$I890
+; Line 46
+	sub	ax,ax
+	push	ax
+	mov	ax,2012
+	push	ax
+	call	_odin_speaks
+	add	sp,4
+; Line 47
+	call	_delete_object
+; Line 48
+$L20008:
+	or	BYTE PTR _setup+1,4
+; Line 49
+; Line 50
+	jmp	SHORT $I888
+	nop	
+$I890:
+	test	BYTE PTR _setup+1,4
+	jne	$I888
+; Line 51
+	sub	ax,ax
+	push	ax
+	mov	ax,2011
+	push	ax
+	call	_odin_speaks
+	add	sp,4
+	jmp	SHORT $L20008
+; Line 55
+$SC893:
+; Line 56
+	test	BYTE PTR _setup+2,8
+	jne	$I888
+	mov	BYTE PTR _slip_flag,1
+; Line 57
+	jmp	SHORT $I888
+; Line 58
+$SC895:
+; Line 59
+	cmp	BYTE PTR _diag,0
+	je	$JCC145
+	jmp	$SC907
+$JCC145:
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],1
+	jmp	SHORT $L20005
+	nop	
+$SC897:
+; Line 62
+	cmp	BYTE PTR _diag,0
+	je	$JCC167
+	jmp	$SC907
+$JCC167:
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],0
+	jmp	SHORT $L20005
+	nop	
+$SC899:
+; Line 65
+	cmp	BYTE PTR _diag,0
+	je	$JCC189
+	jmp	$SC907
+$JCC189:
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],3
+	jmp	SHORT $L20005
+	nop	
+$SC901:
+; Line 68
+	cmp	BYTE PTR _diag,0
+	je	$JCC211
+	jmp	$SC907
+$JCC211:
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],2
+$L20005:
+	jne	$JCC225
+	jmp	$SC907
+$JCC225:
+	jmp	$I888
+	nop	
+$SC903:
+; Line 71
+	mov	ax,10
+$L20006:
+	push	ax
+	push	WORD PTR [bp+6]	;y
+	push	WORD PTR [bp+4]	;x
+	call	_cash_door1
+	add	sp,6
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 72
+	nop	
+$SC904:
+; Line 73
+	mov	ax,100
+	jmp	SHORT $L20006
+; Line 74
+	nop	
+$SC905:
+; Line 75
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],0
+	je	$JCC271
+	jmp	$I888
+$JCC271:
+	test	BYTE PTR _setup+3,32
+	jne	$JCC281
+	jmp	$I888
+$JCC281:
+	test	BYTE PTR _setup+2,32
+	jne	$JCC291
+	jmp	$I888
+$JCC291:
+	test	BYTE PTR _setup+2,64
+	je	$JCC301
+	jmp	$I888
+$JCC301:
+; Line 76
+	mov	ax,1
+	push	ax
+	call	_actor_visible
+	add	sp,2
+; Line 77
+	mov	ax,2
+	push	ax
+	call	_actor_visible
+	add	sp,2
+; Line 78
+	mov	ax,3
+	push	ax
+	call	_actor_visible
+	add	sp,2
+; Line 79
+	mov	ax,4
+	push	ax
+	call	_actor_visible
+	add	sp,2
+; Line 80
+	mov	ax,5
+	push	ax
+	call	_actor_visible
+	add	sp,2
+; Line 81
+	mov	ax,16
+	push	ax
+	sub	ax,ax
+	push	ax
+	mov	ax,OFFSET _scrn+293
+	push	ax
+	call	_memset
+	add	sp,6
+; Line 82
+	mov	WORD PTR _thunder_flag,60
+; Line 83
+	mov	ax,1
+	push	ax
+	mov	ax,5
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 84
+	or	BYTE PTR _setup+2,64
+; Line 85
+; Line 86
+	jmp	$I888
+; Line 94
+	nop	
+$SC909:
+; Line 96
+	mov	ax,WORD PTR _thor_real_y1
+	add	ax,8
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,4
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	WORD PTR [bp-8],ax	;cy
+; Line 97
+	mov	ax,WORD PTR _thor_x1
+	add	ax,7
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	bx,ax
+	mov	ax,20
+	imul	WORD PTR [bp-8]	;cy
+	mov	si,ax
+	mov	al,BYTE PTR _scrn[bx][si]
+	cbw	
+	cmp	ax,WORD PTR [bp+8]	;icon
+	je	$JCC460
+	jmp	$I888
+$JCC460:
+; Line 98
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+189],20
+; Line 99
+	sub	ax,ax
+	push	ax
+	mov	cx,9
+	push	cx
+	call	_play_sound
+	add	sp,4
+; Line 100
+	mov	bx,WORD PTR [bp+8]	;icon
+	mov	al,BYTE PTR _scrn[bx+268]
+	cbw	
+	mov	WORD PTR [bp-2],ax	;nt
+; Line 101
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	mov	si,WORD PTR _display_page
+	shl	si,1
+	mov	WORD PTR [bx+178][si],ax
+; Line 102
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	mov	si,WORD PTR _display_page
+	shl	si,1
+	mov	WORD PTR [bx+182][si],ax
+; Line 103
+	mov	ax,WORD PTR [bp-2]	;nt
+	mov	cx,20
+	cwd	
+	idiv	cx
+	mov	cl,4
+	shl	dx,cl
+	mov	bx,WORD PTR _thor
+	mov	WORD PTR [bx+172],dx
+; Line 104
+	mov	ax,WORD PTR [bp-2]	;nt
+	mov	bx,20
+	cwd	
+	idiv	bx
+	shl	ax,cl
+	dec	ax
+	dec	ax
+	mov	bx,WORD PTR _thor
+	mov	WORD PTR [bx+174],ax
+; Line 105
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	mov	si,WORD PTR _draw_page
+	shl	si,1
+	mov	WORD PTR [bx+178][si],ax
+; Line 106
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	mov	si,WORD PTR _draw_page
+	shl	si,1
+	mov	WORD PTR [bx+182][si],ax
+$SC907:
+; Line 88
+	sub	ax,ax
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$SC911:
+; Line 112
+	mov	WORD PTR [bp-4],1	;f
+; Line 113
+$SC912:
+; Line 128
+	mov	ax,WORD PTR _thor_real_y1
+	add	ax,8
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,4
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	WORD PTR [bp-8],ax	;cy
+; Line 129
+	mov	ax,WORD PTR _thor_x1
+	add	ax,7
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	bx,ax
+	mov	ax,20
+	imul	WORD PTR [bp-8]	;cy
+	mov	si,ax
+	mov	al,BYTE PTR _scrn[bx][si]
+	cbw	
+	cmp	ax,WORD PTR [bp+8]	;icon
+	je	$JCC683
+	jmp	$I888
+$JCC683:
+; Line 130
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+189],20
+; Line 131
+	cmp	WORD PTR [bp+8],224	;icon
+	jge	$I914
+	cmp	WORD PTR [bp+8],219	;icon
+	jle	$I914
+	sub	ax,ax
+	push	ax
+	mov	ax,7
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 132
+$I914:
+; Line 133
+	mov	BYTE PTR _warp_scroll,0
+; Line 134
+	mov	si,WORD PTR [bp-4]	;f
+	mov	ax,si
+	shl	si,1
+	add	si,ax
+	shl	si,1
+	mov	bx,WORD PTR [bp+8]	;icon
+	mov	al,BYTE PTR _scrn[bx+252][si]
+	cbw	
+	mov	WORD PTR _new_level,ax
+	cmp	ax,119
+	jle	$I915
+; Line 135
+	mov	BYTE PTR _warp_scroll,1
+; Line 136
+	sub	ax,128
+	mov	WORD PTR _new_level,ax
+; Line 137
+; Line 138
+$I915:
+	mov	si,WORD PTR [bp-4]	;f
+	mov	ax,si
+	shl	si,1
+	add	si,ax
+	shl	si,1
+	mov	al,BYTE PTR _scrn[bx+262][si]
+	cbw	
+	mov	WORD PTR _new_level_tile,ax
+; Line 139
+	mov	WORD PTR _warp_flag,1
+; Line 140
+	cmp	BYTE PTR _warp_scroll,0
+	je	$I916
+; Line 141
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+169],0
+	jne	$I917
+	mov	WORD PTR [bx+174],175
+; Line 142
+	jmp	SHORT $I924
+$I917:
+	cmp	BYTE PTR [bx+169],1
+	jne	$I919
+	mov	WORD PTR [bx+174],0
+; Line 143
+	jmp	SHORT $I924
+	nop	
+$I919:
+	cmp	BYTE PTR [bx+169],2
+	jne	$I921
+	mov	WORD PTR [bx+172],304
+; Line 144
+	jmp	SHORT $I924
+	nop	
+$I921:
+	cmp	BYTE PTR [bx+169],3
+	jne	$I924
+	mov	WORD PTR [bx+172],0
+; Line 145
+; Line 146
+	jmp	SHORT $I924
+	nop	
+$I916:
+; Line 147
+	mov	cx,20
+	cwd	
+	idiv	cx
+	mov	cl,4
+	shl	dx,cl
+	mov	bx,WORD PTR _thor
+	mov	WORD PTR [bx+172],dx
+; Line 148
+	mov	ax,WORD PTR _new_level_tile
+	mov	bx,20
+	cwd	
+	idiv	bx
+	shl	ax,cl
+	dec	ax
+	dec	ax
+	mov	bx,WORD PTR _thor
+	mov	WORD PTR [bx+174],ax
+; Line 149
+$I924:
+; Line 150
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	mov	WORD PTR [bx+178],ax
+; Line 151
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	mov	WORD PTR [bx+180],ax
+; Line 152
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	mov	WORD PTR [bx+182],ax
+; Line 153
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	mov	WORD PTR [bx+184],ax
+	jmp	$SC907
+$S882:
+	sub	ax,201
+	cmp	ax,28
+	jbe	$JCC962
+	jmp	$SC907
+$JCC962:
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20001[bx]
+	nop	
+$L20001:
+		DW	$SC886
+		DW	$SC887
+		DW	$SC889
+		DW	$SC893
+		DW	$SC895
+		DW	$SC897
+		DW	$SC899
+		DW	$SC901
+		DW	$SC903
+		DW	$SC904
+		DW	$SC905
+		DW	$SC907
+		DW	$SC907
+		DW	$SC907
+		DW	$SC907
+		DW	$SC907
+		DW	$SC909
+		DW	$SC911
+		DW	$SC911
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+		DW	$SC912
+; Line 159
+
+_special_tile_thor	ENDP
+; Line 161
+	PUBLIC	_special_tile
+_special_tile	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	icon = 10
+;	y = 8
+;	x = 6
+;	actr = 4
+; Line 163
+	mov	ax,WORD PTR [bp+10]	;icon
+	jmp	SHORT $S930
+	nop	
+$SC935:
+; Line 169
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$SC941:
+; Line 193
+	mov	bx,WORD PTR [bp+4]	;actr
+	cmp	BYTE PTR [bx+20],0
+	jne	$SC935
+$SC937:
+; Line 179
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$S930:
+	sub	ax,201
+	cmp	ax,26
+	ja	$SC935
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20002[bx]
+$L20002:
+		DW	$SC937
+		DW	$SC937
+		DW	$SC937
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC937
+		DW	$SC937
+		DW	$SC935
+		DW	$SC937
+		DW	$SC937
+		DW	$SC937
+		DW	$SC937
+		DW	$SC937
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC935
+		DW	$SC941
+		DW	$SC941
+		DW	$SC941
+		DW	$SC941
+; Line 203
+
+_special_tile	ENDP
+; Line 205
+	PUBLIC	_erase_door
+_erase_door	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	y = 6
+;	x = 4
+; Line 207
+	sub	ax,ax
+	push	ax
+	mov	ax,6
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 208
+	mov	ax,20
+	imul	WORD PTR [bp+6]	;y
+	mov	si,ax
+	mov	bx,WORD PTR [bp+4]	;x
+	mov	al,BYTE PTR _scrn+240
+	mov	BYTE PTR _scrn[bx][si],al
+; Line 211
+	mov	al,BYTE PTR _scrn+240
+	cbw	
+	mov	cx,262
+	imul	cx
+	add	ax,WORD PTR _bg_pics
+	mov	dx,WORD PTR _bg_pics+2
+	push	dx
+	push	ax
+	mov	ax,-30816
+	push	ax
+	mov	cl,4
+	shl	WORD PTR [bp+6],cl	;y
+	push	WORD PTR [bp+6]	;y
+	shl	WORD PTR [bp+4],cl	;x
+	mov	cx,WORD PTR [bp+4]	;x
+	push	cx
+	call	_xfput
+	add	sp,10
+; Line 212
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _draw_page
+	mov	cx,-30816
+	push	cx
+	push	WORD PTR [bp+6]	;y
+	push	WORD PTR [bp+4]	;x
+	mov	dx,WORD PTR [bp+6]	;y
+	add	dx,16
+	push	dx
+	mov	bx,WORD PTR [bp+4]	;x
+	lea	si,WORD PTR [bx+16]
+	push	si
+	push	WORD PTR [bp+6]	;y
+	push	bx
+	mov	di,dx
+	call	_xcopyd2d
+	add	sp,20
+; Line 213
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _display_page
+	mov	ax,-30816
+	push	ax
+	push	WORD PTR [bp+6]	;y
+	push	WORD PTR [bp+4]	;x
+	push	di
+	push	si
+	push	WORD PTR [bp+6]	;y
+	push	WORD PTR [bp+4]	;x
+	call	_xcopyd2d
+	add	sp,20
+; Line 214
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_erase_door	ENDP
+; Line 216
+	PUBLIC	_open_door1
+_open_door1	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	x = 6
+;	y = 4
+; Line 218
+	cmp	BYTE PTR _thor_info+1,0
+	jle	$I950
+; Line 219
+	push	WORD PTR [bp+4]	;y
+	push	WORD PTR [bp+6]	;x
+	call	_erase_door
+	mov	sp,bp
+; Line 220
+	dec	BYTE PTR _thor_info+1
+; Line 221
+	call	_display_keys
+; Line 222
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+$I950:
+; Line 225
+	cmp	WORD PTR _door_inform,0
+	jne	$I952
+; Line 226
+	sub	ax,ax
+	push	ax
+	mov	ax,2003
+	push	ax
+	call	_odin_speaks
+; Line 227
+	mov	WORD PTR _door_inform,1
+; Line 228
+; Line 229
+$I952:
+; Line 230
+	sub	ax,ax
+; Line 231
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_open_door1	ENDP
+; Line 233
+	PUBLIC	_cash_door1
+_cash_door1	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	amount = 8
+;	x = 6
+;	y = 4
+; Line 235
+	mov	ax,WORD PTR _thor_info+2
+	cmp	WORD PTR [bp+8],ax	;amount
+	jg	$I957
+; Line 236
+	push	WORD PTR [bp+4]	;y
+	push	WORD PTR [bp+6]	;x
+	call	_erase_door
+	mov	sp,bp
+; Line 237
+	mov	ax,WORD PTR [bp+8]	;amount
+	sub	WORD PTR _thor_info+2,ax
+; Line 238
+	call	_display_jewels
+; Line 239
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+$I957:
+; Line 242
+	cmp	WORD PTR [bp+8],10	;amount
+	jne	$I959
+	cmp	WORD PTR _cash1_inform,0
+	jne	$I959
+; Line 243
+	sub	ax,ax
+	push	ax
+	mov	ax,2005
+	push	ax
+	call	_odin_speaks
+	mov	sp,bp
+; Line 244
+	mov	WORD PTR _cash1_inform,1
+; Line 245
+; Line 246
+$I959:
+	cmp	WORD PTR [bp+8],100	;amount
+	jne	$I960
+	cmp	WORD PTR _cash2_inform,0
+	jne	$I960
+; Line 247
+	sub	ax,ax
+	push	ax
+	mov	ax,2004
+	push	ax
+	call	_odin_speaks
+; Line 248
+	mov	WORD PTR _cash2_inform,1
+; Line 249
+; Line 250
+$I960:
+; Line 251
+	sub	ax,ax
+; Line 252
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_cash_door1	ENDP
+_TEXT	ENDS
+END

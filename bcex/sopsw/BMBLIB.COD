@@ -1,0 +1,944 @@
+;	Static Name Aliases
+;
+	TITLE   C:\BMBLIB.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  __systype
+EXTRN	_inp:NEAR
+EXTRN	_memmove:NEAR
+EXTRN	_memset:NEAR
+EXTRN	_movedata:NEAR
+EXTRN	_strchr:NEAR
+EXTRN	_intdosx:NEAR
+EXTRN	_outp:NEAR
+EXTRN	_int86x:NEAR
+EXTRN	_strncmp:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_isalnum:NEAR
+EXTRN	_isalpha:NEAR
+EXTRN	_exit:NEAR
+EXTRN	_strtol:NEAR
+_DATA      SEGMENT
+__systype	DW	00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         bmblib  -       SW Old BMB STDLIB routines
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***         Modification History:
+;|***                         94-12-19        Original development
+;|*** */
+;|*** 
+;|*** 
+;|*** #include "dos.h"
+; Line 16
+;|*** #include "sw.h"
+; Line 17
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** #include "string.h"
+; Line 18
+;|*** 
+;|*** 
+;|*** int _systype = PCDOS;
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** /*----------------------------------------------------------------------------
+;|***                 GETFLAGS flags processing ( Jack Cole )
+;|*** ----------------------------------------------------------------------------*/
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** getflags(ac, av, fmt, flds)
+;|*** int  *ac;
+; Line 35
+	PUBLIC	_getflags
+_getflags	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	b8 18 00 		mov	ax,24
+	*** 000006	e8 00 00 		call	__aNchkstk
+	*** 000009	57 			push	di
+	*** 00000a	56 			push	si
+;	arg = -20
+;	apend = -6
+;	i = -10
+;	j = -18
+;	k = -22
+;	register si = aptr
+;	flag = -16
+;	register di = fptr
+;	var = -8
+;	adrvar = -2
+;	cfmt = -14
+;	sts = -12
+;	got_next = -4
+;	flds = 10
+;	fmt = 8
+;	av = 6
+;	ac = 4
+;|*** char **av;
+;|*** char *fmt;
+;|*** int  *flds[];
+;|***   {
+;|***     char **arg,*apend;
+;|***     int i,j,k;
+;|***     register char *aptr;
+;|***     char *flag;
+;|***     register char *fptr;
+;|***     int  **var;
+;|***     int  *adrvar;
+;|***     char *cfmt;
+;|***     int  sts = 0;
+; Line 48
+	*** 00000b	c7 46 f4 00 00 		mov	WORD PTR [bp-12],0	;sts
+;|***     int  got_next;
+;|*** 
+;|***     arg = (char **) *av;
+;|***     i = *ac;
+; Line 52
+	*** 000010	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ac
+	*** 000013	8b 07 			mov	ax,WORD PTR [bx]
+	*** 000015	89 46 f6 		mov	WORD PTR [bp-10],ax	;i
+;|***     ++arg;                              /* point past program name */
+; Line 53
+	*** 000018	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;av
+	*** 00001b	8b 07 			mov	ax,WORD PTR [bx]
+	*** 00001d	40 			inc	ax
+	*** 00001e	40 			inc	ax
+	*** 00001f	89 46 ec 		mov	WORD PTR [bp-20],ax	;arg
+;|*** 
+;|***     while ( --i )  {                    /* for all args */
+; Line 55
+	*** 000022	e9 99 01 		jmp	$L20004
+	*** 000025	90 			nop	
+					$FC281:
+;|***         aptr = *arg;                    /* point at string */
+;|***         if ( *aptr++ != '-' ) break;    /* past the switches */
+; Line 57
+	*** 000026	8b 5e ec 		mov	bx,WORD PTR [bp-20]	;arg
+	*** 000029	8b 07 			mov	ax,WORD PTR [bx]
+	*** 00002b	89 46 e8 		mov	WORD PTR [bp-24],ax
+	*** 00002e	be 01 00 		mov	si,1
+	*** 000031	03 f0 			add	si,ax
+	*** 000033	8b d8 			mov	bx,ax
+	*** 000035	80 3f 2d 		cmp	BYTE PTR [bx],45
+	*** 000038	74 03 			je	$JCC56
+	*** 00003a	e9 89 01 		jmp	$FB282
+					$JCC56:
+;|***         if ( *aptr == '-' ) {           /* or -- at eol */
+; Line 58
+	*** 00003d	80 3c 2d 		cmp	BYTE PTR [si],45
+	*** 000040	74 03 			je	$JCC64
+	*** 000042	e9 53 01 		jmp	$I284
+					$JCC64:
+;|***                 ++arg;                  /* flush it */
+; Line 59
+	*** 000045	83 46 ec 02 		add	WORD PTR [bp-20],2	;arg
+;|***                 --i;
+; Line 60
+	*** 000049	ff 4e f6 		dec	WORD PTR [bp-10]	;i
+;|***                 break;
+; Line 61
+	*** 00004c	e9 77 01 		jmp	$FB282
+;|***         }
+; Line 62
+;|*** 
+;|*** nextbool:
+; Line 64
+	*** 00004f	90 			nop	
+					$FC291:
+	*** 000050	ff 46 ee 		inc	WORD PTR [bp-18]	;j
+					$L20003:
+	*** 000053	8b 5e ee 		mov	bx,WORD PTR [bp-18]	;j
+	*** 000056	8a 01 			mov	al,BYTE PTR [bx][di]
+	*** 000058	98 			cbw	
+	*** 000059	50 			push	ax
+	*** 00005a	e8 00 00 		call	_isalnum
+	*** 00005d	83 c4 02 		add	sp,2
+	*** 000060	0b c0 			or	ax,ax
+	*** 000062	75 ec 			jne	$FC291
+;|***         flag = aptr;                            /* get the switch */
+;|***         var = (int **) &flds;                   /* find in format */
+;|*** 
+;|***         for (fptr = fmt; *fptr && *fptr != ':' ; ++var) {
+;|***             j = 0;
+;|***             while ( isalnum(*(fptr+j)) ) ++j;           /* get switch length */
+;|*** 
+;|***             /* match and number or space following? */
+;|*** 
+;|***             if ( !strncmp( flag, fptr, j ) && (!isalpha(*(flag+j)) ||
+;|***                                                 *(fptr+j)!='#') ) break;
+; Line 75
+	*** 000064	ff 76 ee 		push	WORD PTR [bp-18]	;j
+	*** 000067	57 			push	di
+	*** 000068	ff 76 f0 		push	WORD PTR [bp-16]	;flag
+	*** 00006b	e8 00 00 		call	_strncmp
+	*** 00006e	83 c4 06 		add	sp,6
+	*** 000071	0b c0 			or	ax,ax
+	*** 000073	75 57 			jne	$I294
+	*** 000075	8b 5e ee 		mov	bx,WORD PTR [bp-18]	;j
+	*** 000078	03 5e f0 		add	bx,WORD PTR [bp-16]	;flag
+	*** 00007b	8a 07 			mov	al,BYTE PTR [bx]
+	*** 00007d	98 			cbw	
+	*** 00007e	50 			push	ax
+	*** 00007f	e8 00 00 		call	_isalpha
+	*** 000082	83 c4 02 		add	sp,2
+	*** 000085	0b c0 			or	ax,ax
+	*** 000087	74 08 			je	$FB288
+	*** 000089	8b 5e ee 		mov	bx,WORD PTR [bp-18]	;j
+	*** 00008c	80 39 23 		cmp	BYTE PTR [bx][di],35
+	*** 00008f	74 3b 			je	$I294
+					$FB288:
+;|*** 
+;|***             fptr += j;                                  /* skip to next */
+;|***             if (*fptr) ++fptr;                          /* past format */
+;|***         }
+;|*** 
+;|***         if ( !(*fptr) || *fptr == ':' )  {              /* no match? */
+; Line 81
+	*** 000091	80 3d 00 		cmp	BYTE PTR [di],0
+	*** 000094	74 05 			je	$I298
+	*** 000096	80 3d 3a 		cmp	BYTE PTR [di],58
+	*** 000099	75 5a 			jne	$I297
+					$I298:
+;|***             if ( (k = index( fmt, ':')) ) {          /* find usage info */
+; Line 82
+	*** 00009b	b8 3a 00 		mov	ax,58
+	*** 00009e	50 			push	ax
+	*** 00009f	ff 76 08 		push	WORD PTR [bp+8]	;fmt
+	*** 0000a2	e8 00 00 		call	_index
+	*** 0000a5	83 c4 04 		add	sp,4
+	*** 0000a8	89 46 ea 		mov	WORD PTR [bp-22],ax	;k
+	*** 0000ab	0b c0 			or	ax,ax
+	*** 0000ad	74 3d 			je	$I300
+;|***                 cfmt = fmt + k - 1;
+;|***                 *cfmt++ = '\0';
+; Line 84
+	*** 0000af	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;fmt
+	*** 0000b2	03 d8 			add	bx,ax
+	*** 0000b4	c6 47 ff 00 		mov	BYTE PTR [bx-1],0
+;|***                 if ( !(*cfmt) ) {                       /* return on error? */
+; Line 85
+	*** 0000b8	8d 5f ff 		lea	bx,WORD PTR [bx-1]
+	*** 0000bb	43 			inc	bx
+	*** 0000bc	89 5e f2 		mov	WORD PTR [bp-14],bx	;cfmt
+	*** 0000bf	80 3f 00 		cmp	BYTE PTR [bx],0
+	*** 0000c2	75 28 			jne	$I300
+;|***                         sts = 1;
+; Line 86
+	*** 0000c4	c7 46 f4 01 00 		mov	WORD PTR [bp-12],1	;sts
+;|***                         goto ret;
+; Line 87
+	*** 0000c9	e9 fa 00 		jmp	$FB282
+;|***             fptr += j;                                  /* skip to next */
+; Line 77
+					$I294:
+;|***             if (*fptr) ++fptr;                          /* past format */
+; Line 78
+	*** 0000cc	03 7e ee 		add	di,WORD PTR [bp-18]	;j
+	*** 0000cf	80 3d 00 		cmp	BYTE PTR [di],0
+	*** 0000d2	74 01 			je	$FC287
+	*** 0000d4	47 			inc	di
+;|***         }
+; Line 79
+					$FC287:
+	*** 0000d5	83 46 f8 02 		add	WORD PTR [bp-8],2	;var
+					$F286:
+	*** 0000d9	80 3d 00 		cmp	BYTE PTR [di],0
+	*** 0000dc	74 b3 			je	$FB288
+	*** 0000de	80 3d 3a 		cmp	BYTE PTR [di],58
+	*** 0000e1	74 ae 			je	$FB288
+;|***             j = 0;
+; Line 69
+	*** 0000e3	c7 46 ee 00 00 		mov	WORD PTR [bp-18],0	;j
+;|***             while ( isalnum(*(fptr+j)) ) ++j;           /* get switch length */
+; Line 70
+	*** 0000e8	e9 68 ff 		jmp	$L20003
+;|*** 
+;|***             /* match and number or space following? */
+;|*** 
+;|***             if ( !strncmp( flag, fptr, j ) && (!isalpha(*(flag+j)) ||
+;|***                                                 *(fptr+j)!='#') ) break;
+;|*** 
+;|***             fptr += j;                                  /* skip to next */
+;|***             if (*fptr) ++fptr;                          /* past format */
+;|***         }
+;|*** 
+;|***         if ( !(*fptr) || *fptr == ':' )  {              /* no match? */
+;|***             if ( (k = index( fmt, ':')) ) {          /* find usage info */
+;|***                 cfmt = fmt + k - 1;
+;|***                 *cfmt++ = '\0';
+;|***                 if ( !(*cfmt) ) {                       /* return on error? */
+;|***                         sts = 1;
+;|***                         goto ret;
+;|***                 }
+; Line 88
+;|***             }
+; Line 89
+	*** 0000eb	90 			nop	
+					$I300:
+;|***             exit(0);
+; Line 90
+	*** 0000ec	2b c0 			sub	ax,ax
+	*** 0000ee	50 			push	ax
+	*** 0000ef	e8 00 00 		call	_exit
+	*** 0000f2	83 c4 02 		add	sp,2
+;|***         }
+; Line 91
+;|*** 
+;|***         flag = fptr+j;                          /* the type */
+; Line 93
+					$I297:
+	*** 0000f5	8b 46 ee 		mov	ax,WORD PTR [bp-18]	;j
+	*** 0000f8	03 c7 			add	ax,di
+	*** 0000fa	89 46 f0 		mov	WORD PTR [bp-16],ax	;flag
+;|***         aptr += j;
+;|***         adrvar = *var;                          /* this is addr of real var */
+; Line 95
+	*** 0000fd	8b 5e f8 		mov	bx,WORD PTR [bp-8]	;var
+	*** 000100	8b 0f 			mov	cx,WORD PTR [bx]
+	*** 000102	89 4e fe 		mov	WORD PTR [bp-2],cx	;adrvar
+;|***         got_next = NO;
+; Line 96
+	*** 000105	c7 46 fc 00 00 		mov	WORD PTR [bp-4],0	;got_next
+;|***         if (*aptr == 0 && *flag != '&')  {      /* more expected */
+; Line 97
+	*** 00010a	03 76 ee 		add	si,WORD PTR [bp-18]	;j
+	*** 00010d	80 3c 00 		cmp	BYTE PTR [si],0
+	*** 000110	75 1e 			jne	$I304
+	*** 000112	8b d8 			mov	bx,ax
+	*** 000114	80 3f 26 		cmp	BYTE PTR [bx],38
+	*** 000117	74 17 			je	$I304
+;|***             if ( i > 1 ) {                      /* any more args? */
+; Line 98
+	*** 000119	83 7e f6 01 		cmp	WORD PTR [bp-10],1	;i
+	*** 00011d	7e 11 			jle	$I304
+;|***                 aptr = *(++arg);                /* step to next arg */
+; Line 99
+	*** 00011f	83 46 ec 02 		add	WORD PTR [bp-20],2	;arg
+	*** 000123	8b 5e ec 		mov	bx,WORD PTR [bp-20]	;arg
+	*** 000126	8b 37 			mov	si,WORD PTR [bx]
+;|***                 --i;
+; Line 100
+	*** 000128	ff 4e f6 		dec	WORD PTR [bp-10]	;i
+;|***                 got_next = YES;
+; Line 101
+	*** 00012b	c7 46 fc 01 00 		mov	WORD PTR [bp-4],1	;got_next
+;|***             }
+; Line 102
+;|***         }
+; Line 103
+					$I304:
+;|*** 
+;|***         switch  (*flag)  {                       /* what kind expected */
+; Line 105
+	*** 000130	8b d8 			mov	bx,ax
+	*** 000132	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000134	98 			cbw	
+	*** 000135	3d 2a 00 		cmp	ax,42
+	*** 000138	74 6e 			je	$SC314
+	*** 00013a	77 4f 			ja	$SB306
+	*** 00013c	2c 23 			sub	al,35
+	*** 00013e	74 08 			je	$SC309
+	*** 000140	2c 03 			sub	al,3
+	*** 000142	74 6c 			je	$SC315
+	*** 000144	eb 45 			jmp	SHORT $SB306
+;|***             case '#' :
+; Line 106
+	*** 000146	90 			nop	
+	*** 000147	90 			nop	
+					$SC309:
+;|***                 j = 0;
+; Line 107
+	*** 000148	c7 46 ee 00 00 		mov	WORD PTR [bp-18],0	;j
+;|***                 if ( *aptr ) {                  /* any more chars? */
+; Line 108
+	*** 00014d	80 3c 00 		cmp	BYTE PTR [si],0
+	*** 000150	74 1f 			je	$I310
+;|***                     *adrvar=strtol(aptr,&apend,10);
+; Line 109
+	*** 000152	b8 0a 00 		mov	ax,10
+	*** 000155	50 			push	ax
+	*** 000156	8d 46 fa 		lea	ax,WORD PTR [bp-6]	;apend
+	*** 000159	50 			push	ax
+	*** 00015a	56 			push	si
+	*** 00015b	e8 00 00 		call	_strtol
+	*** 00015e	83 c4 06 		add	sp,6
+	*** 000161	8b 5e fe 		mov	bx,WORD PTR [bp-2]	;adrvar
+	*** 000164	89 07 			mov	WORD PTR [bx],ax
+;|***                     j = apend - aptr;
+; Line 110
+	*** 000166	8b 46 fa 		mov	ax,WORD PTR [bp-6]	;apend
+	*** 000169	2b c6 			sub	ax,si
+	*** 00016b	89 46 ee 		mov	WORD PTR [bp-18],ax	;j
+;|***                     aptr = apend;
+; Line 111
+	*** 00016e	8b 76 fa 		mov	si,WORD PTR [bp-6]	;apend
+;|***                 }
+; Line 112
+;|***                 if ( !j ) {                     /* how many digits? */
+; Line 113
+					$I310:
+	*** 000171	83 7e ee 00 		cmp	WORD PTR [bp-18],0	;j
+	*** 000175	75 14 			jne	$SB306
+;|***                         if (got_next) {         /* none - push back? */
+; Line 114
+	*** 000177	83 7e fc 00 		cmp	WORD PTR [bp-4],0	;got_next
+	*** 00017b	74 07 			je	$I313
+;|***                                 --arg;          /* yes, push back */
+; Line 115
+	*** 00017d	83 6e ec 02 		sub	WORD PTR [bp-20],2	;arg
+;|***                                 ++i;
+; Line 116
+	*** 000181	ff 46 f6 		inc	WORD PTR [bp-10]	;i
+;|***                         }
+; Line 117
+;|***                         *(int *)adrvar = -1;    /* flag present, but no arg */
+; Line 118
+					$I313:
+	*** 000184	8b 5e fe 		mov	bx,WORD PTR [bp-2]	;adrvar
+	*** 000187	c7 07 ff ff 		mov	WORD PTR [bx],-1
+;|***                 }
+; Line 119
+;|***                 break;
+; Line 120
+					$SB306:
+;|*** 
+;|***             case '*' : *(char **)adrvar = aptr;
+;|***                         break;
+;|*** 
+;|***             case '&' : *(int *)adrvar = YES;              /* boolean */
+;|***                         break;
+;|***           }
+;|*** 
+;|***         if (*flag == '&' && *aptr) goto nextbool;
+; Line 129
+	*** 00018b	8b 5e f0 		mov	bx,WORD PTR [bp-16]	;flag
+	*** 00018e	80 3f 26 		cmp	BYTE PTR [bx],38
+	*** 000191	75 27 			jne	$I316
+	*** 000193	80 3c 00 		cmp	BYTE PTR [si],0
+	*** 000196	74 22 			je	$I316
+					$I284:
+;|***         flag = aptr;                            /* get the switch */
+; Line 65
+	*** 000198	89 76 f0 		mov	WORD PTR [bp-16],si	;flag
+;|***         var = (int **) &flds;                   /* find in format */
+; Line 66
+	*** 00019b	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;flds
+	*** 00019e	89 46 f8 		mov	WORD PTR [bp-8],ax	;var
+;|*** 
+;|***         for (fptr = fmt; *fptr && *fptr != ':' ; ++var) {
+; Line 68
+	*** 0001a1	8b 7e 08 		mov	di,WORD PTR [bp+8]	;fmt
+	*** 0001a4	e9 32 ff 		jmp	$F286
+;|***             j = 0;
+;|***             while ( isalnum(*(fptr+j)) ) ++j;           /* get switch length */
+;|*** 
+;|***             /* match and number or space following? */
+;|*** 
+;|***             if ( !strncmp( flag, fptr, j ) && (!isalpha(*(flag+j)) ||
+;|***                                                 *(fptr+j)!='#') ) break;
+;|*** 
+;|***             fptr += j;                                  /* skip to next */
+;|***             if (*fptr) ++fptr;                          /* past format */
+;|***         }
+;|*** 
+;|***         if ( !(*fptr) || *fptr == ':' )  {              /* no match? */
+;|***             if ( (k = index( fmt, ':')) ) {          /* find usage info */
+;|***                 cfmt = fmt + k - 1;
+;|***                 *cfmt++ = '\0';
+;|***                 if ( !(*cfmt) ) {                       /* return on error? */
+;|***                         sts = 1;
+;|***                         goto ret;
+;|***                 }
+;|***             }
+;|***             exit(0);
+;|***         }
+;|*** 
+;|***         flag = fptr+j;                          /* the type */
+;|***         aptr += j;
+;|***         adrvar = *var;                          /* this is addr of real var */
+;|***         got_next = NO;
+;|***         if (*aptr == 0 && *flag != '&')  {      /* more expected */
+;|***             if ( i > 1 ) {                      /* any more args? */
+;|***                 aptr = *(++arg);                /* step to next arg */
+;|***                 --i;
+;|***                 got_next = YES;
+;|***             }
+;|***         }
+;|*** 
+;|***         switch  (*flag)  {                       /* what kind expected */
+;|***             case '#' :
+;|***                 j = 0;
+;|***                 if ( *aptr ) {                  /* any more chars? */
+;|***                     *adrvar=strtol(aptr,&apend,10);
+;|***                     j = apend - aptr;
+;|***                     aptr = apend;
+;|***                 }
+;|***                 if ( !j ) {                     /* how many digits? */
+;|***                         if (got_next) {         /* none - push back? */
+;|***                                 --arg;          /* yes, push back */
+;|***                                 ++i;
+;|***                         }
+;|***                         *(int *)adrvar = -1;    /* flag present, but no arg */
+;|***                 }
+;|***                 break;
+;|*** 
+;|***             case '*' : *(char **)adrvar = aptr;
+; Line 122
+	*** 0001a7	90 			nop	
+					$SC314:
+	*** 0001a8	8b 5e fe 		mov	bx,WORD PTR [bp-2]	;adrvar
+	*** 0001ab	89 37 			mov	WORD PTR [bx],si
+;|***                         break;
+; Line 123
+	*** 0001ad	eb dc 			jmp	SHORT $SB306
+;|*** 
+;|***             case '&' : *(int *)adrvar = YES;              /* boolean */
+; Line 125
+	*** 0001af	90 			nop	
+					$SC315:
+	*** 0001b0	8b 5e fe 		mov	bx,WORD PTR [bp-2]	;adrvar
+	*** 0001b3	c7 07 01 00 		mov	WORD PTR [bx],1
+;|***                         break;
+; Line 126
+	*** 0001b7	eb d2 			jmp	SHORT $SB306
+;|***           }
+;|*** 
+;|***         if (*flag == '&' && *aptr) goto nextbool;
+;|***         ++arg;
+; Line 130
+	*** 0001b9	90 			nop	
+					$I316:
+	*** 0001ba	83 46 ec 02 		add	WORD PTR [bp-20],2	;arg
+;|***     }
+; Line 131
+					$L20004:
+	*** 0001be	ff 4e f6 		dec	WORD PTR [bp-10]	;i
+	*** 0001c1	74 03 			je	$JCC449
+	*** 0001c3	e9 60 fe 		jmp	$FC281
+					$JCC449:
+					$FB282:
+;|*** 
+;|*** ret:
+;|***     *av = (char *)arg;                          /* point past those processed */
+; Line 134
+	*** 0001c6	8b 46 ec 		mov	ax,WORD PTR [bp-20]	;arg
+	*** 0001c9	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;av
+	*** 0001cc	89 07 			mov	WORD PTR [bx],ax
+;|***     *ac = i;
+; Line 135
+	*** 0001ce	8b 46 f6 		mov	ax,WORD PTR [bp-10]	;i
+	*** 0001d1	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ac
+	*** 0001d4	89 07 			mov	WORD PTR [bx],ax
+;|***     return(sts);                                /* successful */
+; Line 136
+	*** 0001d6	8b 46 f4 		mov	ax,WORD PTR [bp-12]	;sts
+;|***   }
+; Line 137
+	*** 0001d9	5e 			pop	si
+	*** 0001da	5f 			pop	di
+	*** 0001db	8b e5 			mov	sp,bp
+	*** 0001dd	5d 			pop	bp
+	*** 0001de	c3 			ret	
+	*** 0001df	90 			nop	
+
+_getflags	ENDP
+;|*** 
+;|*** 
+;|*** int index(char *str,int c)
+;|*** {
+; Line 141
+	PUBLIC	_index
+_index	PROC NEAR
+	*** 0001e0	55 			push	bp
+	*** 0001e1	8b ec 			mov	bp,sp
+	*** 0001e3	b8 02 00 		mov	ax,2
+	*** 0001e6	e8 00 00 		call	__aNchkstk
+;	s = -2
+;	c = 6
+;	str = 4
+;|*** char *s;
+;|*** 
+;|***     return((s=strchr(str,c))==NULL?0:s-str+1);
+; Line 144
+	*** 0001e9	ff 76 06 		push	WORD PTR [bp+6]	;c
+	*** 0001ec	ff 76 04 		push	WORD PTR [bp+4]	;str
+	*** 0001ef	e8 00 00 		call	_strchr
+	*** 0001f2	83 c4 04 		add	sp,4
+	*** 0001f5	0b c0 			or	ax,ax
+	*** 0001f7	74 04 			je	$EX319
+	*** 0001f9	2b 46 04 		sub	ax,WORD PTR [bp+4]	;str
+	*** 0001fc	40 			inc	ax
+;|*** }
+; Line 145
+					$EX319:
+	*** 0001fd	8b e5 			mov	sp,bp
+	*** 0001ff	5d 			pop	bp
+	*** 000200	c3 			ret	
+	*** 000201	90 			nop	
+
+_index	ENDP
+;|*** 
+;|*** 
+;|*** int inportb(unsigned port)
+;|*** {
+; Line 149
+	PUBLIC	_inportb
+_inportb	PROC NEAR
+	*** 000202	55 			push	bp
+	*** 000203	8b ec 			mov	bp,sp
+	*** 000205	33 c0 			xor	ax,ax
+	*** 000207	e8 00 00 		call	__aNchkstk
+;	port = 4
+;|***     return(inp(port));
+; Line 150
+	*** 00020a	ff 76 04 		push	WORD PTR [bp+4]	;port
+	*** 00020d	e8 00 00 		call	_inp
+;|*** }
+; Line 151
+	*** 000210	8b e5 			mov	sp,bp
+	*** 000212	5d 			pop	bp
+	*** 000213	c3 			ret	
+
+_inportb	ENDP
+;|*** 
+;|*** 
+;|*** void movblock(unsigned int srcoff,unsigned int srcseg,
+;|***               unsigned int destoff,unsigned int destseg,
+;|***               unsigned int count)
+;|*** {
+; Line 157
+	PUBLIC	_movblock
+_movblock	PROC NEAR
+	*** 000214	55 			push	bp
+	*** 000215	8b ec 			mov	bp,sp
+	*** 000217	33 c0 			xor	ax,ax
+	*** 000219	e8 00 00 		call	__aNchkstk
+;	count = 12
+;	destseg = 10
+;	destoff = 8
+;	srcseg = 6
+;	srcoff = 4
+;|***     movedata(srcseg,srcoff,destseg,destoff,count);
+; Line 158
+	*** 00021c	ff 76 0c 		push	WORD PTR [bp+12]	;count
+	*** 00021f	ff 76 08 		push	WORD PTR [bp+8]	;destoff
+	*** 000222	ff 76 0a 		push	WORD PTR [bp+10]	;destseg
+	*** 000225	ff 76 04 		push	WORD PTR [bp+4]	;srcoff
+	*** 000228	ff 76 06 		push	WORD PTR [bp+6]	;srcseg
+	*** 00022b	e8 00 00 		call	_movedata
+;|*** }
+; Line 159
+	*** 00022e	8b e5 			mov	sp,bp
+	*** 000230	5d 			pop	bp
+	*** 000231	c3 			ret	
+
+_movblock	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** void movmem(void *src,void *dest,unsigned count)
+;|*** {
+; Line 164
+	PUBLIC	_movmem
+_movmem	PROC NEAR
+	*** 000232	55 			push	bp
+	*** 000233	8b ec 			mov	bp,sp
+	*** 000235	33 c0 			xor	ax,ax
+	*** 000237	e8 00 00 		call	__aNchkstk
+;	count = 8
+;	dest = 6
+;	src = 4
+;|***     memmove(dest,src,count);
+; Line 165
+	*** 00023a	ff 76 08 		push	WORD PTR [bp+8]	;count
+	*** 00023d	ff 76 04 		push	WORD PTR [bp+4]	;src
+	*** 000240	ff 76 06 		push	WORD PTR [bp+6]	;dest
+	*** 000243	e8 00 00 		call	_memmove
+;|*** }
+; Line 166
+	*** 000246	8b e5 			mov	sp,bp
+	*** 000248	5d 			pop	bp
+	*** 000249	c3 			ret	
+
+_movmem	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** int outportb(unsigned port,int data)
+;|*** {
+; Line 171
+	PUBLIC	_outportb
+_outportb	PROC NEAR
+	*** 00024a	55 			push	bp
+	*** 00024b	8b ec 			mov	bp,sp
+	*** 00024d	33 c0 			xor	ax,ax
+	*** 00024f	e8 00 00 		call	__aNchkstk
+;	data = 6
+;	port = 4
+;|***     return(outp(port,data));
+; Line 172
+	*** 000252	ff 76 06 		push	WORD PTR [bp+6]	;data
+	*** 000255	ff 76 04 		push	WORD PTR [bp+4]	;port
+	*** 000258	e8 00 00 		call	_outp
+;|*** }
+; Line 173
+	*** 00025b	8b e5 			mov	sp,bp
+	*** 00025d	5d 			pop	bp
+	*** 00025e	c3 			ret	
+	*** 00025f	90 			nop	
+
+_outportb	ENDP
+;|*** 
+;|*** 
+;|*** void setmem(void *dest,unsigned count,int c)
+;|*** {
+; Line 177
+	PUBLIC	_setmem
+_setmem	PROC NEAR
+	*** 000260	55 			push	bp
+	*** 000261	8b ec 			mov	bp,sp
+	*** 000263	33 c0 			xor	ax,ax
+	*** 000265	e8 00 00 		call	__aNchkstk
+;	c = 8
+;	count = 6
+;	dest = 4
+;|***     memset(dest,c,count);
+; Line 178
+	*** 000268	ff 76 06 		push	WORD PTR [bp+6]	;count
+	*** 00026b	ff 76 08 		push	WORD PTR [bp+8]	;c
+	*** 00026e	ff 76 04 		push	WORD PTR [bp+4]	;dest
+	*** 000271	e8 00 00 		call	_memset
+;|*** }
+; Line 179
+	*** 000274	8b e5 			mov	sp,bp
+	*** 000276	5d 			pop	bp
+	*** 000277	c3 			ret	
+
+_setmem	ENDP
+;|*** 
+;|*** 
+;|*** int sysint(int intnum,struct regval *inrv,struct regval *outrv)
+;|*** {
+; Line 183
+	PUBLIC	_sysint
+_sysint	PROC NEAR
+	*** 000278	55 			push	bp
+	*** 000279	8b ec 			mov	bp,sp
+	*** 00027b	b8 18 00 		mov	ax,24
+	*** 00027e	e8 00 00 		call	__aNchkstk
+;	regs = -22
+;	segregs = -8
+;	rc = -24
+;	outrv = 8
+;	inrv = 6
+;	intnum = 4
+;|*** union REGS regs;
+;|*** struct SREGS segregs;
+;|*** int rc;
+;|*** 
+;|***     regs.x.ax=inrv->axr;
+; Line 188
+	*** 000281	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;inrv
+	*** 000284	8b 07 			mov	ax,WORD PTR [bx]
+	*** 000286	89 46 ea 		mov	WORD PTR [bp-22],ax	;regs
+;|***     regs.x.bx=inrv->bxr;
+; Line 189
+	*** 000289	8b 47 02 		mov	ax,WORD PTR [bx+2]
+	*** 00028c	89 46 ec 		mov	WORD PTR [bp-20],ax
+;|***     regs.x.cx=inrv->cxr;
+; Line 190
+	*** 00028f	8b 47 04 		mov	ax,WORD PTR [bx+4]
+	*** 000292	89 46 ee 		mov	WORD PTR [bp-18],ax
+;|***     regs.x.dx=inrv->dxr;
+; Line 191
+	*** 000295	8b 47 06 		mov	ax,WORD PTR [bx+6]
+	*** 000298	89 46 f0 		mov	WORD PTR [bp-16],ax
+;|***     segregs.ds=inrv->dsr;
+; Line 192
+	*** 00029b	8b 47 0c 		mov	ax,WORD PTR [bx+12]
+	*** 00029e	89 46 fe 		mov	WORD PTR [bp-2],ax
+;|***     rc=int86x(intnum,&regs,&regs,&segregs);
+; Line 193
+	*** 0002a1	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;segregs
+	*** 0002a4	50 			push	ax
+	*** 0002a5	8d 46 ea 		lea	ax,WORD PTR [bp-22]	;regs
+	*** 0002a8	50 			push	ax
+	*** 0002a9	50 			push	ax
+	*** 0002aa	ff 76 04 		push	WORD PTR [bp+4]	;intnum
+	*** 0002ad	e8 00 00 		call	_int86x
+	*** 0002b0	89 46 e8 		mov	WORD PTR [bp-24],ax	;rc
+;|***     outrv->axr=regs.x.ax;
+; Line 194
+	*** 0002b3	8b 46 ea 		mov	ax,WORD PTR [bp-22]	;regs
+	*** 0002b6	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;outrv
+	*** 0002b9	89 07 			mov	WORD PTR [bx],ax
+;|***     outrv->bxr=regs.x.bx;
+; Line 195
+	*** 0002bb	8b 46 ec 		mov	ax,WORD PTR [bp-20]
+	*** 0002be	89 47 02 		mov	WORD PTR [bx+2],ax
+;|***     outrv->cxr=regs.x.cx;
+; Line 196
+	*** 0002c1	8b 46 ee 		mov	ax,WORD PTR [bp-18]
+	*** 0002c4	89 47 04 		mov	WORD PTR [bx+4],ax
+;|***     outrv->dxr=regs.x.dx;
+; Line 197
+	*** 0002c7	8b 46 f0 		mov	ax,WORD PTR [bp-16]
+	*** 0002ca	89 47 06 		mov	WORD PTR [bx+6],ax
+;|***     outrv->dsr=segregs.ds;
+; Line 198
+	*** 0002cd	8b 46 fe 		mov	ax,WORD PTR [bp-2]
+	*** 0002d0	89 47 0c 		mov	WORD PTR [bx+12],ax
+;|***     return(rc);
+; Line 199
+	*** 0002d3	8b 46 e8 		mov	ax,WORD PTR [bp-24]	;rc
+;|*** }
+; Line 200
+	*** 0002d6	8b e5 			mov	sp,bp
+	*** 0002d8	5d 			pop	bp
+	*** 0002d9	c3 			ret	
+
+_sysint	ENDP
+;|*** 
+;|*** 
+;|*** int sysint21(struct regval *inrv,struct regval *outrv)
+;|*** {
+; Line 204
+	PUBLIC	_sysint21
+_sysint21	PROC NEAR
+	*** 0002da	55 			push	bp
+	*** 0002db	8b ec 			mov	bp,sp
+	*** 0002dd	b8 18 00 		mov	ax,24
+	*** 0002e0	e8 00 00 		call	__aNchkstk
+;	regs = -22
+;	segregs = -8
+;	rc = -24
+;	outrv = 6
+;	inrv = 4
+;|*** union REGS regs;
+;|*** struct SREGS segregs;
+;|*** int rc;
+;|*** 
+;|***     regs.x.ax=inrv->axr;
+; Line 209
+	*** 0002e3	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;inrv
+	*** 0002e6	8b 07 			mov	ax,WORD PTR [bx]
+	*** 0002e8	89 46 ea 		mov	WORD PTR [bp-22],ax	;regs
+;|***     regs.x.bx=inrv->bxr;
+; Line 210
+	*** 0002eb	8b 47 02 		mov	ax,WORD PTR [bx+2]
+	*** 0002ee	89 46 ec 		mov	WORD PTR [bp-20],ax
+;|***     regs.x.cx=inrv->cxr;
+; Line 211
+	*** 0002f1	8b 47 04 		mov	ax,WORD PTR [bx+4]
+	*** 0002f4	89 46 ee 		mov	WORD PTR [bp-18],ax
+;|***     regs.x.dx=inrv->dxr;
+; Line 212
+	*** 0002f7	8b 47 06 		mov	ax,WORD PTR [bx+6]
+	*** 0002fa	89 46 f0 		mov	WORD PTR [bp-16],ax
+;|***     segregs.ds=inrv->dsr;
+; Line 213
+	*** 0002fd	8b 47 0c 		mov	ax,WORD PTR [bx+12]
+	*** 000300	89 46 fe 		mov	WORD PTR [bp-2],ax
+;|***     rc=intdosx(&regs,&regs,&segregs);
+; Line 214
+	*** 000303	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;segregs
+	*** 000306	50 			push	ax
+	*** 000307	8d 46 ea 		lea	ax,WORD PTR [bp-22]	;regs
+	*** 00030a	50 			push	ax
+	*** 00030b	50 			push	ax
+	*** 00030c	e8 00 00 		call	_intdosx
+	*** 00030f	89 46 e8 		mov	WORD PTR [bp-24],ax	;rc
+;|***     outrv->axr=regs.x.ax;
+; Line 215
+	*** 000312	8b 46 ea 		mov	ax,WORD PTR [bp-22]	;regs
+	*** 000315	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;outrv
+	*** 000318	89 07 			mov	WORD PTR [bx],ax
+;|***     outrv->bxr=regs.x.bx;
+; Line 216
+	*** 00031a	8b 46 ec 		mov	ax,WORD PTR [bp-20]
+	*** 00031d	89 47 02 		mov	WORD PTR [bx+2],ax
+;|***     outrv->cxr=regs.x.cx;
+; Line 217
+	*** 000320	8b 46 ee 		mov	ax,WORD PTR [bp-18]
+	*** 000323	89 47 04 		mov	WORD PTR [bx+4],ax
+;|***     outrv->dxr=regs.x.dx;
+; Line 218
+	*** 000326	8b 46 f0 		mov	ax,WORD PTR [bp-16]
+	*** 000329	89 47 06 		mov	WORD PTR [bx+6],ax
+;|***     outrv->dsr=segregs.ds;
+; Line 219
+	*** 00032c	8b 46 fe 		mov	ax,WORD PTR [bp-2]
+	*** 00032f	89 47 0c 		mov	WORD PTR [bx+12],ax
+;|***     return(rc);
+; Line 220
+	*** 000332	8b 46 e8 		mov	ax,WORD PTR [bp-24]	;rc
+;|*** }
+; Line 221
+	*** 000335	8b e5 			mov	sp,bp
+	*** 000337	5d 			pop	bp
+	*** 000338	c3 			ret	
+	*** 000339	90 			nop	
+
+_sysint21	ENDP
+_TEXT	ENDS
+END

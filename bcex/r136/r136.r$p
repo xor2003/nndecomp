@@ -1,0 +1,14 @@
+/Tde/x/l/v/c/k /V3.10 /LD:\BC5\LIB +
+D:\BC5\LIB\c0c.obj+
+strinp.obj+
+init.obj+
+status.obj+
+main.obj+
+use.obj
+r136.exe
+
+D:\BC5\LIB\bidsc.lib+
+D:\BC5\LIB\emu.lib+
+D:\BC5\LIB\mathc.lib+
+D:\BC5\LIB\cc.lib
+

@@ -1,0 +1,2272 @@
+;	Static Name Aliases
+;
+;	$S1016_flag	EQU	flag
+	TITLE   C:\SRC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_xpoint:NEAR
+EXTRN	_setup_magic_item:NEAR
+EXTRN	_rnd:NEAR
+EXTRN	_point_within:NEAR
+EXTRN	_odin_speaks:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	_memset:NEAR
+EXTRN	_xcopyd2d:NEAR
+EXTRN	_actor_damaged:NEAR
+EXTRN	_play_sound:NEAR
+EXTRN	_display_item:NEAR
+EXTRN	_sound_playing:NEAR
+EXTRN	_add_jewels:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_actor_destroyed:NEAR
+EXTRN	_add_score:NEAR
+EXTRN	_music_pause:NEAR
+EXTRN	_music_resume:NEAR
+EXTRN	_add_magic:NEAR
+EXTRN	_add_health:NEAR
+EXTRN	_add_keys:NEAR
+EXTRN	_xshowpage:NEAR
+EXTRN	_fill_score:NEAR
+EXTRN	_xfput:NEAR
+EXTRN	_xdisplay_actors:NEAR
+EXTRN	_xerase_actors:NEAR
+EXTRN	_abs:NEAR
+EXTRN	_setup_actor:NEAR
+EXTRN	_xpset:NEAR
+EXTRN	_objects:BYTE
+EXTRN	_object_map:BYTE
+EXTRN	_object_index:BYTE
+EXTRN	_ox:WORD
+EXTRN	_oy:WORD
+EXTRN	_of:WORD
+EXTRN	_scrn:BYTE
+EXTRN	_bg_pics:DWORD
+EXTRN	_display_page:WORD
+EXTRN	_draw_page:WORD
+EXTRN	_thor_info:BYTE
+EXTRN	_magic_cnt:WORD
+EXTRN	_thor:WORD
+EXTRN	_hammer:WORD
+EXTRN	_actor:BYTE
+EXTRN	_magic_item:BYTE
+EXTRN	_key_magic:WORD
+EXTRN	_key_flag:BYTE
+EXTRN	_hourglass_flag:WORD
+EXTRN	_thunder_flag:WORD
+EXTRN	_shield_on:WORD
+EXTRN	_lightning_used:WORD
+EXTRN	_tornado_used:WORD
+EXTRN	_apple_flag:WORD
+EXTRN	_timer_cnt:WORD
+EXTRN	_magic_inform:WORD
+EXTRN	_carry_inform:WORD
+EXTRN	_object_names:BYTE
+_BSS      SEGMENT
+COMM NEAR	_pixel_x:	 2:	 200
+COMM NEAR	_pixel_y:	 2:	 200
+COMM NEAR	_pixel_p:	 1:	 200
+COMM NEAR	_pixel_c:	 1:	 8
+_BSS      ENDS
+_DATA      SEGMENT
+$S1016_flag	DW	00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 4
+; Line 5
+; Line 6
+; Line 7
+; Line 9
+; Line 10
+; Line 49
+	PUBLIC	_show_objects
+_show_objects	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+	push	si
+;	i = -4
+;	p = -2
+;	pg = 6
+;	level = 4
+; Line 54
+	mov	ax,240
+	push	ax
+	sub	cx,cx
+	push	cx
+	mov	dx,OFFSET _object_map
+	push	dx
+	call	_memset
+	add	sp,6
+; Line 55
+	mov	ax,240
+	push	ax
+	sub	ax,ax
+	push	ax
+	mov	cx,OFFSET _object_index
+	push	cx
+	call	_memset
+	add	sp,6
+; Line 56
+	mov	WORD PTR [bp-4],0	;i
+$FC888:
+; Line 57
+	mov	bx,WORD PTR [bp-4]	;i
+	cmp	BYTE PTR _scrn[bx+322],0
+	je	$L20006
+; Line 59
+	mov	al,BYTE PTR _scrn[bx+322]
+	cbw	
+	mov	cx,262
+	imul	cx
+	add	ax,OFFSET _objects-262
+	mov	cx,SEG _objects
+	push	cx
+	push	ax
+	push	WORD PTR [bp+6]	;pg
+	mov	cl,4
+	shl	bx,1
+	mov	ax,WORD PTR _scrn[bx+412]
+	shl	ax,cl
+	push	ax
+	mov	ax,WORD PTR _scrn[bx+352]
+	shl	ax,cl
+	push	ax
+	mov	si,bx
+	call	_xfput
+	add	sp,10
+; Line 60
+	mov	ax,20
+	imul	WORD PTR _scrn[si+412]
+	add	ax,WORD PTR _scrn[si+352]
+; Line 61
+	mov	bx,ax
+	mov	cl,BYTE PTR [bp-4]	;i
+	mov	BYTE PTR _object_index[bx],cl
+; Line 62
+	mov	si,WORD PTR [bp-4]	;i
+	mov	cl,BYTE PTR _scrn[si+322]
+	mov	BYTE PTR _object_map[bx],cl
+; Line 63
+; Line 64
+$L20006:
+	inc	WORD PTR [bp-4]	;i
+	cmp	WORD PTR [bp-4],30	;i
+	jl	$FC888
+; Line 65
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_show_objects	ENDP
+; Line 67
+	PUBLIC	_pick_up_object
+_pick_up_object	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,8
+	call	__aNchkstk
+	push	di
+	push	si
+;	s = -4
+;	r = -2
+;	x = -6
+;	y = -8
+;	p = 4
+; Line 70
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	al,BYTE PTR _object_map[bx]
+	cbw	
+	jmp	$S897
+; Line 71
+$SC901:
+; Line 72
+	cmp	WORD PTR _thor_info+2,999
+	jl	$I902
+; Line 73
+$L20007:
+	call	_cannot_carry_more
+; Line 74
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 75
+; Line 76
+	nop	
+$I902:
+	mov	ax,10
+$L20009:
+	push	ax
+	call	_add_jewels
+$L20008:
+	add	sp,2
+; Line 77
+	jmp	$SB898
+; Line 78
+	nop	
+$SC903:
+; Line 79
+	cmp	WORD PTR _thor_info+2,999
+	jge	$L20007
+; Line 82
+; Line 83
+	mov	ax,1
+	jmp	SHORT $L20009
+; Line 85
+	nop	
+$SC905:
+; Line 86
+	mov	al,BYTE PTR _thor_info
+	cbw	
+	cmp	ax,150
+	jge	$L20007
+; Line 89
+; Line 90
+	mov	ax,10
+$L20010:
+	push	ax
+	call	_add_magic
+	jmp	SHORT $L20008
+; Line 92
+$SC907:
+; Line 93
+	mov	al,BYTE PTR _thor_info
+	cbw	
+	cmp	ax,150
+	jge	$L20007
+; Line 96
+; Line 97
+	mov	ax,3
+	jmp	SHORT $L20010
+; Line 99
+$SC909:
+; Line 100
+	mov	bx,WORD PTR _thor
+	mov	al,BYTE PTR [bx+14]
+	cbw	
+	cmp	ax,150
+	jge	$L20007
+; Line 103
+; Line 104
+	sub	ax,ax
+	push	ax
+	mov	ax,1
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 105
+	mov	WORD PTR [bp-4],1	;s
+; Line 106
+	mov	ax,5
+$L20011:
+	push	ax
+	call	_add_health
+	jmp	SHORT $L20008
+; Line 108
+$SC911:
+; Line 109
+	sub	ax,ax
+	push	ax
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 110
+	mov	WORD PTR [bp-4],1	;s
+; Line 111
+	mov	ax,-10
+	jmp	SHORT $L20011
+; Line 113
+$SC912:
+; Line 115
+	mov	ax,1
+	push	ax
+	call	_add_keys
+	jmp	SHORT $L20008
+; Line 117
+	nop	
+$SC913:
+; Line 118
+	cmp	WORD PTR _thor_info+2,999
+	jl	$JCC328
+	jmp	$L20007
+$JCC328:
+; Line 121
+; Line 122
+	mov	ax,50
+	jmp	$L20009
+; Line 124
+	nop	
+$SC915:
+; Line 125
+	mov	ax,100
+$L20012:
+	push	ax
+	call	_add_score
+	jmp	$L20008
+; Line 127
+$SC916:
+; Line 128
+	mov	ax,1000
+	jmp	SHORT $L20012
+	nop	
+$SC918:
+; Line 147
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+15],1
+; Line 148
+	mov	bx,WORD PTR _hammer
+	mov	BYTE PTR [bx+15],2
+; Line 149
+	mov	BYTE PTR _actor+702,0
+; Line 151
+	sub	ax,ax
+	mov	WORD PTR _shield_on,ax
+	mov	WORD PTR _tornado_used,ax
+; Line 152
+	or	BYTE PTR _thor_info+8,64
+; Line 153
+	mov	BYTE PTR _thor_info+10,7
+; Line 154
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	al,BYTE PTR _object_map[bx]
+	sub	al,11
+	mov	BYTE PTR _thor_info+30,al
+; Line 155
+	call	_display_item
+; Line 156
+	mov	al,BYTE PTR _thor_info+30
+	cbw	
+	mov	bx,ax
+	shl	bx,1
+	mov	ax,WORD PTR _object_names[bx-2]
+	mov	WORD PTR _thor_info+32,ax
+; Line 157
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	al,BYTE PTR _object_map[bx]
+	cbw	
+	mov	cx,ax
+	dec	ax
+	push	ax
+	add	cx,489
+	push	cx
+	call	_odin_speaks
+	add	sp,4
+; Line 158
+	jmp	$SB898
+; Line 159
+	nop	
+$SC919:
+; Line 169
+	sub	ax,ax
+	mov	WORD PTR _hourglass_flag,ax
+	mov	WORD PTR _thunder_flag,ax
+	mov	WORD PTR _shield_on,ax
+	mov	WORD PTR _lightning_used,ax
+	mov	WORD PTR _tornado_used,ax
+; Line 170
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+15],1
+; Line 171
+	mov	bx,WORD PTR _hammer
+	mov	BYTE PTR [bx+15],2
+; Line 172
+	mov	BYTE PTR _actor+702,0
+; Line 174
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	cl,BYTE PTR _object_map[bx]
+	mov	ax,cx
+	sub	cl,27
+	mov	dx,1
+	shl	dx,cl
+	or	WORD PTR _thor_info+8,dx
+; Line 175
+	cbw	
+	mov	cx,ax
+	dec	ax
+	push	ax
+	add	cx,489
+	push	cx
+	call	_odin_speaks
+	add	sp,4
+; Line 176
+	mov	WORD PTR [bp-4],1	;s
+; Line 177
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	al,BYTE PTR _object_map[bx]
+	sub	al,26
+	mov	BYTE PTR _thor_info+10,al
+; Line 178
+	call	_display_item
+; Line 179
+	mov	ax,150
+	push	ax
+	call	_add_magic
+	add	sp,2
+; Line 180
+	mov	ax,5
+	push	ax
+	call	_fill_score
+	jmp	$L20008
+	nop	
+$S897:
+	dec	ax
+	cmp	ax,31
+	ja	$SB898
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20001[bx]
+$L20001:
+		DW	$SC901
+		DW	$SC903
+		DW	$SC905
+		DW	$SC907
+		DW	$SC909
+		DW	$SC911
+		DW	$SC912
+		DW	$SC913
+		DW	$SC915
+		DW	$SC916
+		DW	$SB898
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC918
+		DW	$SC919
+		DW	$SC919
+		DW	$SC919
+		DW	$SC919
+		DW	$SC919
+		DW	$SC919
+$SB898:
+; Line 184
+	mov	ax,WORD PTR [bp+4]	;p
+	mov	cx,20
+	cwd	
+	idiv	cx
+	mov	WORD PTR [bp-8],ax	;y
+; Line 186
+	mov	dx,ax
+	mov	ax,WORD PTR [bp+4]	;p
+	mov	bx,dx
+	cwd	
+	idiv	cx
+	mov	WORD PTR [bp-6],dx	;x
+	mov	cl,4
+	shl	dx,cl
+	mov	WORD PTR _ox,dx
+; Line 187
+	mov	ax,bx
+	shl	bx,cl
+	mov	WORD PTR _oy,bx
+; Line 188
+	mov	WORD PTR _of,1
+; Line 189
+	mov	cx,262
+	mov	si,ax
+	mov	al,BYTE PTR _scrn+240
+	cbw	
+	mov	di,dx
+	imul	cx
+	add	ax,WORD PTR _bg_pics
+	mov	dx,WORD PTR _bg_pics+2
+	push	dx
+	push	ax
+	mov	ax,-30816
+	push	ax
+	push	bx
+	push	di
+	call	_xfput
+	add	sp,10
+; Line 190
+	mov	ax,si
+	mov	cx,20
+	imul	cx
+	mov	bx,ax
+	mov	si,WORD PTR [bp-6]	;x
+	mov	al,BYTE PTR _scrn[bx][si]
+	cbw	
+	mov	cx,262
+	imul	cx
+	add	ax,WORD PTR _bg_pics
+	mov	dx,WORD PTR _bg_pics+2
+	push	dx
+	push	ax
+	mov	ax,-30816
+	push	ax
+	push	WORD PTR _oy
+	push	WORD PTR _ox
+	call	_xfput
+	add	sp,10
+; Line 191
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _draw_page
+	mov	ax,-30816
+	push	ax
+	push	WORD PTR _oy
+	push	WORD PTR _ox
+	mov	ax,WORD PTR _oy
+	add	ax,16
+	push	ax
+	mov	ax,WORD PTR _ox
+	add	ax,16
+	push	ax
+	push	WORD PTR _oy
+	push	WORD PTR _ox
+	call	_xcopyd2d
+	add	sp,20
+; Line 194
+	mov	WORD PTR [bp-2],1	;r
+; Line 196
+	sub	ax,ax
+	mov	WORD PTR [bp-4],ax	;s
+	push	ax
+	mov	ax,3
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 197
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	BYTE PTR _object_map[bx],0
+; Line 198
+	cmp	WORD PTR [bp-2],0	;r
+	je	$I921
+; Line 199
+	cmp	BYTE PTR _object_index[bx],30
+	jge	$I922
+	mov	al,BYTE PTR _object_index[bx]
+	cbw	
+	mov	bx,ax
+	mov	BYTE PTR _scrn[bx+322],0
+; Line 200
+$I922:
+	mov	bx,WORD PTR [bp+4]	;p
+	mov	BYTE PTR _object_index[bx],0
+; Line 201
+; Line 202
+$I921:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_pick_up_object	ENDP
+; Line 204
+	PUBLIC	_drop_object
+_drop_object	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,6
+	call	__aNchkstk
+;	o = -6
+;	rnd1 = -2
+;	rnd2 = -4
+;	actr = 4
+; Line 207
+	mov	ax,100
+	push	ax
+	call	_rnd
+	add	sp,2
+	mov	WORD PTR [bp-2],ax	;rnd1
+; Line 208
+	mov	ax,100
+	push	ax
+	call	_rnd
+	add	sp,2
+; Line 210
+	cmp	WORD PTR [bp-2],25	;rnd1
+	jge	$I928
+	mov	WORD PTR [bp-6],5	;o
+; Line 211
+	jmp	SHORT $I935
+	nop	
+$I928:
+	test	BYTE PTR [bp-2],1	;rnd1
+	je	$I930
+; Line 212
+	cmp	ax,10
+	jge	$I931
+	mov	WORD PTR [bp-6],1	;o
+; Line 213
+	jmp	SHORT $I935
+$I931:
+	mov	WORD PTR [bp-6],2	;o
+; Line 214
+; Line 215
+	jmp	SHORT $I935
+	nop	
+$I930:
+; Line 216
+	cmp	ax,10
+	jge	$I934
+	mov	WORD PTR [bp-6],3	;o
+; Line 217
+	jmp	SHORT $I935
+$I934:
+	mov	WORD PTR [bp-6],4	;o
+$I935:
+; Line 218
+; Line 219
+	push	WORD PTR [bp-6]	;o
+	push	WORD PTR [bp+4]	;actr
+	call	__drop_obj
+; Line 220
+	mov	ax,1
+; Line 221
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_drop_object	ENDP
+; Line 223
+	PUBLIC	__drop_obj
+__drop_obj	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,10
+	call	__aNchkstk
+	push	di
+	push	si
+;	x = -4
+;	y = -6
+;	p = -2
+;	o = 6
+;	actr = 4
+; Line 226
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+11]
+	mov	cl,2
+	cbw	
+	idiv	cl
+	cbw	
+	add	ax,WORD PTR [bx+172]
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,4
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,ax
+	mov	al,BYTE PTR [bx+12]
+	mov	bl,2
+	cbw	
+	idiv	bl
+	cbw	
+	mov	bx,WORD PTR [bp+4]	;actr
+	add	ax,WORD PTR [bx+174]
+	mov	si,cx
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,4
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,20
+	imul	cx
+	add	si,ax
+	mov	WORD PTR [bp-2],si	;p
+; Line 227
+	cmp	BYTE PTR _object_map[si],0
+	je	$JCC1092
+	jmp	$I942
+$JCC1092:
+	mov	ax,si
+	cwd	
+	idiv	cx
+	mov	ax,si
+	mov	di,dx
+	cwd	
+	idiv	cx
+	imul	cx
+	mov	bx,ax
+	mov	al,BYTE PTR _scrn[bx][di]
+	cbw	
+	cmp	ax,140
+	jge	$JCC1121
+	jmp	$I942
+$JCC1121:
+; Line 228
+	mov	al,BYTE PTR [bp+6]	;o
+	mov	BYTE PTR _object_map[si],al
+; Line 229
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+194]
+	add	al,27
+	mov	bx,WORD PTR [bp-2]	;p
+	mov	BYTE PTR _object_index[bx],al
+; Line 230
+	mov	ax,bx
+	cwd	
+	idiv	cx
+	mov	cl,4
+	shl	dx,cl
+; Line 231
+	mov	ax,bx
+	mov	bx,20
+	mov	si,dx
+	cwd	
+	idiv	bx
+	shl	ax,cl
+; Line 232
+	mov	cx,ax
+	mov	ax,262
+	imul	WORD PTR [bp+6]	;o
+	add	ax,OFFSET _objects-262
+	mov	dx,SEG _objects
+	push	dx
+	push	ax
+	mov	ax,-30816
+	push	ax
+	push	cx
+	push	si
+	mov	di,cx
+	call	_xfput
+	add	sp,10
+; Line 233
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _draw_page
+	mov	cx,-30816
+	push	cx
+	push	di
+	push	si
+	lea	dx,WORD PTR [di+16]
+	push	dx
+	lea	bx,WORD PTR [si+16]
+	push	bx
+	push	di
+	push	si
+	mov	WORD PTR [bp-8],dx
+	mov	WORD PTR [bp-10],bx
+	call	_xcopyd2d
+	add	sp,20
+; Line 234
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _display_page
+	mov	ax,-30816
+	push	ax
+	push	di
+	push	si
+	push	WORD PTR [bp-8]
+	push	WORD PTR [bp-10]
+	push	di
+	push	si
+	call	_xcopyd2d
+	add	sp,20
+; Line 235
+	mov	ax,1
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 236
+; Line 237
+	nop	
+$I942:
+	sub	ax,ax
+; Line 238
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+__drop_obj	ENDP
+; Line 240
+	PUBLIC	_use_apple
+_use_apple	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 242
+	mov	bx,WORD PTR _thor
+	mov	al,BYTE PTR [bx+14]
+	cbw	
+	cmp	ax,150
+	jne	$I946
+$L20013:
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 244
+	nop	
+$I946:
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I947
+	cmp	BYTE PTR _thor_info,0
+	jle	$I947
+; Line 245
+	cmp	WORD PTR _apple_flag,0
+	jne	$I948
+; Line 246
+	mov	WORD PTR _magic_cnt,0
+; Line 247
+	mov	ax,-2
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 248
+	mov	ax,1
+	push	ax
+	call	_add_health
+	mov	sp,bp
+; Line 249
+	sub	ax,ax
+	jmp	SHORT $L20014
+$I948:
+	cmp	WORD PTR _magic_cnt,8
+	jbe	$I951
+; Line 252
+	mov	WORD PTR _magic_cnt,0
+; Line 253
+	mov	ax,-2
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 254
+	mov	ax,1
+	push	ax
+	call	_add_health
+	mov	sp,bp
+; Line 255
+	call	_sound_playing
+	or	ax,ax
+	jne	$I951
+$L20014:
+	push	ax
+	mov	ax,8
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 256
+$I951:
+; Line 258
+	mov	ax,1
+	mov	WORD PTR _apple_flag,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+$I947:
+; Line 261
+	mov	WORD PTR _apple_flag,0
+; Line 262
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$L20013
+	call	_not_enough_magic
+; Line 263
+	jmp	$L20013
+; Line 265
+
+_use_apple	ENDP
+; Line 267
+	PUBLIC	_use_thunder
+_use_thunder	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 269
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I956
+	cmp	BYTE PTR _thor_info,29
+	jle	$I956
+; Line 270
+	cmp	WORD PTR _thunder_flag,0
+	jne	$I957
+; Line 271
+	mov	ax,-30
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 272
+	sub	ax,ax
+	push	ax
+	mov	ax,5
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 273
+	mov	WORD PTR _thunder_flag,60
+; Line 274
+; Line 275
+$I957:
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+$I956:
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I959
+	cmp	WORD PTR _thunder_flag,0
+	jne	$I959
+	call	_not_enough_magic
+; Line 279
+$I959:
+	cmp	WORD PTR _thunder_flag,0
+	jne	$I957
+; Line 280
+	sub	ax,ax
+; Line 281
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_use_thunder	ENDP
+; Line 283
+	PUBLIC	_use_hourglass
+_use_hourglass	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,32
+	call	__aNchkstk
+	push	si
+;	hour_time = -32
+;	flag = 4
+; Line 284
+	mov	WORD PTR [bp-32],0	;hour_time
+	mov	WORD PTR [bp-30],60
+	mov	WORD PTR [bp-28],120
+	mov	WORD PTR [bp-26],180
+	mov	WORD PTR [bp-24],240
+	mov	WORD PTR [bp-22],300
+	mov	WORD PTR [bp-20],360
+	mov	WORD PTR [bp-18],420
+	mov	WORD PTR [bp-16],480
+; Line 285
+	mov	WORD PTR [bp-14],510
+	mov	WORD PTR [bp-12],540
+	mov	WORD PTR [bp-10],570
+	mov	WORD PTR [bp-8],600
+	mov	WORD PTR [bp-6],630
+	mov	WORD PTR [bp-4],660
+	mov	WORD PTR [bp-2],690
+; Line 287
+	cmp	WORD PTR _hourglass_flag,0
+	je	$I964
+; Line 288
+	mov	si,WORD PTR _hourglass_flag
+	shl	si,1
+	mov	ax,WORD PTR _magic_cnt
+	cmp	WORD PTR [bp-32][si],ax
+	jae	$I965
+; Line 290
+	inc	WORD PTR _hourglass_flag
+	cmp	WORD PTR _hourglass_flag,16
+	jne	$I966
+; Line 291
+	mov	WORD PTR _hourglass_flag,0
+; Line 292
+	call	_music_resume
+; Line 293
+; Line 294
+$I966:
+	mov	ax,1
+	push	ax
+	mov	ax,9
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 295
+; Line 296
+$I965:
+	mov	ax,1
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 297
+; Line 299
+	nop	
+$I964:
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I967
+	cmp	BYTE PTR _thor_info,29
+	jle	$I967
+; Line 300
+	cmp	WORD PTR _hourglass_flag,0
+	jne	$I970
+; Line 301
+	mov	WORD PTR _magic_cnt,0
+; Line 302
+	mov	ax,-30
+	push	ax
+	call	_add_magic
+	add	sp,2
+; Line 303
+	call	_music_pause
+; Line 304
+	mov	ax,1
+	push	ax
+	mov	cx,9
+	push	cx
+	call	_play_sound
+	add	sp,4
+; Line 306
+	mov	ax,1
+	mov	WORD PTR _hourglass_flag,ax
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+$I967:
+; Line 310
+	mov	WORD PTR _hourglass_flag,0
+; Line 311
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I970
+	call	_not_enough_magic
+; Line 312
+$I970:
+; Line 313
+	sub	ax,ax
+; Line 314
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_use_hourglass	ENDP
+; Line 316
+	PUBLIC	_use_boots
+_use_boots	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 318
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I973
+; Line 319
+	cmp	BYTE PTR _thor_info,0
+	jle	$I974
+; Line 320
+	mov	bx,WORD PTR _thor
+	cmp	BYTE PTR [bx+15],1
+	je	$L20015
+	cmp	WORD PTR _magic_cnt,8
+	jbe	$I977
+; Line 325
+$L20015:
+	mov	WORD PTR _magic_cnt,0
+; Line 326
+	mov	ax,-1
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 327
+; Line 328
+$I977:
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+15],2
+; Line 329
+	mov	bx,WORD PTR _hammer
+	mov	BYTE PTR [bx+15],3
+; Line 330
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+$I974:
+; Line 333
+	call	_not_enough_magic
+$I973:
+; Line 339
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+15],1
+; Line 340
+	mov	bx,WORD PTR _hammer
+	mov	BYTE PTR [bx+15],2
+; Line 341
+; Line 342
+	sub	ax,ax
+; Line 343
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_use_boots	ENDP
+; Line 345
+	PUBLIC	_use_shield
+_use_shield	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	f = -2
+;	flag = 4
+; Line 348
+	mov	WORD PTR [bp-2],0	;f
+; Line 349
+	cmp	WORD PTR [bp+4],0	;flag
+	jne	$JCC1888
+	jmp	$I984
+$JCC1888:
+; Line 350
+	cmp	BYTE PTR _thor_info,0
+	je	$I985
+; Line 351
+	cmp	WORD PTR _shield_on,0
+	jne	$I986
+; Line 352
+	mov	WORD PTR _magic_cnt,0
+; Line 353
+	mov	ax,-1
+	push	ax
+	call	_add_magic
+	add	sp,2
+; Line 354
+	mov	ax,1
+	push	ax
+	call	_setup_magic_item
+	add	sp,2
+; Line 355
+	mov	ax,258
+	push	ax
+	mov	ax,OFFSET _magic_item+258
+	push	ax
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 356
+	mov	bx,WORD PTR _thor
+	push	WORD PTR [bx+174]
+	push	WORD PTR [bx+172]
+	sub	al,al
+	push	ax
+	mov	al,2
+	push	ax
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_setup_actor
+	add	sp,10
+; Line 358
+	mov	al,1
+	mov	BYTE PTR _actor+704,al
+	mov	BYTE PTR _actor+526,al
+; Line 359
+	mov	WORD PTR _shield_on,1
+; Line 360
+; Line 361
+	jmp	SHORT $I988
+	nop	
+$I986:
+	cmp	WORD PTR _magic_cnt,8
+	jbe	$I988
+; Line 362
+	mov	WORD PTR _magic_cnt,0
+; Line 363
+	mov	ax,-1
+	push	ax
+	call	_add_magic
+	add	sp,2
+; Line 364
+; Line 365
+$I988:
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+$I985:
+; Line 368
+	mov	WORD PTR [bp-2],1	;f
+; Line 369
+	call	_not_enough_magic
+; Line 370
+; Line 372
+; Line 373
+	jmp	SHORT $I990
+$I984:
+	mov	WORD PTR [bp-2],1	;f
+$I990:
+; Line 374
+	cmp	WORD PTR [bp-2],1	;f
+	jne	$I992
+; Line 375
+	cmp	WORD PTR _shield_on,0
+	je	$I992
+; Line 376
+	mov	BYTE PTR _actor+712,2
+; Line 377
+	mov	BYTE PTR _actor+702,0
+; Line 378
+	mov	WORD PTR _shield_on,0
+; Line 379
+; Line 380
+$I992:
+; Line 381
+	sub	ax,ax
+; Line 382
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_use_shield	ENDP
+; Line 384
+	PUBLIC	_use_lightning
+_use_lightning	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 386
+	cmp	WORD PTR [bp+4],0	;flag
+	je	$I998
+; Line 387
+	cmp	BYTE PTR _thor_info,14
+	jle	$I997
+; Line 388
+	mov	ax,-15
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 389
+	call	_throw_lightning
+; Line 390
+; Line 391
+	jmp	SHORT $I998
+	nop	
+$I997:
+; Line 392
+	call	_not_enough_magic
+; Line 393
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 394
+	nop	
+$I998:
+; Line 395
+; Line 396
+	mov	ax,1
+; Line 397
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_use_lightning	ENDP
+; Line 399
+	PUBLIC	_use_tornado
+_use_tornado	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 401
+	cmp	WORD PTR [bp+4],0	;flag
+	jne	$JCC2142
+	jmp	$L20017
+$JCC2142:
+; Line 402
+	cmp	BYTE PTR _thor_info,10
+	jg	$JCC2152
+	jmp	$I1003
+$JCC2152:
+; Line 403
+	cmp	WORD PTR _tornado_used,0
+	jne	$I1006
+	cmp	BYTE PTR _actor+712,0
+	jne	$I1006
+	cmp	WORD PTR _magic_cnt,20
+	jbe	$I1006
+; Line 404
+	mov	WORD PTR _magic_cnt,0
+; Line 405
+	mov	ax,-10
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 406
+	sub	ax,ax
+	push	ax
+	call	_setup_magic_item
+	mov	sp,bp
+; Line 407
+	mov	ax,258
+	push	ax
+	mov	ax,OFFSET _magic_item
+	push	ax
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_memcpy
+	mov	sp,bp
+; Line 408
+	mov	bx,WORD PTR _thor
+	push	WORD PTR [bx+174]
+	push	WORD PTR [bx+172]
+	sub	al,al
+	push	ax
+	mov	al,2
+	push	ax
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_setup_actor
+	mov	sp,bp
+; Line 409
+	mov	bx,WORD PTR _thor
+	mov	al,BYTE PTR [bx+169]
+	mov	BYTE PTR _actor+686,al
+; Line 410
+	mov	BYTE PTR _actor+516,16
+; Line 411
+	mov	WORD PTR _tornado_used,1
+; Line 412
+	sub	ax,ax
+	push	ax
+	mov	ax,12
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 413
+; Line 414
+; Line 415
+$I1006:
+	cmp	WORD PTR _magic_cnt,8
+	jbe	$I1008
+; Line 420
+	cmp	WORD PTR _tornado_used,0
+	je	$I1008
+; Line 421
+	mov	WORD PTR _magic_cnt,0
+; Line 422
+	mov	ax,-1
+	push	ax
+	call	_add_magic
+	mov	sp,bp
+; Line 423
+; Line 424
+$I1008:
+; Line 425
+	cmp	BYTE PTR _thor_info,1
+	jge	$I1009
+; Line 426
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_actor_destroyed
+	mov	sp,bp
+; Line 427
+	mov	WORD PTR _tornado_used,0
+	jmp	SHORT $L20018
+$I1003:
+	cmp	WORD PTR _tornado_used,0
+	jne	$I1006
+; Line 416
+$L20018:
+	call	_not_enough_magic
+; Line 417
+$L20017:
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 418
+; Line 430
+; Line 431
+$I1009:
+	mov	ax,1
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_use_tornado	ENDP
+; Line 436
+	PUBLIC	_use_object
+_use_object	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	flag = 4
+; Line 438
+	cmp	WORD PTR [bp+4],0	;flag
+	jne	$I1013
+$L20019:
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 439
+$I1013:
+	cmp	WORD PTR _thor_info+8,1
+	sbb	ax,ax
+	neg	ax
+	test	al,64
+	jne	$L20019
+; Line 442
+	push	WORD PTR _draw_page
+	call	_xshowpage
+	mov	sp,bp
+; Line 443
+	push	WORD PTR _display_page
+	mov	ax,OFFSET _actor
+	push	ax
+	call	_xerase_actors
+	mov	sp,bp
+; Line 444
+	push	WORD PTR _display_page
+	mov	ax,OFFSET _actor+8772
+	push	ax
+	call	_xdisplay_actors
+	mov	sp,bp
+; Line 445
+	push	WORD PTR _display_page
+	call	_xshowpage
+	mov	sp,bp
+; Line 447
+	mov	al,BYTE PTR _thor_info+30
+	cbw	
+	mov	cx,ax
+	dec	ax
+	push	ax
+	add	cx,5500
+	push	cx
+	call	_odin_speaks
+	mov	sp,bp
+; Line 448
+	push	WORD PTR _draw_page
+	mov	ax,OFFSET _actor+8772
+	push	ax
+	call	_xdisplay_actors
+; Line 449
+	mov	ax,1
+; Line 450
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_use_object	ENDP
+; Line 452
+	PUBLIC	_use_item
+_use_item	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,6
+	call	__aNchkstk
+;	kf = -2
+;	ret = -6
+;	mf = -4
+; Line 456
+	mov	bx,WORD PTR _key_magic
+	mov	al,BYTE PTR _key_flag[bx]
+	cbw	
+	mov	WORD PTR [bp-2],ax	;kf
+; Line 458
+	or	ax,ax
+	jne	$I1020
+	cmp	WORD PTR _tornado_used,ax
+	je	$I1020
+; Line 459
+	mov	ax,OFFSET _actor+516
+	push	ax
+	call	_actor_destroyed
+	add	sp,2
+; Line 460
+	mov	WORD PTR _tornado_used,0
+; Line 461
+; Line 463
+$I1020:
+	mov	ax,WORD PTR _magic_inform
+	mov	WORD PTR [bp-4],ax	;mf
+; Line 464
+	mov	al,BYTE PTR _thor_info+10
+	cbw	
+	jmp	SHORT $S1021
+; Line 465
+	nop	
+$SC1025:
+; Line 466
+	push	WORD PTR [bp-2]	;kf
+	call	_use_apple
+$L20020:
+	add	sp,2
+	mov	WORD PTR [bp-6],ax	;ret
+; Line 467
+	jmp	SHORT $SB1022
+; Line 468
+$SC1026:
+; Line 469
+	push	WORD PTR [bp-2]	;kf
+	call	_use_lightning
+	jmp	SHORT $L20020
+; Line 471
+$SC1027:
+; Line 472
+	push	WORD PTR [bp-2]	;kf
+	call	_use_boots
+	jmp	SHORT $L20020
+; Line 474
+$SC1028:
+; Line 475
+	push	WORD PTR [bp-2]	;kf
+	call	_use_tornado
+	jmp	SHORT $L20020
+; Line 477
+$SC1029:
+; Line 478
+	push	WORD PTR [bp-2]	;kf
+	call	_use_shield
+	jmp	SHORT $L20020
+; Line 480
+$SC1030:
+; Line 481
+	push	WORD PTR [bp-2]	;kf
+	call	_use_thunder
+	jmp	SHORT $L20020
+; Line 483
+$SC1031:
+; Line 484
+	push	WORD PTR [bp-2]	;kf
+	call	_use_object
+	jmp	SHORT $L20020
+$S1021:
+	dec	ax
+	cmp	ax,6
+	ja	$SB1022
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20004[bx]
+$L20004:
+		DW	$SC1025
+		DW	$SC1026
+		DW	$SC1027
+		DW	$SC1028
+		DW	$SC1029
+		DW	$SC1030
+		DW	$SC1031
+$SB1022:
+; Line 488
+	cmp	WORD PTR [bp-2],0	;kf
+	je	$I1032
+; Line 489
+	cmp	WORD PTR [bp-6],0	;ret
+	jne	$I1035
+	cmp	WORD PTR $S1016_flag,0
+	jne	$I1035
+; Line 490
+	cmp	WORD PTR [bp-4],0	;mf
+	je	$I1034
+	sub	ax,ax
+	push	ax
+	mov	ax,11
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 491
+$I1034:
+	mov	WORD PTR $S1016_flag,1
+; Line 492
+; Line 493
+; Line 494
+	mov	sp,bp
+	pop	bp
+	ret	
+$I1032:
+	mov	WORD PTR $S1016_flag,0
+$I1035:
+; Line 495
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_use_item	ENDP
+; Line 497
+	PUBLIC	_place_pixel
+_place_pixel	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	num = 6
+;	dir = 4
+; Line 499
+	mov	ax,WORD PTR [bp+4]	;dir
+	jmp	$S1040
+; Line 500
+$SC1044:
+; Line 501
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	dec	ax
+$L20021:
+	mov	WORD PTR _pixel_y[bx],ax
+; Line 502
+	mov	ax,3
+$L20028:
+	push	ax
+	mov	si,bx
+	call	_rnd
+	add	sp,2
+	sub	ax,WORD PTR _pixel_x[si-2]
+	neg	ax
+	inc	ax
+$L20027:
+	mov	WORD PTR _pixel_x[si],ax
+; Line 503
+	jmp	$SB1041
+; Line 504
+$SC1045:
+; Line 505
+	mov	ax,2
+	push	ax
+	call	_rnd
+	add	sp,2
+	or	ax,ax
+	je	$I1046
+; Line 506
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	inc	ax
+	jmp	$L20031
+	nop	
+$I1046:
+; Line 510
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	dec	ax
+	jmp	SHORT $L20029
+; Line 514
+$SC1048:
+; Line 515
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	inc	ax
+$L20023:
+	mov	WORD PTR _pixel_x[bx],ax
+; Line 516
+	mov	ax,3
+$L20032:
+	push	ax
+	mov	si,bx
+	call	_rnd
+	add	sp,2
+	sub	ax,WORD PTR _pixel_y[si-2]
+	neg	ax
+	inc	ax
+	jmp	$L20026
+; Line 518
+$SC1049:
+; Line 519
+	mov	ax,2
+	push	ax
+	call	_rnd
+	add	sp,2
+	or	ax,ax
+	je	$I1050
+; Line 520
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	inc	ax
+$L20033:
+	mov	WORD PTR _pixel_x[bx],ax
+; Line 521
+	mov	ax,2
+	jmp	SHORT $L20032
+	nop	
+$I1050:
+; Line 524
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	inc	ax
+$L20029:
+	mov	WORD PTR _pixel_y[bx],ax
+; Line 525
+	mov	ax,2
+	jmp	$L20028
+; Line 528
+$SC1052:
+; Line 529
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	inc	ax
+	jmp	$L20021
+; Line 532
+	nop	
+$SC1053:
+; Line 533
+	mov	ax,2
+	push	ax
+	call	_rnd
+	add	sp,2
+	or	ax,ax
+	je	$I1054
+; Line 534
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	dec	ax
+	jmp	SHORT $L20033
+$I1054:
+; Line 538
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	inc	ax
+$L20030:
+	mov	WORD PTR _pixel_y[bx],ax
+; Line 539
+	mov	ax,2
+	push	ax
+	mov	si,bx
+	call	_rnd
+	add	sp,2
+	sub	ax,WORD PTR _pixel_x[si-2]
+	neg	ax
+	jmp	$L20027
+; Line 542
+	nop	
+$SC1056:
+; Line 543
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	dec	ax
+	jmp	$L20023
+; Line 546
+	nop	
+$SC1057:
+; Line 547
+	mov	ax,2
+	push	ax
+	call	_rnd
+	add	sp,2
+	or	ax,ax
+	je	$I1058
+; Line 548
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_x[bx-2]
+	dec	ax
+$L20031:
+	mov	WORD PTR _pixel_x[bx],ax
+; Line 549
+	mov	ax,2
+	push	ax
+	mov	si,bx
+	call	_rnd
+	add	sp,2
+	sub	ax,WORD PTR _pixel_y[si-2]
+	neg	ax
+$L20026:
+	mov	WORD PTR _pixel_y[si],ax
+; Line 550
+; Line 551
+	jmp	SHORT $SB1041
+$I1058:
+; Line 552
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	shl	bx,1
+	mov	ax,WORD PTR _pixel_y[bx-2]
+	dec	ax
+	jmp	$L20030
+	nop	
+$S1040:
+	cmp	ax,7
+	ja	$I1061
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20005[bx]
+	nop	
+$L20005:
+		DW	$SC1044
+		DW	$SC1045
+		DW	$SC1048
+		DW	$SC1049
+		DW	$SC1052
+		DW	$SC1053
+		DW	$SC1056
+		DW	$SC1057
+$SB1041:
+; Line 559
+	mov	ax,191
+	push	ax
+	mov	ax,319
+	push	ax
+	sub	ax,ax
+	push	ax
+	push	ax
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	mov	ax,bx
+	shl	bx,1
+	push	WORD PTR _pixel_y[bx]
+	push	WORD PTR _pixel_x[bx]
+	mov	si,ax
+	mov	di,bx
+	call	_point_within
+	add	sp,12
+	or	ax,ax
+	je	$I1061
+; Line 560
+	push	WORD PTR _draw_page
+	push	WORD PTR _pixel_y[di]
+	push	WORD PTR _pixel_x[di]
+	call	_xpoint
+	add	sp,6
+	mov	BYTE PTR _pixel_p[si],al
+; Line 561
+	mov	bx,WORD PTR [bp+4]	;dir
+	mov	al,BYTE PTR _pixel_c[bx]
+	cbw	
+	push	ax
+	push	WORD PTR _draw_page
+	push	WORD PTR _pixel_y[di]
+	push	WORD PTR _pixel_x[di]
+	call	_xpset
+	add	sp,8
+; Line 562
+; Line 563
+$I1061:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_place_pixel	ENDP
+; Line 565
+	PUBLIC	_replace_pixel
+_replace_pixel	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	num = 6
+;	dir = 4
+; Line 567
+	mov	ax,191
+	push	ax
+	mov	ax,319
+	push	ax
+	sub	ax,ax
+	push	ax
+	push	ax
+	mov	ax,25
+	imul	WORD PTR [bp+4]	;dir
+	mov	bx,ax
+	add	bx,WORD PTR [bp+6]	;num
+	mov	ax,bx
+	shl	bx,1
+	push	WORD PTR _pixel_y[bx]
+	push	WORD PTR _pixel_x[bx]
+	mov	si,ax
+	mov	di,bx
+	call	_point_within
+	add	sp,12
+	or	ax,ax
+	je	$I1066
+; Line 568
+	mov	al,BYTE PTR _pixel_p[si]
+	cbw	
+	push	ax
+	push	WORD PTR _draw_page
+	push	WORD PTR _pixel_y[di]
+	push	WORD PTR _pixel_x[di]
+	call	_xpset
+	add	sp,8
+; Line 569
+; Line 570
+$I1066:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_replace_pixel	ENDP
+; Line 572
+	PUBLIC	_throw_lightning
+_throw_lightning	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,14
+	call	__aNchkstk
+	push	si
+;	i = -10
+;	r = -2
+;	loop = -14
+;	x = -4
+;	y = -8
+;	ax = -6
+;	ay = -12
+; Line 575
+	mov	WORD PTR [bp-10],0	;i
+$FC1076:
+	mov	ax,258
+	imul	WORD PTR [bp-10]	;i
+	mov	bx,ax
+	mov	BYTE PTR _actor[bx+200],0
+	inc	WORD PTR [bp-10]	;i
+	cmp	WORD PTR [bp-10],35	;i
+	jl	$FC1076
+; Line 577
+	push	WORD PTR _draw_page
+	mov	ax,OFFSET _actor+8772
+	push	ax
+	call	_xdisplay_actors
+	add	sp,4
+; Line 578
+	push	WORD PTR _draw_page
+	call	_xshowpage
+	add	sp,2
+; Line 579
+	mov	ax,1
+	push	ax
+	mov	ax,4
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 580
+	mov	WORD PTR [bp-14],0	;loop
+	jmp	SHORT $F1078
+	nop	
+	nop	
+$FC1088:
+	inc	WORD PTR [bp-10]	;i
+$F1087:
+	cmp	WORD PTR [bp-10],25	;i
+	jge	$FC1085
+; Line 588
+	push	WORD PTR [bp-10]	;i
+	push	WORD PTR [bp-2]	;r
+	call	_place_pixel
+	add	sp,4
+; Line 589
+	jmp	SHORT $FC1088
+; Line 590
+	nop	
+$FC1085:
+	inc	WORD PTR [bp-2]	;r
+$F1084:
+	cmp	WORD PTR [bp-2],8	;r
+	jge	$FB1086
+; Line 587
+	mov	WORD PTR [bp-10],1	;i
+	jmp	SHORT $F1087
+$FB1086:
+; Line 591
+	mov	WORD PTR _timer_cnt,0
+; Line 592
+$FC1091:
+	cmp	WORD PTR _timer_cnt,3
+	jb	$FC1091
+; Line 593
+	mov	WORD PTR [bp-2],7	;r
+	jmp	SHORT $F1093
+$FC1097:
+	inc	WORD PTR [bp-10]	;i
+$F1096:
+	cmp	WORD PTR [bp-10],25	;i
+	jge	$FC1094
+; Line 595
+	push	WORD PTR [bp-10]	;i
+	push	WORD PTR [bp-2]	;r
+	call	_replace_pixel
+	add	sp,4
+; Line 596
+	jmp	SHORT $FC1097
+; Line 597
+	nop	
+$FC1094:
+	dec	WORD PTR [bp-2]	;r
+$F1093:
+	cmp	WORD PTR [bp-2],0	;r
+	jl	$FB1095
+; Line 594
+	mov	WORD PTR [bp-10],1	;i
+	jmp	SHORT $F1096
+$FB1095:
+; Line 598
+	mov	WORD PTR _timer_cnt,0
+; Line 599
+$FC1100:
+	cmp	WORD PTR _timer_cnt,3
+	jb	$FC1100
+; Line 600
+	inc	WORD PTR [bp-14]	;loop
+$F1078:
+	cmp	WORD PTR [bp-14],10	;loop
+	jge	$FB1080
+; Line 581
+	mov	WORD PTR [bp-10],0	;i
+$FC1082:
+; Line 582
+	mov	ax,50
+	imul	WORD PTR [bp-10]	;i
+	mov	bx,ax
+	mov	si,WORD PTR _thor
+	mov	ax,WORD PTR [si+172]
+	add	ax,7
+	mov	WORD PTR _pixel_x[bx],ax
+; Line 583
+	mov	ax,WORD PTR [si+174]
+	add	ax,7
+	mov	WORD PTR _pixel_y[bx],ax
+; Line 584
+	mov	ax,2
+	push	ax
+	call	_rnd
+	add	sp,2
+	add	al,14
+	mov	bx,WORD PTR [bp-10]	;i
+	mov	BYTE PTR _pixel_c[bx],al
+; Line 585
+	inc	WORD PTR [bp-10]	;i
+	cmp	WORD PTR [bp-10],8	;i
+	jl	$FC1082
+; Line 586
+	mov	WORD PTR [bp-2],0	;r
+	jmp	$F1084
+	nop	
+$FB1080:
+; Line 601
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	add	ax,7
+	mov	WORD PTR [bp-4],ax	;x
+; Line 602
+	mov	ax,WORD PTR [bx+174]
+	add	ax,7
+	mov	WORD PTR [bp-8],ax	;y
+; Line 603
+	mov	WORD PTR [bp-10],3	;i
+$FC1103:
+; Line 604
+	mov	ax,258
+	imul	WORD PTR [bp-10]	;i
+	mov	bx,ax
+	cmp	BYTE PTR _actor[bx+186],0
+	je	$L20036
+; Line 605
+	mov	ax,258
+	imul	WORD PTR [bp-10]	;i
+	mov	bx,ax
+	mov	al,BYTE PTR _actor[bx+11]
+	mov	cl,2
+	cbw	
+	idiv	cl
+	cbw	
+	add	ax,WORD PTR _actor[bx+172]
+; Line 606
+	mov	dx,ax
+	mov	al,BYTE PTR _actor[bx+12]
+	cbw	
+	idiv	cl
+	cbw	
+	add	ax,WORD PTR _actor[bx+174]
+	mov	WORD PTR [bp-12],ax	;ay
+; Line 607
+	sub	dx,WORD PTR [bp-4]	;x
+	push	dx
+	mov	si,bx
+	call	_abs
+	add	sp,2
+	cmp	ax,30
+	jge	$L20036
+	mov	ax,WORD PTR [bp-12]	;ay
+	sub	ax,WORD PTR [bp-8]	;y
+	push	ax
+	call	_abs
+	add	sp,2
+	cmp	ax,30
+	jge	$L20036
+; Line 608
+	mov	BYTE PTR _actor[si+215],1
+; Line 609
+	mov	BYTE PTR _actor[si+189],0
+; Line 610
+	mov	ax,254
+	push	ax
+	add	si,OFFSET _actor
+	push	si
+	call	_actor_damaged
+	add	sp,4
+; Line 611
+; Line 612
+$L20036:
+	inc	WORD PTR [bp-10]	;i
+	cmp	WORD PTR [bp-10],35	;i
+	jl	$FC1103
+; Line 613
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_throw_lightning	ENDP
+; Line 615
+	PUBLIC	_not_enough_magic
+_not_enough_magic	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 617
+	cmp	WORD PTR _magic_inform,0
+	jne	$I1108
+	sub	ax,ax
+	push	ax
+	mov	ax,2006
+	push	ax
+	call	_odin_speaks
+	add	sp,4
+; Line 618
+$I1108:
+	push	WORD PTR _draw_page
+	mov	ax,OFFSET _actor+8772
+	push	ax
+	call	_xdisplay_actors
+	add	sp,4
+; Line 619
+	mov	WORD PTR _magic_inform,1
+; Line 620
+	ret	
+
+_not_enough_magic	ENDP
+; Line 622
+	PUBLIC	_cannot_carry_more
+_cannot_carry_more	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 624
+	cmp	WORD PTR _carry_inform,0
+	jne	$I1110
+	sub	ax,ax
+	push	ax
+	mov	ax,2007
+	push	ax
+	call	_odin_speaks
+	add	sp,4
+; Line 625
+$I1110:
+	mov	WORD PTR _carry_inform,1
+; Line 626
+	ret	
+
+_cannot_carry_more	ENDP
+; Line 628
+	PUBLIC	_delete_object
+_delete_object	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 630
+	mov	bx,WORD PTR _thor
+	mov	BYTE PTR [bx+15],1
+; Line 631
+	mov	bx,WORD PTR _hammer
+	mov	BYTE PTR [bx+15],2
+; Line 632
+	mov	BYTE PTR _actor+702,0
+; Line 634
+	sub	ax,ax
+	mov	WORD PTR _shield_on,ax
+	mov	WORD PTR _tornado_used,ax
+; Line 635
+	and	WORD PTR _thor_info+8,191
+; Line 636
+	mov	BYTE PTR _thor_info+10,1
+; Line 637
+	jmp	_display_item
+; Line 638
+
+_delete_object	ENDP
+_TEXT	ENDS
+END

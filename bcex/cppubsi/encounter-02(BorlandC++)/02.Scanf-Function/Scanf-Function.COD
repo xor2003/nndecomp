@@ -1,0 +1,183 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E90F7DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,4
+	push	si
+   ;	
+   ;	{
+   ;	int a, b, c;
+   ;	clrscr ();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	printf("Masukan Nilai A = "); scanf("%d",&a);
+   ;	
+	mov	ax,offset DGROUP:s@
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	lea	ax,word ptr [bp-2]
+	push	ax
+	mov	ax,offset DGROUP:s@+19
+	push	ax
+	call	near ptr _scanf
+	pop	cx
+	pop	cx
+   ;	
+   ;	printf("Masukan Nilai B = "); scanf("%d",&b);
+   ;	
+	mov	ax,offset DGROUP:s@+22
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	lea	ax,word ptr [bp-4]
+	push	ax
+	mov	ax,offset DGROUP:s@+41
+	push	ax
+	call	near ptr _scanf
+	pop	cx
+	pop	cx
+   ;	
+   ;	c = a + b;
+   ;	
+	mov	ax,word ptr [bp-2]
+	add	ax,word ptr [bp-4]
+	mov	si,ax
+   ;	
+   ;	printf("Hasil Penjumlahan = %d",c);
+   ;	
+	push	si
+	mov	ax,offset DGROUP:s@+44
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	pop	cx
+   ;	
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	printf("HITUNG NILAI \n");
+   ;	
+	mov	ax,offset DGROUP:s@+67
+	push	ax
+	call	near ptr _printf
+	pop	cx
+   ;	
+   ;	printf("NILAI A :%d\n",a);
+   ;	
+	push	word ptr [bp-2]
+	mov	ax,offset DGROUP:s@+82
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	pop	cx
+   ;	
+   ;	printf("NILAI B :%d\n",b);
+   ;	
+	push	word ptr [bp-4]
+	mov	ax,offset DGROUP:s@+95
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	pop	cx
+   ;	
+   ;	printf("-------------\n");
+   ;	
+	mov	ax,offset DGROUP:s@+108
+	push	ax
+	call	near ptr _printf
+	pop	cx
+   ;	
+   ;	printf("NILAI C :%d\n",c);
+   ;	
+	push	si
+	mov	ax,offset DGROUP:s@+123
+	push	ax
+	call	near ptr _printf
+	pop	cx
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'Masukan Nilai A = '
+	db	0
+	db	'%d'
+	db	0
+	db	'Masukan Nilai B = '
+	db	0
+	db	'%d'
+	db	0
+	db	'Hasil Penjumlahan = %d'
+	db	0
+	db	'HITUNG NILAI '
+	db	10
+	db	0
+	db	'NILAI A :%d'
+	db	10
+	db	0
+	db	'NILAI B :%d'
+	db	10
+	db	0
+	db	'-------------'
+	db	10
+	db	0
+	db	'NILAI C :%d'
+	db	10
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	public	_main
+	extrn	_clrscr:near
+	extrn	_printf:near
+	extrn	_scanf:near
+	extrn	_getch:near
+	end
+

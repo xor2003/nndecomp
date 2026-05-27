@@ -1,0 +1,577 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9107DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,54
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	float a, b, c, d, e, f, x, y;
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"Masukan Nilai X=";cin>>x;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-28]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+   ;	
+   ;	cout<<"Masukan Nilai Y=";cin>>y;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+17
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-32]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+   ;	
+   ;	a=x==y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	jne	short @1@74
+	mov	ax,1
+	jmp	short @1@98
+@1@74:
+	xor	ax,ax
+@1@98:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-4]
+   ;	
+   ;	b=x !=y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	je	short @1@146
+	mov	ax,1
+	jmp	short @1@170
+@1@146:
+	xor	ax,ax
+@1@170:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-8]
+   ;	
+   ;	c=x>y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	jbe	short @1@218
+	mov	ax,1
+	jmp	short @1@242
+@1@218:
+	xor	ax,ax
+@1@242:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-12]
+   ;	
+   ;	d=x<y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	jae	short @1@290
+	mov	ax,1
+	jmp	short @1@314
+@1@290:
+	xor	ax,ax
+@1@314:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-16]
+   ;	
+   ;	e=x>=y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	jb	short @1@362
+	mov	ax,1
+	jmp	short @1@386
+@1@362:
+	xor	ax,ax
+@1@386:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-20]
+   ;	
+   ;	f=x<=y;
+   ;	
+	FLD	dword ptr [bp-28]
+	FCOMP	dword ptr [bp-32]
+	FSTSW	word ptr [bp-34]
+	FWAIT	
+	mov	ax,word ptr [bp-34]
+	sahf	
+	ja	short @1@434
+	mov	ax,1
+	jmp	short @1@458
+@1@434:
+	xor	ax,ax
+@1@458:
+	mov	word ptr [bp-34],ax
+	FILD	word ptr [bp-34]
+	FSTP	dword ptr [bp-24]
+   ;	
+   ;	cout<<endl;
+   ;	
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<"=="<<y<<"="<<a<<endl;
+   ;	
+	FLD	dword ptr [bp-4]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+34
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-36],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+45
+	push	ax
+	push	word ptr [bp-36]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-36]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-38],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+48
+	push	ax
+	push	word ptr [bp-38]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-38]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<"!="<<y<<"="<<b<<endl;
+   ;	
+	FLD	dword ptr [bp-8]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+50
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-40],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+61
+	push	ax
+	push	word ptr [bp-40]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-40]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-42],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+64
+	push	ax
+	push	word ptr [bp-42]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-42]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<">"<<y<<"="<<c<<endl;
+   ;	
+	FLD	dword ptr [bp-12]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+66
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-44],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+77
+	push	ax
+	push	word ptr [bp-44]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-44]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-46],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+79
+	push	ax
+	push	word ptr [bp-46]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-46]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<"<"<<y<<"="<<d<<endl;
+   ;	
+	FLD	dword ptr [bp-16]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+81
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-48],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+92
+	push	ax
+	push	word ptr [bp-48]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-48]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-50],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+94
+	push	ax
+	push	word ptr [bp-50]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-50]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<">="<<y<<"="<<e<<endl;
+   ;	
+	FLD	dword ptr [bp-20]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+96
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-52],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+107
+	push	ax
+	push	word ptr [bp-52]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-52]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-54],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+110
+	push	ax
+	push	word ptr [bp-54]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-54]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Hasil dari"<<x<<"<="<<y<<"="<<f<<endl;
+   ;	
+	FLD	dword ptr [bp-24]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-68]
+	FLD	dword ptr [bp-32]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-78]
+	FLD	dword ptr [bp-28]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-88]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+112
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	di,ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+123
+	push	ax
+	push	di
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	di
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	si,ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+126
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'Masukan Nilai X='
+	db	0
+	db	'Masukan Nilai Y='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'=='
+	db	0
+	db	'='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'!='
+	db	0
+	db	'='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'>'
+	db	0
+	db	'='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'<'
+	db	0
+	db	'='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'>='
+	db	0
+	db	'='
+	db	0
+	db	'Hasil dari'
+	db	0
+	db	'<='
+	db	0
+	db	'='
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+	extrn	__turboFloat:word
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	_clrscr:near
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	@istream@$brsh$qrf:near
+	extrn	_cin:word
+	extrn	@endl$qr7ostream:near
+	extrn	@ostream@$blsh$qg:near
+	extrn	_getch:near
+	end
+

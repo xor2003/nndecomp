@@ -1,0 +1,448 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWMAIN.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _lcompter
+PUBLIC  _rcompter
+PUBLIC  _objsmax
+PUBLIC  _keydelay
+PUBLIC  _sintab
+PUBLIC  _multbuff
+PUBLIC  _multaddr
+PUBLIC  _printflg
+EXTRN	__acrtused:ABS
+EXTRN	_setjmp:NEAR
+EXTRN	_swkeyint:NEAR
+EXTRN	_malloc:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_swinit:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_swmove:NEAR
+EXTRN	_swgetjoy:NEAR
+EXTRN	_swdisp:NEAR
+EXTRN	_swcollsn:NEAR
+EXTRN	__intreset:NEAR
+EXTRN	_swprint:NEAR
+EXTRN	__intsetup:NEAR
+EXTRN	_csseg:NEAR
+EXTRN	_dsseg:NEAR
+EXTRN	_swsound:NEAR
+_BSS      SEGMENT
+COMM NEAR	_compnear:	 2:	 4
+COMM NEAR	_endsts:	 2:	 4
+COMM NEAR	_endcount:	BYTE:	 2
+COMM NEAR	_player:	BYTE:	 2
+COMM NEAR	_currobx:	BYTE:	 2
+COMM NEAR	_plyrplane:	BYTE:	 2
+COMM NEAR	_compplane:	BYTE:	 2
+COMM NEAR	_wdisp:	 6:	 100
+COMM NEAR	_goingsun:	BYTE:	 2
+COMM NEAR	_forcdisp:	BYTE:	 2
+COMM NEAR	_histin:	BYTE:	 2
+COMM NEAR	_histout:	BYTE:	 2
+COMM NEAR	_explseed:	BYTE:	 2
+COMM NEAR	_dispcnt:	BYTE:	 2
+COMM NEAR	_endstat:	BYTE:	 2
+COMM NEAR	_playmode:	BYTE:	 2
+COMM NEAR	_currgame:	BYTE:	 2
+COMM NEAR	_maxcrash:	BYTE:	 2
+COMM NEAR	_targets:	 2:	 22
+COMM NEAR	_shothole:	BYTE:	 2
+COMM NEAR	_numtarg:	 2:	 2
+COMM NEAR	_splatbird:	BYTE:	 2
+COMM NEAR	_splatox:	BYTE:	 2
+COMM NEAR	_savemode:	BYTE:	 2
+COMM NEAR	_oxsplatted:	BYTE:	 2
+COMM NEAR	_tickmode:	BYTE:	 2
+COMM NEAR	_counttick:	BYTE:	 2
+COMM NEAR	_envrestart:	 2:	 9
+COMM NEAR	_countmove:	BYTE:	 2
+COMM NEAR	_movetick:	BYTE:	 2
+COMM NEAR	_movemax:	BYTE:	 2
+_BSS      ENDS
+EXTRN	__systype:WORD
+_BSS      SEGMENT
+COMM NEAR	_gamenum:	BYTE:	 2
+COMM NEAR	_gmaxspeed:	BYTE:	 2
+COMM NEAR	_gminspeed:	BYTE:	 2
+COMM NEAR	_targrnge:	BYTE:	 2
+COMM NEAR	_multiost:	BYTE:	 24
+COMM NEAR	_auxdisp:	 1:	 8192
+COMM NEAR	_multkey:	BYTE:	 2
+COMM NEAR	_multtick:	BYTE:	 2
+COMM NEAR	_hires:	BYTE:	 2
+COMM NEAR	_disppos:	BYTE:	 2
+COMM NEAR	_titleflg:	BYTE:	 2
+COMM NEAR	_dispdbg:	BYTE:	 2
+COMM NEAR	_soundflg:	BYTE:	 2
+COMM NEAR	_repflag:	BYTE:	 2
+COMM NEAR	_joystick:	BYTE:	 2
+COMM NEAR	_ibmkeybd:	BYTE:	 2
+COMM NEAR	_inplay:	BYTE:	 2
+COMM NEAR	_koveride:	BYTE:	 2
+COMM NEAR	_missok:	BYTE:	 2
+COMM NEAR	_displx:	BYTE:	 2
+COMM NEAR	_disprx:	BYTE:	 2
+COMM NEAR	_dispdx:	BYTE:	 2
+COMM NEAR	_dispinit:	BYTE:	 2
+COMM NEAR	_drawlist:	BYTE:	 2
+COMM NEAR	_nobjects:	BYTE:	 2
+COMM NEAR	_oobjects:	 118:	 4
+COMM NEAR	_objbot:	BYTE:	 2
+COMM NEAR	_objtop:	BYTE:	 2
+COMM NEAR	_objfree:	BYTE:	 2
+COMM NEAR	_deltop:	BYTE:	 2
+COMM NEAR	_delbot:	BYTE:	 2
+COMM NEAR	_topobj:	BYTE:	 118
+COMM NEAR	_botobj:	BYTE:	 118
+_BSS      ENDS
+_DATA      SEGMENT
+_multbuff	DW	DGROUP:_multiost
+_multaddr	DW	03f2H
+_printflg	DW	00H
+_lcompter	DW	00H
+	DW	0483H
+	DW	00H
+	DW	0829H
+_rcompter	DW	00H
+	DW	0828H
+	DW	0482H
+	DW	02710H
+_objsmax	DW	00H
+_keydelay	DW	0ffffH
+_sintab	DW	00H
+	DW	062H
+	DW	0b5H
+	DW	0edH
+	DW	0100H
+	DW	0edH
+	DW	0b5H
+	DW	062H
+	DW	00H
+	DW	0ff9eH
+	DW	0ff4bH
+	DW	0ff13H
+	DW	0ff00H
+	DW	0ff13H
+	DW	0ff4bH
+	DW	0ff9eH
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swmain   -      SW mainline
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PC-jr Speed-up
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler.
+;|***                         87-03-12        Wounded airplanes.
+;|***                         87-04-06        Computer plane avoiding oxen.
+;|***                         96-12-26        Speed up game a bit
+;|*** */
+;|*** #include        "sw.h"
+; Line 22
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** 
+;|*** int     playmode;                       /* Mode of play                     */
+;|*** GAMES   *currgame;                      /* Game parameters and current game */
+;|*** OBJECTS *targets[MAX_TARG+MAX_OXEN];    /* Status of targets array          */
+;|*** int     numtarg[2];                     /* Number of active targets by color*/
+;|*** int     savemode;                       /* Saved PC display mode            */
+;|*** int     tickmode;                       /* Tick action to be performed      */
+;|*** int     counttick, countmove;           /* Performance counters             */
+;|*** int     movetick, movemax;              /* Move timing                      */
+;|*** 
+;|*** int     gamenum;                        /* Current game number              */
+;|*** int     gmaxspeed, gminspeed;           /* Speed range based on game number */
+;|*** int     targrnge;                       /* Target range based on game number*/
+;|*** 
+;|*** MULTIO  multiost;                       /* Multiple player I/O buffer       */
+;|*** #ifdef  IBMPC                           /* Auxiliary display area           */
+;|*** char    auxdisp[0x2000];
+;|*** #endif
+;|*** #ifdef  ATARI
+;|*** char    auxdisp[0x4000];
+;|*** #endif
+;|*** 
+;|*** int     multkey;                        /* Keystroke to be passed           */
+;|*** MULTIO  *multbuff = &multiost;
+;|*** 
+;|*** #ifdef  IBMPC
+;|*** unsigned multaddr = 0x3F2;              /* Multiple user diskette adapter   */
+;|*** #endif                                  /*   address                        */
+;|*** #ifdef  ATARI
+;|*** unsigned multaddr = 0;                  /* Multiple user controller number  */
+;|*** #endif
+;|*** 
+;|*** int     multtick;                       /* Multiple user tick delay         */
+;|*** BOOL    hires;                          /* High res flag                    */
+;|*** BOOL    disppos;                        /* Display position flag            */
+;|*** BOOL    titleflg;                       /* Title flag                       */
+;|*** int     dispdbg;                        /* Debug value to display           */
+;|*** BOOL    soundflg;                       /* Sound flag                       */
+;|*** BOOL    repflag;                        /* Report statistics flag           */
+;|*** BOOL    joystick;                       /* Joystick being used              */
+;|*** BOOL    ibmkeybd;                       /* IBM-like keyboard being used     */
+;|*** BOOL    inplay;                         /* Game is in play                  */
+;|*** BOOL    printflg = 0;                   /* Print screen requested           */
+;|*** int     koveride;                       /* Keyboard override index number   */
+;|*** int     missok;                         /* Missiles supported               */
+;|*** 
+;|*** int     displx, disprx;                 /* Display left and right           */
+;|*** int     dispdx;                         /* Display shift                    */
+;|*** BOOL    dispinit;                       /* Inialized display flag           */
+;|*** 
+;|*** OBJECTS *drawlist;                      /* Onscreen object list             */
+;|*** OBJECTS *nobjects;                      /* Objects list.                    */
+;|*** OBJECTS oobjects[MAX_PLYR];             /* Original plane object description*/
+;|*** OBJECTS *objbot, *objtop,               /* Top and bottom of object list    */
+;|***         *objfree,                       /* Free list                        */
+;|***         *deltop, *delbot;               /* Newly deallocated objects        */
+;|*** OBJECTS topobj, botobj;                 /* Top and Bottom of obj. x list    */
+;|*** 
+;|*** OBJECTS *compnear[MAX_PLYR];            /* Planes near computer planes      */
+;|*** int     lcompter[MAX_PLYR] = {          /* Computer plane territory         */
+;|***         0, 1155, 0,    2089
+;|*** };
+;|*** int     rcompter[MAX_PLYR] = {          /* Computer plane territory         */
+;|***         0, 2088, 1154, 10000
+;|*** };
+;|*** 
+;|*** OBJECTS *objsmax        =       0;      /* Maximum object allocated         */
+;|*** int     endsts[MAX_PLYR];               /* End of game status and move count*/
+;|*** int     endcount;
+;|*** int     player;                         /* Pointer to player's object       */
+;|*** int     currobx;                        /* Current object index             */
+;|*** BOOL    plyrplane;                      /* Current object is player flag    */
+;|*** BOOL    compplane;                      /* Current object is a comp plane   */
+;|*** OLDWDISP wdisp[MAX_OBJS];               /* World display status             */
+;|*** BOOL    goingsun;                       /* Going to the sun flag            */
+;|*** BOOL    forcdisp;                       /* Force display of ground          */
+;|*** char    *histin, *histout;              /* History input and output files   */
+;|*** unsigned explseed;                      /* random seed for explosion        */
+;|*** 
+;|*** int     keydelay = -1;                  /* Number of displays per keystroke */
+;|*** int     dispcnt;                        /* Displays to delay keyboard       */
+;|*** int     endstat;                        /* End of game status for curr. move*/
+;|*** int     maxcrash;                       /* Maximum number of crashes        */
+;|*** int     shothole;                       /* Number of shot holes to display  */
+;|*** int     splatbird;                      /* Number of slatted bird symbols   */
+;|*** int     splatox;                        /* Display splatted ox              */
+;|*** int     oxsplatted;                     /* An ox has been splatted          */
+;|*** 
+;|*** int     sintab[ANGLES] = {              /* sine table of pi/8 increments    */
+;|***         0,      98,     181,    237,    /*   multiplied by 256              */
+;|***         256,    237,    181,    98,
+;|***         0,      -98,    -181,   -237,
+;|***         -256,   -237,   -181,   -98
+;|***         };
+;|*** 
+;|*** jmp_buf envrestart;                     /* Restart environment for restart  */
+;|***                                         /*  long jump.                      */
+;|*** 
+;|*** extern  int      swkeyint();            /* Keyboard interrupt server        */
+;|*** 
+;|*** #ifdef  IBMPC                           /* System type                      */
+;|*** extern  int      _systype;
+;|*** #endif
+;|*** #ifdef  ATARI
+;|***         int     _systype;
+;|*** #endif
+;|*** 
+;|*** 
+;|*** main( argc, argv )
+;|*** int     argc;
+; Line 134
+	PUBLIC	_main
+_main	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	33 c0 			xor	ax,ax
+	*** 000005	e8 00 00 		call	__aNchkstk
+;	argv = 6
+;	argc = 4
+;|*** char    *argv[];
+;|*** {
+;|*** char    *malloc();
+;|*** 
+;|***         nobjects = (OBJECTS *)malloc( 100 * sizeof( OBJECTS ) );
+; Line 139
+	*** 000008	b8 18 2e 		mov	ax,11800
+	*** 00000b	50 			push	ax
+	*** 00000c	e8 00 00 		call	_malloc
+	*** 00000f	8b e5 			mov	sp,bp
+	*** 000011	a3 00 00 		mov	WORD PTR _nobjects,ax
+;|***         _systype = PCDOS;
+; Line 140
+	*** 000014	c7 06 00 00 00 00 	mov	WORD PTR __systype,0
+;|*** 
+;|***         swinit( argc, argv );
+; Line 142
+	*** 00001a	ff 76 06 		push	WORD PTR [bp+6]	;argv
+	*** 00001d	ff 76 04 		push	WORD PTR [bp+4]	;argc
+	*** 000020	e8 00 00 		call	_swinit
+	*** 000023	8b e5 			mov	sp,bp
+;|***         setjmp( envrestart );
+; Line 143
+	*** 000025	b8 00 00 		mov	ax,OFFSET DGROUP:_envrestart
+	*** 000028	50 			push	ax
+	*** 000029	e8 00 00 		call	_setjmp
+	*** 00002c	8b e5 			mov	sp,bp
+;|***         FOREVER {
+; Line 144
+					$FC227:
+;|*** 
+;|***                 /*----- DLC 96/12/27 ------
+;|***                 while ( movetick < 2  );
+;|***                 movetick = 0;
+;|***                 -------------------------*/
+;|***                 while ( movetick < movemax );
+; Line 150
+	*** 00002e	a1 00 00 		mov	ax,WORD PTR _movetick
+	*** 000031	39 06 00 00 		cmp	WORD PTR _movemax,ax
+	*** 000035	7f f7 			jg	$FC227
+;|***                 intsoff();
+; Line 151
+	*** 000037	e8 00 00 		call	_intsoff
+;|***                 movetick -= movemax;
+; Line 152
+	*** 00003a	a1 00 00 		mov	ax,WORD PTR _movemax
+	*** 00003d	29 06 00 00 		sub	WORD PTR _movetick,ax
+;|***                 intson();
+; Line 153
+	*** 000041	e8 00 00 		call	_intson
+;|*** 
+;|***                 swmove();
+; Line 155
+	*** 000044	e8 00 00 		call	_swmove
+;|***                 swgetjoy();
+; Line 156
+	*** 000047	e8 00 00 		call	_swgetjoy
+;|***                 swdisp();
+; Line 157
+	*** 00004a	e8 00 00 		call	_swdisp
+;|***                 swgetjoy();
+; Line 158
+	*** 00004d	e8 00 00 		call	_swgetjoy
+;|***                 swcollsn();
+; Line 159
+	*** 000050	e8 00 00 		call	_swcollsn
+;|***                 swgetjoy();
+; Line 160
+	*** 000053	e8 00 00 		call	_swgetjoy
+;|***                 intsoff();
+; Line 161
+	*** 000056	e8 00 00 		call	_intsoff
+;|***                 if ( printflg ) {
+; Line 162
+	*** 000059	83 3e 04 00 00 		cmp	WORD PTR _printflg,0
+	*** 00005e	74 30 			je	$I238
+;|***                         printflg = FALSE;
+; Line 163
+	*** 000060	c7 06 04 00 00 00 	mov	WORD PTR _printflg,0
+;|***                         _intreset( koveride );
+; Line 164
+	*** 000066	ff 36 00 00 		push	WORD PTR _koveride
+	*** 00006a	e8 00 00 		call	__intreset
+	*** 00006d	8b e5 			mov	sp,bp
+;|***                         intson();
+; Line 165
+	*** 00006f	e8 00 00 		call	_intson
+;|***                         swprint();
+; Line 166
+	*** 000072	e8 00 00 		call	_swprint
+;|***                         intsoff();
+; Line 167
+	*** 000075	e8 00 00 		call	_intsoff
+;|***                         koveride = _intsetup( KEYINT, swkeyint,
+;|***                                               csseg(), dsseg() );
+; Line 169
+	*** 000078	e8 00 00 		call	_dsseg
+	*** 00007b	50 			push	ax
+	*** 00007c	e8 00 00 		call	_csseg
+	*** 00007f	50 			push	ax
+	*** 000080	b8 00 00 		mov	ax,OFFSET _swkeyint
+	*** 000083	50 			push	ax
+	*** 000084	b8 09 00 		mov	ax,9
+	*** 000087	50 			push	ax
+	*** 000088	e8 00 00 		call	__intsetup
+	*** 00008b	8b e5 			mov	sp,bp
+	*** 00008d	a3 00 00 		mov	WORD PTR _koveride,ax
+;|***                 }
+; Line 170
+;|***                 intson();
+; Line 171
+					$I238:
+	*** 000090	e8 00 00 		call	_intson
+;|***                 swsound();
+; Line 172
+	*** 000093	e8 00 00 		call	_swsound
+;|***         }
+; Line 173
+	*** 000096	eb 96 			jmp	SHORT $FC227
+
+_main	ENDP
+_TEXT	ENDS
+END
+;|*** }

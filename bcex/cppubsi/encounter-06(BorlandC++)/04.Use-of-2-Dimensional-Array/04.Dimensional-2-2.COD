@@ -1,0 +1,428 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9117DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+	?debug	C E95337528114443A5C494E434C5544455C696F6D616E69702E68
+	?debug	C E95337528114443A5C494E434C5544455C67656E657269632E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,66
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	int i,j;
+   ;	int data_jual[4][4];
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	for(i=1;i<=3;i++)
+   ;	
+	mov	di,1
+	jmp	@1@170
+@1@50:
+   ;	
+   ;	{
+   ;	for(j=1;
+   ;	
+	mov	si,1
+	jmp	@1@122
+@1@74:
+   ;	
+   ;	j<=3;j++)
+   ;	{
+   ;	cout<<"Datra ke - "<<i<<" "<<j<<endl;
+   ;	
+	mov	ax,si
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-2],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+12
+	push	ax
+	push	word ptr [bp-2]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-2]
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"Jumlah Penjualan:";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+14
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	cin>>data_jual[i][j];
+   ;	
+	mov	ax,di
+	shl	ax,1
+	shl	ax,1
+	shl	ax,1
+	lea	dx,word ptr [bp-66]
+	add	dx,ax
+	mov	ax,si
+	shl	ax,1
+	add	dx,ax
+	push	dx
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+	inc	si
+@1@122:
+	cmp	si,3
+	jg	@@0
+	jmp	@1@74
+@@0:
+	inc	di
+@1@170:
+	cmp	di,3
+	jg	@@1
+	jmp	@1@50
+@@1:
+   ;	
+   ;	}
+   ;	}
+   ;	cout<<"Data Penjualan Pertahun"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+32
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"-----------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+56
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"NO 2007 2008 2003"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+74
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<"-----------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+92
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	for(i=1;i<=3;i++)
+   ;	
+	mov	di,1
+	jmp	@1@362
+@1@218:
+   ;	
+   ;	{
+   ;	cout<<setiosflags(ios::left)<<setw(5)<<i;
+   ;	
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	mov	dx,2
+	push	ax
+	push	dx
+	push	ds
+	lea	ax,word ptr [bp-8]
+	push	ax
+	call	near ptr @setiosflags$ql
+	add	sp,8
+	lea	ax,word ptr [bp-8]
+	mov	word ptr [bp-10],ax
+	mov	bx,word ptr [bp-10]
+	push	word ptr [bx+4]
+	push	word ptr [bx+2]
+	push	word ptr DGROUP:_cout
+	mov	bx,word ptr [bp-10]
+	call	word ptr [bx]
+	add	sp,6
+	mov	word ptr [bp-16],offset DGROUP:_cout
+	mov	ax,5
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-14]
+	push	ax
+	call	near ptr @setw$qi
+	add	sp,6
+	lea	ax,word ptr [bp-14]
+	mov	word ptr [bp-18],ax
+	mov	bx,word ptr [bp-18]
+	push	word ptr [bx+2]
+	mov	bx,word ptr [bp-16]
+	push	word ptr [bx]
+	mov	bx,word ptr [bp-18]
+	call	word ptr [bx]
+	pop	cx
+	pop	cx
+	push	word ptr [bp-16]
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	for(j=1;j<=3;j++)
+   ;	
+	mov	si,1
+	jmp	@1@290
+@1@242:
+   ;	
+   ;	{
+   ;	cout<<setiosflags(ios::right)<<setw(4);
+   ;	
+	xor	ax,ax
+	mov	dx,4
+	push	ax
+	push	dx
+	push	ds
+	lea	ax,word ptr [bp-24]
+	push	ax
+	call	near ptr @setiosflags$ql
+	add	sp,8
+	lea	ax,word ptr [bp-24]
+	mov	word ptr [bp-26],ax
+	mov	bx,word ptr [bp-26]
+	push	word ptr [bx+4]
+	push	word ptr [bx+2]
+	push	word ptr DGROUP:_cout
+	mov	bx,word ptr [bp-26]
+	call	word ptr [bx]
+	add	sp,6
+	mov	word ptr [bp-32],offset DGROUP:_cout
+	mov	ax,4
+	push	ax
+	push	ds
+	lea	ax,word ptr [bp-30]
+	push	ax
+	call	near ptr @setw$qi
+	add	sp,6
+	lea	ax,word ptr [bp-30]
+	mov	word ptr [bp-34],ax
+	mov	bx,word ptr [bp-34]
+	push	word ptr [bx+2]
+	mov	bx,word ptr [bp-32]
+	push	word ptr [bx]
+	mov	bx,word ptr [bp-34]
+	call	word ptr [bx]
+	pop	cx
+	pop	cx
+   ;	
+   ;	cout<<data_jual[i][j];
+   ;	
+	mov	ax,di
+	shl	ax,1
+	shl	ax,1
+	shl	ax,1
+	lea	bx,word ptr [bp-66]
+	add	bx,ax
+	mov	ax,si
+	shl	ax,1
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	cout<<" ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+110
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	si
+@1@290:
+	cmp	si,3
+	jg	@@2
+	jmp	@1@242
+@@2:
+   ;	
+   ;	}
+   ;	cout<<endl;
+   ;	
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	inc	di
+@1@362:
+	cmp	di,3
+	jg	@@3
+	jmp	@1@218
+@@3:
+   ;	
+   ;	}
+   ;	cout<<"-----------------------"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+112
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'Datra ke - '
+	db	0
+	db	' '
+	db	0
+	db	'Jumlah Penjualan:'
+	db	0
+	db	'Data Penjualan Pertahun'
+	db	0
+	db	'-----------------'
+	db	0
+	db	'NO 2007 2008 2003'
+	db	0
+	db	'-----------------'
+	db	0
+	db	' '
+	db	0
+	db	'-----------------------'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	_clrscr:near
+	extrn	@endl$qr7ostream:near
+	extrn	@ostream@$blsh$ql:near
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	@istream@$brsh$qri:near
+	extrn	_cin:word
+	extrn	@setw$qi:near
+	extrn	@setiosflags$ql:near
+	extrn	_getch:near
+	end
+

@@ -1,0 +1,17 @@
+Publics by module
+
+MCURSOR      size = 272
+	_ArrowCursor                      _HandCursor
+	_LeftRightCursor                  _UpDownCursor
+
+MSMOUSE      size = 1273
+	MouseObject::MouseObject()        MouseObject::ButtonStatus()
+	MouseObject::DriverExists()       MouseObject::Event(int near&,int near&)
+	MouseObject::Hide()               MouseObject::Move(int,int)
+	MouseObject::Moved()              MouseObject::Operating()
+	MouseObject::PressCnt(unsigned int)  MouseObject::ReleaseCnt(unsigned int)
+	MouseObject::SetGCursor(const MouseCursor near&)  MouseObject::Setup(VideoModeType)
+	MouseObject::SetupOk()            MouseObject::Show()
+	MouseObject::Status(int near&,int near&)  MouseObject::TurnOff()
+	MouseObject::TurnOn()             MouseObject::WaitForAnyEvent(int near&,int near&)
+	MouseObject::WaitForEvent(unsigned int,int near&,int near&)  _Mouse

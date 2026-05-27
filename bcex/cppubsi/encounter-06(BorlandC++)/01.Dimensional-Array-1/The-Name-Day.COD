@@ -1,0 +1,240 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9117DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_DATA	segment word public 'DATA'
+	db	77
+	db	105
+	db	110
+	db	103
+	db	103
+	db	117
+	db	4 dup (0)
+	db	83
+	db	101
+	db	110
+	db	105
+	db	110
+	db	5 dup (0)
+	db	83
+	db	101
+	db	108
+	db	97
+	db	115
+	db	97
+	db	4 dup (0)
+	db	82
+	db	97
+	db	98
+	db	117
+	db	6 dup (0)
+	db	75
+	db	97
+	db	109
+	db	105
+	db	115
+	db	5 dup (0)
+	db	74
+	db	117
+	db	109
+	db	39
+	db	97
+	db	116
+	db	4 dup (0)
+	db	83
+	db	97
+	db	98
+	db	116
+	db	117
+	db	5 dup (0)
+_DATA	ends
+_BSS	segment word public 'BSS'
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,78
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	char hari [7][10]=
+   ;	
+   ;	
+   ;	{"Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"};
+   ;	
+	lea	ax,word ptr [bp-78]
+	push	ss
+	push	ax
+	mov	ax,offset DGROUP:d@+0
+	push	ds
+	push	ax
+	mov	cx,70
+	call	near ptr N_SCOPY@
+   ;	
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"Nama-nama hari :"<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	cout<<hari[0]<<endl<<hari[1]<<endl<<hari[2]<<endl<<hari[3]<<endl<<hari[4]<<endl<<hari[5]<<endl<<hari[6]<<endl;
+   ;	
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	word ptr [bp-2],ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-68]
+	push	ax
+	push	word ptr [bp-2]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-2]
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	word ptr [bp-4],ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-58]
+	push	ax
+	push	word ptr [bp-4]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-4]
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	word ptr [bp-6],ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-48]
+	push	ax
+	push	word ptr [bp-6]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-6]
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	word ptr [bp-8],ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-38]
+	push	ax
+	push	word ptr [bp-8]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-8]
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	di,ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-28]
+	push	ax
+	push	di
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	di
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	mov	si,ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-18]
+	push	ax
+	push	si
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'Nama-nama hari :'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	N_SCOPY@:near
+	extrn	_clrscr:near
+	extrn	@endl$qr7ostream:near
+	extrn	_cout:word
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_getch:near
+	end
+

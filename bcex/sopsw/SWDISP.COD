@@ -1,0 +1,930 @@
+;	Static Name Aliases
+;
+;	$S227_seed	EQU	seed
+	TITLE   C:\SWDISP.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_swpntsym:NEAR
+EXTRN	_swpntcol:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	__aNulmul:NEAR
+EXTRN	__aNulrem:NEAR
+EXTRN	_sound:NEAR
+EXTRN	_swputsym:NEAR
+EXTRN	_swsetblk:NEAR
+EXTRN	_wdisp:BYTE
+EXTRN	_nobjects:WORD
+EXTRN	_shothole:WORD
+EXTRN	_splatbird:WORD
+EXTRN	_splatox:WORD
+EXTRN	_oxsplatted:WORD
+EXTRN	_swshtsym:BYTE
+EXTRN	_swsplsym:BYTE
+EXTRN	_countmove:WORD
+_DATA      SEGMENT
+$S227_seed	DD	04772791H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swdispc  -      Display all players and objects
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-21        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         87-03-09        Microsoft compiler.
+;|***                         87-03-12        Wounded airplanes.
+;|***                         87-03-13        Splatted bird symbol.
+;|***                         87-04-05        Missile and starburst support
+;|*** */
+;|*** #include        "sw.h"
+; Line 21
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** 
+;|*** extern  OLDWDISP wdisp[];               /*  World display status            */
+;|*** extern  OBJECTS *nobjects;              /*  Objects list.                   */
+;|*** extern  OBJECTS *objtop;                /*  Start of object list.           */
+;|*** extern  int     shothole;               /*  Number of shot holes to display */
+;|*** extern  int     splatbird;              /*  Number of splatted birds        */
+;|*** extern  int     splatox;                /* Display splatted ox              */
+;|*** extern  int     oxsplatted;             /* An ox has been splatted          */
+;|*** extern  char    swshtsym[];             /*  Shot hole symbol                */
+;|*** extern  char    swsplsym[];             /*  Splatted bird symbol            */
+;|*** extern  int     countmove;              /*  Move number                     */
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispplyr( ob )
+;|*** OBJECTS *ob;
+; Line 43
+	PUBLIC	_dispplyr
+_dispplyr	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	33 c0 			xor	ax,ax
+	*** 000005	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|***         if ( shothole )
+; Line 45
+	*** 000008	83 3e 00 00 00 		cmp	WORD PTR _shothole,0
+	*** 00000d	74 03 			je	$I159
+;|***                 dispwindshot();
+; Line 46
+	*** 00000f	e8 00 00 		call	_dispwindshot
+;|***         if ( splatbird )
+; Line 47
+					$I159:
+	*** 000012	83 3e 00 00 00 		cmp	WORD PTR _splatbird,0
+	*** 000017	74 03 			je	$I161
+;|***                 dispsplatbird();
+; Line 48
+	*** 000019	e8 00 00 		call	_dispsplatbird
+;|***         plnsound( ob );
+; Line 49
+					$I161:
+	*** 00001c	ff 76 04 		push	WORD PTR [bp+4]	;ob
+	*** 00001f	e8 00 00 		call	plnsound
+;|*** }
+; Line 50
+	*** 000022	8b e5 			mov	sp,bp
+	*** 000024	5d 			pop	bp
+	*** 000025	c3 			ret	
+
+_dispplyr	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispbomb( obp )
+;|*** OBJECTS *obp;
+; Line 58
+	PUBLIC	_dispbomb
+_dispbomb	PROC NEAR
+	*** 000026	55 			push	bp
+	*** 000027	8b ec 			mov	bp,sp
+	*** 000029	33 c0 			xor	ax,ax
+	*** 00002b	e8 00 00 		call	__aNchkstk
+	*** 00002e	56 			push	si
+;	register si = ob
+;	obp = 4
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         if ( ( ob = obp )->ob_dy <= 0 )
+; Line 62
+	*** 00002f	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 000032	83 7c 08 00 		cmp	WORD PTR [si+8],0
+	*** 000036	7f 11 			jg	$I168
+;|***                 sound( S_BOMB, -( ob->ob_y ), ob );
+; Line 63
+	*** 000038	56 			push	si
+	*** 000039	8b 44 04 		mov	ax,WORD PTR [si+4]
+	*** 00003c	f7 d8 			neg	ax
+	*** 00003e	50 			push	ax
+	*** 00003f	b8 14 00 		mov	ax,20
+	*** 000042	50 			push	ax
+	*** 000043	e8 00 00 		call	_sound
+	*** 000046	83 c4 06 		add	sp,6
+;|*** }
+; Line 64
+					$I168:
+	*** 000049	5e 			pop	si
+	*** 00004a	8b e5 			mov	sp,bp
+	*** 00004c	5d 			pop	bp
+	*** 00004d	c3 			ret	
+
+_dispbomb	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispmiss( obp )
+;|*** OBJECTS *obp;
+; Line 71
+	PUBLIC	_dispmiss
+_dispmiss	PROC NEAR
+	*** 00004e	33 c0 			xor	ax,ax
+	*** 000050	e8 00 00 		call	__aNchkstk
+;	obp = 4
+;|*** {
+;|*** }
+; Line 73
+	*** 000053	c3 			ret	
+
+_dispmiss	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispburst( obp )
+;|*** OBJECTS *obp;
+; Line 80
+	PUBLIC	_dispburst
+_dispburst	PROC NEAR
+	*** 000054	33 c0 			xor	ax,ax
+	*** 000056	e8 00 00 		call	__aNchkstk
+;	obp = 4
+;|*** {
+;|*** }
+; Line 82
+	*** 000059	c3 			ret	
+
+_dispburst	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispexpl( obp )
+;|*** OBJECTS *obp;
+; Line 89
+	PUBLIC	_dispexpl
+_dispexpl	PROC NEAR
+	*** 00005a	55 			push	bp
+	*** 00005b	8b ec 			mov	bp,sp
+	*** 00005d	33 c0 			xor	ax,ax
+	*** 00005f	e8 00 00 		call	__aNchkstk
+	*** 000062	56 			push	si
+;	register si = ob
+;	obp = 4
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         if ( ( ob = obp )->ob_orient )
+; Line 93
+	*** 000063	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 000066	83 7c 0c 00 		cmp	WORD PTR [si+12],0
+	*** 00006a	74 0e 			je	$I180
+;|***                 sound( S_EXPLOSION, ob->ob_hitcount, ob );
+; Line 94
+	*** 00006c	56 			push	si
+	*** 00006d	ff 74 1a 		push	WORD PTR [si+26]
+	*** 000070	b8 0a 00 		mov	ax,10
+	*** 000073	50 			push	ax
+	*** 000074	e8 00 00 		call	_sound
+	*** 000077	83 c4 06 		add	sp,6
+;|*** }
+; Line 95
+					$I180:
+	*** 00007a	5e 			pop	si
+	*** 00007b	8b e5 			mov	sp,bp
+	*** 00007d	5d 			pop	bp
+	*** 00007e	c3 			ret	
+	*** 00007f	90 			nop	
+
+_dispexpl	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispcomp( ob )
+;|*** OBJECTS *ob;
+; Line 102
+	PUBLIC	_dispcomp
+_dispcomp	PROC NEAR
+	*** 000080	55 			push	bp
+	*** 000081	8b ec 			mov	bp,sp
+	*** 000083	33 c0 			xor	ax,ax
+	*** 000085	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|***         plnsound( ob );
+; Line 104
+	*** 000088	ff 76 04 		push	WORD PTR [bp+4]	;ob
+	*** 00008b	e8 00 00 		call	plnsound
+;|*** }
+; Line 105
+	*** 00008e	8b e5 			mov	sp,bp
+	*** 000090	5d 			pop	bp
+	*** 000091	c3 			ret	
+
+_dispcomp	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispmult( ob )
+;|*** OBJECTS *ob;
+; Line 111
+	PUBLIC	_dispmult
+_dispmult	PROC NEAR
+	*** 000092	55 			push	bp
+	*** 000093	8b ec 			mov	bp,sp
+	*** 000095	33 c0 			xor	ax,ax
+	*** 000097	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|***         plnsound( ob );
+; Line 113
+	*** 00009a	ff 76 04 		push	WORD PTR [bp+4]	;ob
+	*** 00009d	e8 00 00 		call	plnsound
+;|*** }
+; Line 114
+	*** 0000a0	8b e5 			mov	sp,bp
+	*** 0000a2	5d 			pop	bp
+	*** 0000a3	c3 			ret	
+
+_dispmult	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** disptarg( ob )
+;|*** OBJECTS *ob;
+; Line 120
+	PUBLIC	_disptarg
+_disptarg	PROC NEAR
+	*** 0000a4	55 			push	bp
+	*** 0000a5	8b ec 			mov	bp,sp
+	*** 0000a7	33 c0 			xor	ax,ax
+	*** 0000a9	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|***         if ( ob->ob_firing )
+; Line 122
+	*** 0000ac	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 0000af	83 7f 14 00 		cmp	WORD PTR [bx+20],0
+	*** 0000b3	74 0b 			je	$I190
+;|***                 sound( S_SHOT, 0, ob );
+; Line 123
+	*** 0000b5	53 			push	bx
+	*** 0000b6	2b c0 			sub	ax,ax
+	*** 0000b8	50 			push	ax
+	*** 0000b9	b8 1e 00 		mov	ax,30
+	*** 0000bc	50 			push	ax
+	*** 0000bd	e8 00 00 		call	_sound
+;|*** }
+; Line 124
+					$I190:
+	*** 0000c0	8b e5 			mov	sp,bp
+	*** 0000c2	5d 			pop	bp
+	*** 0000c3	c3 			ret	
+
+_disptarg	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispflck( ob )
+;|*** OBJECTS *ob;
+; Line 130
+	PUBLIC	_dispflck
+_dispflck	PROC NEAR
+	*** 0000c4	33 c0 			xor	ax,ax
+	*** 0000c6	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|*** }
+; Line 132
+	*** 0000c9	c3 			ret	
+
+_dispflck	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispbird( ob )
+;|*** OBJECTS *ob;
+; Line 138
+	PUBLIC	_dispbird
+_dispbird	PROC NEAR
+	*** 0000ca	33 c0 			xor	ax,ax
+	*** 0000cc	e8 00 00 		call	__aNchkstk
+;	ob = 4
+;|*** {
+;|*** }
+; Line 140
+	*** 0000cf	c3 			ret	
+
+_dispbird	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  plnsound( obp )
+;|*** OBJECTS *obp;
+; Line 147
+plnsound	PROC NEAR
+	*** 0000d0	55 			push	bp
+	*** 0000d1	8b ec 			mov	bp,sp
+	*** 0000d3	33 c0 			xor	ax,ax
+	*** 0000d5	e8 00 00 		call	__aNchkstk
+	*** 0000d8	56 			push	si
+;	register si = ob
+;	obp = 4
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         ob = obp;
+;|***         if ( ob->ob_firing )
+; Line 152
+	*** 0000d9	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 0000dc	83 7c 14 00 		cmp	WORD PTR [si+20],0
+	*** 0000e0	74 14 			je	$I200
+;|***                 sound( S_SHOT, 0, ob );
+; Line 153
+	*** 0000e2	56 			push	si
+	*** 0000e3	2b c0 			sub	ax,ax
+	*** 0000e5	50 			push	ax
+	*** 0000e6	b8 1e 00 		mov	ax,30
+					$L20006:
+	*** 0000e9	50 			push	ax
+	*** 0000ea	e8 00 00 		call	_sound
+	*** 0000ed	83 c4 06 		add	sp,6
+;|***         else
+; Line 154
+	*** 0000f0	5e 			pop	si
+	*** 0000f1	8b e5 			mov	sp,bp
+	*** 0000f3	5d 			pop	bp
+	*** 0000f4	c3 			ret	
+	*** 0000f5	90 			nop	
+					$I200:
+;|***                 switch ( ob->ob_state ) {
+; Line 155
+	*** 0000f6	8b 04 			mov	ax,WORD PTR [si]
+	*** 0000f8	eb 26 			jmp	SHORT $S202
+;|***                         case FALLING:
+; Line 156
+					$SC206:
+;|***                                 if ( ob->ob_dy >= 0 )
+; Line 157
+	*** 0000fa	83 7c 08 00 		cmp	WORD PTR [si+8],0
+	*** 0000fe	7c 0a 			jl	$I207
+;|***                                         sound( S_HIT, 0, ob );
+; Line 158
+					$L20004:
+	*** 000100	56 			push	si
+	*** 000101	2b c0 			sub	ax,ax
+	*** 000103	50 			push	ax
+	*** 000104	b8 32 00 		mov	ax,50
+	*** 000107	eb e0 			jmp	SHORT $L20006
+	*** 000109	90 			nop	
+					$I207:
+;|***                                 else
+;|***                                         sound( S_FALLING, ob->ob_y, ob );
+; Line 160
+	*** 00010a	56 			push	si
+	*** 00010b	ff 74 04 		push	WORD PTR [si+4]
+	*** 00010e	b8 28 00 		mov	ax,40
+	*** 000111	eb d6 			jmp	SHORT $L20006
+;|***                                 break;
+;|*** 
+;|***                         case FLYING:
+; Line 163
+	*** 000113	90 			nop	
+					$SC209:
+;|***                                 sound( S_PLANE, -( ob->ob_speed ), ob );
+; Line 164
+	*** 000114	56 			push	si
+	*** 000115	8b 44 0e 		mov	ax,WORD PTR [si+14]
+	*** 000118	f7 d8 			neg	ax
+	*** 00011a	50 			push	ax
+	*** 00011b	b8 3c 00 		mov	ax,60
+	*** 00011e	eb c9 			jmp	SHORT $L20006
+					$S202:
+	*** 000120	48 			dec	ax
+	*** 000121	3d 09 00 		cmp	ax,9
+	*** 000124	77 1c 			ja	$SB203
+	*** 000126	d1 e0 			shl	ax,1
+	*** 000128	93 			xchg	ax,bx
+	*** 000129	2e ff a7 2e 01 		jmp	WORD PTR cs:$L20001[bx]
+					$L20001:
+	*** 00012e	14 01 				DW	$SC209
+	*** 000130	42 01 				DW	$SB203
+	*** 000132	42 01 				DW	$SB203
+	*** 000134	42 01 				DW	$SB203
+	*** 000136	fa 00 				DW	$SC206
+	*** 000138	42 01 				DW	$SB203
+	*** 00013a	00 01 				DW	$L20004
+	*** 00013c	42 01 				DW	$SB203
+	*** 00013e	00 01 				DW	$L20004
+	*** 000140	00 01 				DW	$L20004
+					$SB203:
+;|***                                 break;
+;|*** 
+;|***                         case STALLED:
+;|***                         case WOUNDED:
+;|***                         case WOUNDSTALL:
+;|***                                 sound( S_HIT, 0, ob );
+;|***                                 break;
+;|*** 
+;|***                         default:
+;|***                                 break;
+;|***                 }
+;|*** 
+;|*** }
+; Line 177
+	*** 000142	5e 			pop	si
+	*** 000143	8b e5 			mov	sp,bp
+	*** 000145	5d 			pop	bp
+	*** 000146	c3 			ret	
+	*** 000147	90 			nop	
+
+plnsound	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispwobj( obp )
+;|*** OBJECTS *obp;
+; Line 183
+	PUBLIC	_dispwobj
+_dispwobj	PROC NEAR
+	*** 000148	55 			push	bp
+	*** 000149	8b ec 			mov	bp,sp
+	*** 00014b	b8 06 00 		mov	ax,6
+	*** 00014e	e8 00 00 		call	__aNchkstk
+	*** 000151	57 			push	di
+	*** 000152	56 			push	si
+;	register si = ob
+;	register di = ow
+;	ox = -2
+;	oy = -4
+;	oldplot = -6
+;	obp = 4
+;|*** {
+;|*** register OBJECTS  *ob;
+;|*** register OLDWDISP *ow;
+;|*** int               ox, oy, oldplot;
+;|*** 
+;|***         ob = obp;
+;|***         ow = &wdisp[ob->ob_index];
+; Line 190
+	*** 000153	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 000156	8b 44 38 		mov	ax,WORD PTR [si+56]
+	*** 000159	8b c8 			mov	cx,ax
+	*** 00015b	d1 e0 			shl	ax,1
+	*** 00015d	03 c1 			add	ax,cx
+	*** 00015f	d1 e0 			shl	ax,1
+	*** 000161	05 00 00 		add	ax,OFFSET _wdisp
+	*** 000164	8b f8 			mov	di,ax
+;|*** 
+;|***         if ( ow->ow_xorplot )
+; Line 192
+	*** 000166	8b df 			mov	bx,di
+	*** 000168	83 3f 00 		cmp	WORD PTR [bx],0
+	*** 00016b	74 10 			je	$I220
+;|***                 swpntsym( ow->ow_x, ow->ow_y, ow->ow_xorplot - 1 );
+; Line 193
+	*** 00016d	8b 0f 			mov	cx,WORD PTR [bx]
+	*** 00016f	49 			dec	cx
+	*** 000170	51 			push	cx
+	*** 000171	ff 77 04 		push	WORD PTR [bx+4]
+	*** 000174	ff 77 02 		push	WORD PTR [bx+2]
+	*** 000177	e8 00 00 		call	_swpntsym
+	*** 00017a	83 c4 06 		add	sp,6
+;|*** 
+;|***         if ( ob->ob_state >= FINISHED )
+; Line 195
+					$I220:
+	*** 00017d	83 3c 5b 		cmp	WORD PTR [si],91
+	*** 000180	7d 65 			jge	$L20007
+;|***                 ow->ow_xorplot = 0;
+;|***         else {
+;|***                 oldplot = swpntcol( ow->ow_x = SCR_CENTR
+;|***                                     + ( ob->ob_x + ob->ob_symwdt / 2 )
+;|***                                     / WRLD_RSX,
+;|***                                     ow->ow_y
+;|***                                     = ( ob->ob_y - ob->ob_symhgt / 2 )
+;|***                                     / WRLD_RSY,
+;|***                                     ob->ob_owner->ob_clr );
+; Line 204
+	*** 000182	8b 44 22 		mov	ax,WORD PTR [si+34]
+	*** 000185	99 			cwd	
+	*** 000186	2b c2 			sub	ax,dx
+	*** 000188	d1 f8 			sar	ax,1
+	*** 00018a	2b 44 04 		sub	ax,WORD PTR [si+4]
+	*** 00018d	f7 d8 			neg	ax
+	*** 00018f	b9 0d 00 		mov	cx,13
+	*** 000192	99 			cwd	
+	*** 000193	f7 f9 			idiv	cx
+	*** 000195	89 45 04 		mov	WORD PTR [di+4],ax
+	*** 000198	8b 44 24 		mov	ax,WORD PTR [si+36]
+	*** 00019b	99 			cwd	
+	*** 00019c	2b c2 			sub	ax,dx
+	*** 00019e	d1 f8 			sar	ax,1
+	*** 0001a0	03 44 02 		add	ax,WORD PTR [si+2]
+	*** 0001a3	b9 13 00 		mov	cx,19
+	*** 0001a6	99 			cwd	
+	*** 0001a7	f7 f9 			idiv	cx
+	*** 0001a9	05 98 00 		add	ax,152
+	*** 0001ac	89 45 02 		mov	WORD PTR [di+2],ax
+;|*** 
+;|***                 if ( ( oldplot == 0 ) || ( ( oldplot & 0x0003 ) == 3 ) ) {
+; Line 206
+	*** 0001af	8b 5c 20 		mov	bx,WORD PTR [si+32]
+	*** 0001b2	ff 77 2a 		push	WORD PTR [bx+42]
+	*** 0001b5	ff 75 04 		push	WORD PTR [di+4]
+	*** 0001b8	50 			push	ax
+	*** 0001b9	e8 00 00 		call	_swpntcol
+	*** 0001bc	83 c4 06 		add	sp,6
+	*** 0001bf	89 46 fa 		mov	WORD PTR [bp-6],ax	;oldplot
+	*** 0001c2	0b c0 			or	ax,ax
+	*** 0001c4	74 06 			je	$I226
+	*** 0001c6	24 03 			and	al,3
+	*** 0001c8	3c 03 			cmp	al,3
+	*** 0001ca	75 0c 			jne	$I225
+					$I226:
+;|***                         ow->ow_xorplot = oldplot + 1;
+; Line 207
+	*** 0001cc	8b 46 fa 		mov	ax,WORD PTR [bp-6]	;oldplot
+	*** 0001cf	40 			inc	ax
+	*** 0001d0	89 05 			mov	WORD PTR [di],ax
+;|***                         return;
+; Line 208
+	*** 0001d2	5e 			pop	si
+	*** 0001d3	5f 			pop	di
+	*** 0001d4	8b e5 			mov	sp,bp
+	*** 0001d6	5d 			pop	bp
+	*** 0001d7	c3 			ret	
+;|***                 }
+; Line 209
+;|***                 swpntsym( ow->ow_x, ow->ow_y, oldplot );
+; Line 210
+					$I225:
+	*** 0001d8	ff 76 fa 		push	WORD PTR [bp-6]	;oldplot
+	*** 0001db	ff 75 04 		push	WORD PTR [di+4]
+	*** 0001de	ff 75 02 		push	WORD PTR [di+2]
+	*** 0001e1	e8 00 00 		call	_swpntsym
+	*** 0001e4	83 c4 06 		add	sp,6
+;|***                 ow->ow_xorplot = 0;
+; Line 211
+					$L20007:
+	*** 0001e7	c7 05 00 00 		mov	WORD PTR [di],0
+;|***         }
+; Line 212
+;|*** }
+; Line 213
+	*** 0001eb	5e 			pop	si
+	*** 0001ec	5f 			pop	di
+	*** 0001ed	8b e5 			mov	sp,bp
+	*** 0001ef	5d 			pop	bp
+	*** 0001f0	c3 			ret	
+	*** 0001f1	90 			nop	
+
+_dispwobj	ENDP
+;|*** 
+;|*** 
+;|*** static  unsigned long    seed = 74917777;
+;|*** 
+;|*** unsigned long   randsd()
+;|*** {
+; Line 219
+	PUBLIC	_randsd
+_randsd	PROC NEAR
+	*** 0001f2	33 c0 			xor	ax,ax
+	*** 0001f4	e8 00 00 		call	__aNchkstk
+;|***         if ( !( seed = seed * countmove + 7491 ) )
+; Line 220
+	*** 0001f7	ff 36 02 00 		push	WORD PTR $S227_seed+2
+	*** 0001fb	ff 36 00 00 		push	WORD PTR $S227_seed
+	*** 0001ff	a1 00 00 		mov	ax,WORD PTR _countmove
+	*** 000202	99 			cwd	
+	*** 000203	52 			push	dx
+	*** 000204	50 			push	ax
+	*** 000205	e8 00 00 		call	__aNulmul
+	*** 000208	05 43 1d 		add	ax,7491
+	*** 00020b	83 d2 00 		adc	dx,0
+	*** 00020e	a3 00 00 		mov	WORD PTR $S227_seed,ax
+	*** 000211	89 16 02 00 		mov	WORD PTR $S227_seed+2,dx
+	*** 000215	0b d0 			or	dx,ax
+	*** 000217	75 0c 			jne	$I230
+;|***                 seed = 74917777;
+; Line 221
+	*** 000219	c7 06 00 00 91 27 	mov	WORD PTR $S227_seed,10129
+	*** 00021f	c7 06 02 00 77 04 	mov	WORD PTR $S227_seed+2,1143
+;|*** }
+; Line 222
+					$I230:
+	*** 000225	c3 			ret	
+
+_randsd	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** dispwindshot()
+;|*** {
+; Line 227
+	PUBLIC	_dispwindshot
+_dispwindshot	PROC NEAR
+	*** 000226	55 			push	bp
+	*** 000227	8b ec 			mov	bp,sp
+	*** 000229	b8 76 00 		mov	ax,118
+	*** 00022c	e8 00 00 		call	__aNchkstk
+;	ob = -118
+;|*** OBJECTS                  ob;
+;|*** 
+;|***         ob.ob_type = DUMMYTYPE;
+; Line 230
+	*** 00022f	c7 46 ea 63 00 		mov	WORD PTR [bp-22],99
+;|***         ob.ob_symhgt = ob.ob_symwdt = 16;
+; Line 231
+	*** 000234	b8 10 00 		mov	ax,16
+	*** 000237	89 46 ae 		mov	WORD PTR [bp-82],ax
+	*** 00023a	89 46 ac 		mov	WORD PTR [bp-84],ax
+;|***         ob.ob_clr = 1;
+; Line 232
+	*** 00023d	c7 46 b4 01 00 		mov	WORD PTR [bp-76],1
+;|***         ob.ob_newsym = swshtsym;
+; Line 233
+	*** 000242	c7 46 d8 00 00 		mov	WORD PTR [bp-40],OFFSET _swshtsym
+;|***         do {
+; Line 234
+					$D233:
+;|***                 randsd();
+; Line 235
+	*** 000247	e8 a8 ff 		call	_randsd
+;|***                 swputsym( (unsigned)( seed % ( SCR_WDTH - 16 ) ),
+;|***                           (unsigned)( seed % ( SCR_HGHT - 50 ) ) + 50,
+;|***                           &ob );
+; Line 238
+	*** 00024a	8d 46 8a 		lea	ax,WORD PTR [bp-118]	;ob
+	*** 00024d	50 			push	ax
+	*** 00024e	b8 96 00 		mov	ax,150
+	*** 000251	99 			cwd	
+	*** 000252	52 			push	dx
+	*** 000253	50 			push	ax
+	*** 000254	ff 36 02 00 		push	WORD PTR $S227_seed+2
+	*** 000258	ff 36 00 00 		push	WORD PTR $S227_seed
+	*** 00025c	e8 00 00 		call	__aNulrem
+	*** 00025f	05 32 00 		add	ax,50
+	*** 000262	50 			push	ax
+	*** 000263	b8 30 01 		mov	ax,304
+	*** 000266	99 			cwd	
+	*** 000267	52 			push	dx
+	*** 000268	50 			push	ax
+	*** 000269	ff 36 02 00 		push	WORD PTR $S227_seed+2
+	*** 00026d	ff 36 00 00 		push	WORD PTR $S227_seed
+	*** 000271	e8 00 00 		call	__aNulrem
+	*** 000274	50 			push	ax
+	*** 000275	e8 00 00 		call	_swputsym
+	*** 000278	83 c4 06 		add	sp,6
+;|***         } while ( --shothole );
+; Line 239
+	*** 00027b	ff 0e 00 00 		dec	WORD PTR _shothole
+	*** 00027f	75 c6 			jne	$D233
+;|*** }
+; Line 240
+	*** 000281	8b e5 			mov	sp,bp
+	*** 000283	5d 			pop	bp
+	*** 000284	c3 			ret	
+	*** 000285	90 			nop	
+
+_dispwindshot	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** dispsplatbird()
+;|*** {
+; Line 245
+	PUBLIC	_dispsplatbird
+_dispsplatbird	PROC NEAR
+	*** 000286	55 			push	bp
+	*** 000287	8b ec 			mov	bp,sp
+	*** 000289	b8 76 00 		mov	ax,118
+	*** 00028c	e8 00 00 		call	__aNchkstk
+;	ob = -118
+;|*** OBJECTS                  ob;
+;|*** 
+;|***         ob.ob_type = DUMMYTYPE;
+; Line 248
+	*** 00028f	c7 46 ea 63 00 		mov	WORD PTR [bp-22],99
+;|***         ob.ob_symhgt = ob.ob_symwdt = 32;
+; Line 249
+	*** 000294	b8 20 00 		mov	ax,32
+	*** 000297	89 46 ae 		mov	WORD PTR [bp-82],ax
+	*** 00029a	89 46 ac 		mov	WORD PTR [bp-84],ax
+;|***         ob.ob_clr = 2;
+; Line 250
+	*** 00029d	c7 46 b4 02 00 		mov	WORD PTR [bp-76],2
+;|***         ob.ob_newsym = swsplsym;
+; Line 251
+	*** 0002a2	c7 46 d8 00 00 		mov	WORD PTR [bp-40],OFFSET _swsplsym
+;|***         do {
+; Line 252
+					$D239:
+;|***                 randsd();
+; Line 253
+	*** 0002a7	e8 48 ff 		call	_randsd
+;|***                 swputsym( (unsigned)( seed % ( SCR_WDTH - 32 ) ),
+;|***                           (unsigned)( seed % ( SCR_HGHT - 60 ) ) + 60,
+;|***                           &ob );
+; Line 256
+	*** 0002aa	8d 46 8a 		lea	ax,WORD PTR [bp-118]	;ob
+	*** 0002ad	50 			push	ax
+	*** 0002ae	b8 8c 00 		mov	ax,140
+	*** 0002b1	99 			cwd	
+	*** 0002b2	52 			push	dx
+	*** 0002b3	50 			push	ax
+	*** 0002b4	ff 36 02 00 		push	WORD PTR $S227_seed+2
+	*** 0002b8	ff 36 00 00 		push	WORD PTR $S227_seed
+	*** 0002bc	e8 00 00 		call	__aNulrem
+	*** 0002bf	05 3c 00 		add	ax,60
+	*** 0002c2	50 			push	ax
+	*** 0002c3	b8 20 01 		mov	ax,288
+	*** 0002c6	99 			cwd	
+	*** 0002c7	52 			push	dx
+	*** 0002c8	50 			push	ax
+	*** 0002c9	ff 36 02 00 		push	WORD PTR $S227_seed+2
+	*** 0002cd	ff 36 00 00 		push	WORD PTR $S227_seed
+	*** 0002d1	e8 00 00 		call	__aNulrem
+	*** 0002d4	50 			push	ax
+	*** 0002d5	e8 00 00 		call	_swputsym
+	*** 0002d8	83 c4 06 		add	sp,6
+;|***         } while ( --splatbird );
+; Line 257
+	*** 0002db	ff 0e 00 00 		dec	WORD PTR _splatbird
+	*** 0002df	75 c6 			jne	$D239
+;|*** }
+; Line 258
+	*** 0002e1	8b e5 			mov	sp,bp
+	*** 0002e3	5d 			pop	bp
+	*** 0002e4	c3 			ret	
+	*** 0002e5	90 			nop	
+
+_dispsplatbird	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** dispoxsplat()
+;|*** {
+; Line 264
+	PUBLIC	_dispoxsplat
+_dispoxsplat	PROC NEAR
+	*** 0002e6	33 c0 			xor	ax,ax
+	*** 0002e8	e8 00 00 		call	__aNchkstk
+	*** 0002eb	57 			push	di
+	*** 0002ec	56 			push	si
+;	register si = ob
+;	register di = i
+;|*** register OBJECTS *ob;
+;|*** register int     i;
+;|*** 
+;|***         swsetblk( 0,        SCR_SEGM,
+;|***                   ( ( SCR_HGHT - SCR_MNSH - 2 ) >> 1 ) * SCR_LINW, 0xAA );
+; Line 269
+	*** 0002ed	b8 aa 00 		mov	ax,170
+	*** 0002f0	50 			push	ax
+	*** 0002f1	b9 70 1c 		mov	cx,7280
+	*** 0002f4	51 			push	cx
+	*** 0002f5	b9 00 b8 		mov	cx,-18432
+	*** 0002f8	51 			push	cx
+	*** 0002f9	2b d2 			sub	dx,dx
+	*** 0002fb	52 			push	dx
+	*** 0002fc	e8 00 00 		call	_swsetblk
+	*** 0002ff	83 c4 08 		add	sp,8
+;|***         swsetblk( SCR_ROFF, SCR_SEGM,
+;|***                   ( ( SCR_HGHT - SCR_MNSH - 3 ) >> 1 ) * SCR_LINW, 0xAA );
+; Line 271
+	*** 000302	b8 aa 00 		mov	ax,170
+	*** 000305	50 			push	ax
+	*** 000306	b8 20 1c 		mov	ax,7200
+	*** 000309	50 			push	ax
+	*** 00030a	b8 00 b8 		mov	ax,-18432
+	*** 00030d	50 			push	ax
+	*** 00030e	b8 00 20 		mov	ax,8192
+	*** 000311	50 			push	ax
+	*** 000312	e8 00 00 		call	_swsetblk
+	*** 000315	83 c4 08 		add	sp,8
+;|***         splatox = 0;
+;|***         oxsplatted = 1;
+; Line 273
+	*** 000318	c7 06 00 00 01 00 	mov	WORD PTR _oxsplatted,1
+;|*** 
+;|***         ob = nobjects;
+; Line 275
+	*** 00031e	8b 36 00 00 		mov	si,WORD PTR _nobjects
+;|***         for ( i = 0; i < MAX_OBJS; ++i, ob++ )
+; Line 276
+	*** 000322	2b ff 			sub	di,di
+	*** 000324	89 3e 00 00 		mov	WORD PTR _splatox,di
+	*** 000328	eb 0c 			jmp	SHORT $F247
+					$FC248:
+;|***                 ob->ob_drwflg = ob->ob_delflg = 0;
+; Line 277
+	*** 00032a	2b c0 			sub	ax,ax
+	*** 00032c	89 44 40 		mov	WORD PTR [si+64],ax
+	*** 00032f	89 44 3e 		mov	WORD PTR [si+62],ax
+	*** 000332	47 			inc	di
+	*** 000333	83 c6 76 		add	si,118
+					$F247:
+	*** 000336	83 ff 64 		cmp	di,100
+	*** 000339	7c ef 			jl	$FC248
+;|*** }
+; Line 278
+	*** 00033b	5e 			pop	si
+	*** 00033c	5f 			pop	di
+	*** 00033d	c3 			ret	
+
+_dispoxsplat	ENDP
+_TEXT	ENDS
+END

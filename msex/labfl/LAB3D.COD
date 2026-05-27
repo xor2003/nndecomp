@@ -1,0 +1,515 @@
+;	Static Name Aliases
+;
+	TITLE   C:\LAB3D.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _bultype
+PUBLIC  _paldef
+PUBLIC  _pcfreq
+PUBLIC  _adlibfreq
+PUBLIC  _firstime
+PUBLIC  _quitgame
+PUBLIC  _midiinst
+PUBLIC  _cheatenable
+PUBLIC  _capturecount
+PUBLIC  _mainmenuplace
+PUBLIC  _loadsavegameplace
+PUBLIC  _gameheadstat
+PUBLIC  _newgameplace
+PUBLIC  _sodaplace
+PUBLIC  _vms
+PUBLIC  _slotable
+EXTRN	__acrtused:ABS
+EXTRN	_emmdeallocate:NEAR
+EXTRN	__aNldiv:NEAR
+EXTRN	_emsetpages:NEAR
+EXTRN	_convdeallocate:NEAR
+EXTRN	_xmsdeallocate:NEAR
+EXTRN	_xmsmemmove:NEAR
+EXTRN	_showcompass:NEAR
+EXTRN	__dos_setvect:NEAR
+EXTRN	_kgif:NEAR
+EXTRN	__enable:NEAR
+EXTRN	_textprint:NEAR
+EXTRN	_loadstory:NEAR
+EXTRN	_statusbaralldraw:NEAR
+EXTRN	_printf:NEAR
+EXTRN	_hiscorecheck:NEAR
+EXTRN	_setuptextbuf:NEAR
+EXTRN	_getname:NEAR
+EXTRN	_abs:NEAR
+EXTRN	_drawscore:NEAR
+EXTRN	_drawtime:NEAR
+EXTRN	_reset_dsp:NEAR
+EXTRN	_screencapture:NEAR
+EXTRN	_mainmenu:NEAR
+EXTRN	_sprintf:NEAR
+EXTRN	_loadvms:NEAR
+EXTRN	_wingame:NEAR
+EXTRN	__aNlrem:NEAR
+EXTRN	_winallgame:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_labs:NEAR
+EXTRN	_copyslots:NEAR
+EXTRN	_initialize:NEAR
+EXTRN	_picrot:NEAR
+EXTRN	_spridraw:NEAR
+EXTRN	_pictur:NEAR
+EXTRN	_statusbardraw:NEAR
+EXTRN	_rand:NEAR
+EXTRN	_loadboard:NEAR
+EXTRN	_ksay:NEAR
+EXTRN	_strcmp:NEAR
+EXTRN	_checkobj:NEAR
+EXTRN	__disable:NEAR
+EXTRN	_linecompare:NEAR
+EXTRN	_drawlife:NEAR
+EXTRN	__aNlmul:NEAR
+EXTRN	_loadgame:NEAR
+EXTRN	_savegame:NEAR
+EXTRN	_inp:NEAR
+EXTRN	_introduction:NEAR
+EXTRN	_loadmusic:NEAR
+EXTRN	_strlen:NEAR
+EXTRN	_outp:NEAR
+EXTRN	_musicon:NEAR
+EXTRN	_musicoff:NEAR
+EXTRN	_setmidiinsts:NEAR
+EXTRN	_sodamenu:NEAR
+EXTRN	_checkhitwall:NEAR
+EXTRN	_fade:NEAR
+_BSS      SEGMENT
+COMM NEAR	_keydefs:	 1:	 18
+COMM NEAR	_oldposy:	BYTE:	 2
+COMM NEAR	_musicstatus:	BYTE:	 4
+COMM NEAR	_tempbuf:	 1:	 4096
+COMM NEAR	_count:	BYTE:	 4
+COMM NEAR	_ang:	BYTE:	 2
+COMM NEAR	_palette:	 1:	 768
+COMM NEAR	_startang:	BYTE:	 2
+COMM NEAR	_countstop:	BYTE:	 4
+COMM NEAR	_numnotes:	BYTE:	 2
+COMM NEAR	_mshot:	 1:	 512
+COMM NEAR	_angvel:	BYTE:	 2
+COMM NEAR	_yourhereoldpos:	BYTE:	 2
+COMM NEAR	_speed:	BYTE:	 2
+COMM NEAR	_hiscorenam:	 1:	 16
+COMM NEAR	_hiscorenamstat:	BYTE:	 1
+COMM NEAR	_drumstat:	BYTE:	 2
+COMM NEAR	_vel:	BYTE:	 2
+COMM NEAR	_numchans:	BYTE:	 2
+COMM NEAR	_namrememberstat:	BYTE:	 1
+COMM NEAR	_mxvel:	BYTE:	 2
+COMM NEAR	_nownote:	BYTE:	 2
+COMM NEAR	_myvel:	BYTE:	 2
+COMM NEAR	_height:	 2:	 360
+COMM NEAR	_note:	BYTE:	 2
+COMM NEAR	_svel:	BYTE:	 2
+COMM NEAR	_linum:	 2:	 360
+COMM NEAR	_maxvel:	BYTE:	 2
+COMM NEAR	_walnum:	 2:	 360
+COMM NEAR	_chanage:	 4:	 18
+COMM NEAR	_sprinum:	 2:	 360
+COMM NEAR	_inst:	 1:	 2816
+COMM NEAR	_posz:	BYTE:	 2
+COMM NEAR	_hvel:	BYTE:	 2
+COMM NEAR	_lincalc:	 2:	 360
+COMM NEAR	_databuf:	 1:	 512
+COMM NEAR	_lastunlock:	BYTE:	 2
+COMM NEAR	_numline:	BYTE:	 2
+COMM NEAR	_chanfreq:	 1:	 18
+COMM NEAR	_lastline:	BYTE:	 2
+COMM NEAR	_chantrack:	 1:	 18
+COMM NEAR	_lastshoot:	BYTE:	 2
+COMM NEAR	_saidwelcome:	BYTE:	 2
+COMM NEAR	_linplc:	 2:	 360
+COMM NEAR	_trinst:	 1:	 16
+COMM NEAR	_linbits:	 2:	 360
+COMM NEAR	_memtype:	 2:	 449
+COMM NEAR	_trquant:	 1:	 16
+COMM NEAR	_convavailpages:	BYTE:	 2
+COMM NEAR	_tantable:	 4:	 1025
+COMM NEAR	_trchan:	 1:	 16
+COMM NEAR	_sintable:	 4:	 2050
+COMM NEAR	_convwalls:	BYTE:	 2
+COMM NEAR	_trprio:	 1:	 16
+COMM NEAR	_radarang:	 2:	 360
+COMM NEAR	_trvol:	 1:	 16
+COMM NEAR	_oldlogpage:	BYTE:	 2
+COMM NEAR	_oldphyspage:	BYTE:	 2
+COMM NEAR	_snd:	BYTE:	 2
+COMM NEAR	_oldsndleng:	BYTE:	 2
+COMM NEAR	_oldsourhand:	BYTE:	 2
+COMM NEAR	_ksayfreq:	BYTE:	 2
+COMM NEAR	_lastsoundnum:	BYTE:	 2
+COMM NEAR	_emmhandle:	BYTE:	 2
+COMM NEAR	_speechstatus:	BYTE:	 2
+COMM NEAR	_oldsndfiloffs:	BYTE:	 4
+COMM NEAR	_sndaddr:	BYTE:	 4
+COMM NEAR	_emmpageframe:	BYTE:	 2
+COMM NEAR	_pageoffset:	BYTE:	 2
+COMM NEAR	_lastpageoffset:	BYTE:	 2
+COMM NEAR	_boardnum:	BYTE:	 2
+COMM NEAR	_emswalls:	BYTE:	 2
+COMM NEAR	_xmshandle:	BYTE:	 2
+COMM NEAR	_halfheight:	BYTE:	 2
+COMM NEAR	_oldlife:	BYTE:	 2
+COMM NEAR	_life:	BYTE:	 2
+COMM NEAR	_xmspageframe:	BYTE:	 2
+COMM NEAR	_times90:	 2:	 240
+COMM NEAR	_less64inc:	 2:	 64
+COMM NEAR	_death:	BYTE:	 2
+COMM NEAR	_xmswalls:	BYTE:	 2
+COMM NEAR	_lzwbuf:	BYTE:	 2
+COMM NEAR	_moustat:	BYTE:	 2
+COMM NEAR	_xmstruct:	 2:	 8
+COMM NEAR	_lifevests:	BYTE:	 2
+COMM NEAR	_pic:	BYTE:	 2
+COMM NEAR	_mousx:	BYTE:	 2
+COMM NEAR	_walseg:	 2:	 449
+COMM NEAR	_xmsvector:	BYTE:	 4
+COMM NEAR	_lightnings:	BYTE:	 2
+COMM NEAR	_oldsouroff:	BYTE:	 4
+COMM NEAR	_firepowers:	 2:	 3
+COMM NEAR	_lborder:	 2:	 449
+COMM NEAR	_mousy:	BYTE:	 2
+COMM NEAR	_rborder:	 2:	 449
+COMM NEAR	_bstatus:	BYTE:	 2
+COMM NEAR	_gamehead:	 1:	 216
+COMM NEAR	_keys:	 2:	 2
+COMM NEAR	_compass:	BYTE:	 2
+COMM NEAR	_joyx1:	BYTE:	 2
+COMM NEAR	_gamexist:	 1:	 8
+COMM NEAR	_boleng:	 2:	 60
+COMM NEAR	_joyy1:	BYTE:	 2
+COMM NEAR	_tileng:	 2:	 449
+COMM NEAR	_cheated:	BYTE:	 2
+COMM NEAR	_joyx2:	BYTE:	 2
+COMM NEAR	_coins:	BYTE:	 2
+COMM NEAR	_oldkeyhandler:	BYTE:	 4
+COMM NEAR	_tioffs:	 4:	 449
+COMM NEAR	_joyy2:	BYTE:	 2
+COMM NEAR	_walrec:	 4:	 449
+COMM NEAR	_waterstat:	BYTE:	 2
+COMM NEAR	_animate2:	BYTE:	 2
+COMM NEAR	_joyx3:	BYTE:	 2
+COMM NEAR	_numcells:	BYTE:	 2
+COMM NEAR	_oldhand:	BYTE:	 4
+COMM NEAR	_animate3:	BYTE:	 2
+COMM NEAR	_joyy3:	BYTE:	 2
+COMM NEAR	_totalsortcnt:	BYTE:	 2
+COMM NEAR	_olddivzerohandler:	BYTE:	 4
+COMM NEAR	_animate4:	BYTE:	 2
+COMM NEAR	_sortcnt:	BYTE:	 2
+COMM NEAR	_joystat:	BYTE:	 2
+COMM NEAR	_sortang:	 2:	 512
+COMM NEAR	_readch:	BYTE:	 1
+COMM NEAR	_oscillate3:	BYTE:	 2
+COMM NEAR	_oldreadch:	BYTE:	 1
+COMM NEAR	_sorti:	 2:	 512
+COMM NEAR	_oscillate5:	BYTE:	 2
+COMM NEAR	_animate6:	BYTE:	 2
+COMM NEAR	_sortbnum:	 2:	 512
+COMM NEAR	_keystatus:	 1:	 256
+COMM NEAR	_animate7:	BYTE:	 2
+COMM NEAR	_extended:	BYTE:	 1
+COMM NEAR	_wallheader:	 1:	 449
+COMM NEAR	_bmpkind:	 1:	 449
+COMM NEAR	_animate8:	BYTE:	 2
+COMM NEAR	_clockspeed:	BYTE:	 2
+COMM NEAR	_animate10:	BYTE:	 2
+COMM NEAR	_slottime:	BYTE:	 2
+COMM NEAR	_mposx:	 2:	 512
+COMM NEAR	_animate11:	BYTE:	 2
+COMM NEAR	_slotpos:	 2:	 3
+COMM NEAR	_mposy:	 2:	 512
+COMM NEAR	_animate15:	BYTE:	 2
+COMM NEAR	_mnum:	BYTE:	 2
+COMM NEAR	_owecoins:	BYTE:	 2
+COMM NEAR	_owecoinwait:	BYTE:	 2
+COMM NEAR	_mgolx:	 2:	 512
+COMM NEAR	_xwarp:	 1:	 16
+COMM NEAR	_mgoly:	 2:	 512
+COMM NEAR	_ywarp:	 1:	 16
+COMM NEAR	_statusbar:	BYTE:	 2
+COMM NEAR	_mrotbuf:	 2:	 256
+COMM NEAR	_numwarps:	BYTE:	 1
+COMM NEAR	_statusbargoal:	BYTE:	 2
+COMM NEAR	_justwarped:	BYTE:	 1
+COMM NEAR	_moldx:	 2:	 512
+COMM NEAR	_doorx:	BYTE:	 2
+COMM NEAR	_moldy:	 2:	 512
+COMM NEAR	_doory:	BYTE:	 2
+COMM NEAR	_bulnum:	BYTE:	 2
+COMM NEAR	_doorstat:	BYTE:	 2
+COMM NEAR	_bulang:	 2:	 64
+COMM NEAR	_mshock:	 2:	 512
+COMM NEAR	_bulkind:	 2:	 64
+COMM NEAR	_fadehurtval:	BYTE:	 2
+COMM NEAR	_mstat:	 2:	 512
+COMM NEAR	_vidmode:	BYTE:	 2
+COMM NEAR	_fadewarpval:	BYTE:	 2
+COMM NEAR	_bulchoose:	BYTE:	 2
+COMM NEAR	_bulx:	 2:	 64
+COMM NEAR	_lside:	BYTE:	 2
+COMM NEAR	_ototclock:	BYTE:	 4
+COMM NEAR	_buly:	 2:	 64
+COMM NEAR	_rside:	BYTE:	 2
+COMM NEAR	_totalclock:	BYTE:	 4
+COMM NEAR	_purpletime:	BYTE:	 4
+COMM NEAR	_bulstat:	 4:	 64
+COMM NEAR	_dside:	BYTE:	 2
+COMM NEAR	_scrsize:	BYTE:	 2
+COMM NEAR	_greentime:	BYTE:	 4
+COMM NEAR	_lastbulshoot:	BYTE:	 4
+COMM NEAR	_capetime:	 4:	 2
+COMM NEAR	_board:	 2:	 4096
+COMM NEAR	_lastbarchange:	BYTE:	 4
+COMM NEAR	_videotype:	BYTE:	 2
+COMM NEAR	_startx:	BYTE:	 2
+COMM NEAR	_scoreclock:	BYTE:	 4
+COMM NEAR	_scorecount:	BYTE:	 4
+COMM NEAR	_mute:	BYTE:	 2
+COMM NEAR	_starty:	BYTE:	 2
+COMM NEAR	_textbuf:	 1:	 41
+COMM NEAR	_posx:	BYTE:	 2
+COMM NEAR	_numboards:	BYTE:	 2
+COMM NEAR	_posy:	BYTE:	 2
+COMM NEAR	_musicsource:	BYTE:	 2
+COMM NEAR	_skilevel:	BYTE:	 2
+COMM NEAR	_oldposx:	BYTE:	 2
+COMM NEAR	_midiscrap:	BYTE:	 2
+COMM NEAR	_option:	 1:	 4
+_BSS      ENDS
+_DATA      SEGMENT
+$SG716	DB	'zslz',  82H,  85H, '|',  00H
+$SG1682	DB	'CONGRAT1',  00H
+$SG1684	DB	'CONGRAT0',  00H
+$SG1698	DB	'GAME PAUSED',  00H
+$SG1729	DB	'DRUMSONG',  00H
+$SG1800	DB	'Error #3:  Invalid saved game.',  00H
+_bultype	DB	00H
+	DB	01H
+	DB	01H
+	DB	01H
+	DB	01H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	02H
+	DB	01H
+	DB	02H
+	DB	01H
+_paldef	DB	00H
+	DB	01eH
+	DB	03fH
+	DB	01cH
+	DB	022H
+	DB	03cH
+	DB	00H
+	DB	032H
+	DB	014H
+	DB	029H
+	DB	034H
+	DB	01cH
+	DB	03fH
+	DB	03fH
+	DB	019H
+	DB	03fH
+	DB	03fH
+	DB	03fH
+	DB	03fH
+	DB	014H
+	DB	014H
+	DB	03fH
+	DB	00H
+	DB	03fH
+	DB	03fH
+	DB	030H
+	DB	01bH
+	DB	03fH
+	DB	028H
+	DB	019H
+	DB	03fH
+	DB	030H
+	DB	030H
+	DB	02dH
+	DB	03fH
+	DB	02dH
+	DB	037H
+	DB	037H
+	DB	03fH
+	DB	03fH
+	DB	028H
+	DB	03fH
+	DB	03fH
+	DB	01eH
+	DB	014H
+	DB	037H
+	DB	019H
+	DB	01eH
+_pcfreq	DW	00H
+	DW	041H
+	DW	045H
+	DW	049H
+	DW	04eH
+	DW	052H
+	DW	057H
+	DW	05cH
+	DW	062H
+	DW	068H
+	DW	06eH
+	DW	075H
+	DW	07bH
+	DW	083H
+	DW	08bH
+	DW	093H
+	DW	09cH
+	DW	0a5H
+	DW	0afH
+	DW	0b9H
+	DW	0c4H
+	DW	0d0H
+	DW	0dcH
+	DW	0e9H
+	DW	0f7H
+	DW	0106H
+	DW	0115H
+	DW	0126H
+	DW	0137H
+	DW	014aH
+	DW	015dH
+	DW	0172H
+	DW	0188H
+	DW	019fH
+	DW	01b8H
+	DW	01d2H
+	DW	01eeH
+	DW	020bH
+	DW	022aH
+	DW	024bH
+	DW	026eH
+	DW	0293H
+	DW	02baH
+	DW	02e4H
+	DW	0310H
+	DW	033fH
+	DW	0370H
+	DW	03a4H
+	DW	03dcH
+	DW	0417H
+	DW	0455H
+	DW	0497H
+	DW	04ddH
+	DW	0527H
+	DW	0575H
+	DW	05c8H
+	DW	0620H
+	DW	067dH
+	DW	06e0H
+	DW	0748H
+	DW	07b8H
+	DW	082eH
+ 	DB	2 DUP(0)
+
+_adlibfreq	DW	00H
+	DW	0956H
+	DW	096bH
+	DW	0982H
+	DW	0998H
+	DW	09b0H
+	DW	09caH
+	DW	09e5H
+	DW	0a02H
+	DW	0a20H
+	DW	0a41H
+	DW	0a63H
+	DW	0a87H
+	DW	0d56H
+	DW	0d6bH
+	DW	0d82H
+	DW	0d98H
+	DW	0db0H
+	DW	0dcaH
+	DW	0de5H
+	DW	0e02H
+	DW	0e20H
+	DW	0e41H
+	DW	0e63H
+	DW	0e87H
+	DW	01156H
+	DW	0116bH
+	DW	01182H
+	DW	01198H
+	DW	011b0H
+	DW	011caH
+	DW	011e5H
+	DW	01202H
+	DW	01220H
+	DW	01241H
+	DW	01263H
+	DW	01287H
+	DW	01556H
+	DW	0156bH
+	DW	01582H
+	DW	01598H
+	DW	015b0H
+	DW	015caH
+	DW	015e5H
+	DW	01602H
+	DW	01620H
+	DW	01641H
+	DW	01663H
+	DW	01687H
+	DW	01956H
+	DW	0196bH
+	DW	01982H
+	DW	01998H
+	DW	019b0H
+	DW	019caH
+	DW	019e5H
+	DW	01a02H
+	DW	01a20H
+	DW	01a41H
+	DW	01a63H
+	DW	01a87H
+	DW	01d56H
+ 	DB	2 DUP(0)
+
+_firstime	DW	01H
+_quitgame	DW	00H
+_midiinst	DW	00H
+_cheatenable	DW	00H
+_capturecount	DW	00H
+_mainmenuplace	DW	00H
+_loadsavegameplace	DW	00H
+_gameheadstat	DW	00H
+_newgameplace	DW	00H
+_sodaplace	DW	00H
+_vms	DW	00H
+_slotable	DB	05H
+	D

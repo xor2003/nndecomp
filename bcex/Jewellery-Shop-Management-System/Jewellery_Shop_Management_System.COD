@@ -1,0 +1,8499 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9E27CBB840A633A5C7372632E637070
+	?debug	C E95337528114443A5C494E434C5544455C6673747265616D2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528113443A5C494E434C5544455C737472696E672E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_user	label	byte
+	db	20 dup (?)
+_p	label	byte
+	db	5 dup (?)
+_dt	label	word
+	db	11 dup (?)
+_cr	label	word
+	db	8 dup (?)
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	void show_sale(salec s)
+   ;	
+	assume	cs:_TEXT
+@show_sale$q5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,12
+	push	si
+	push	di
+   ;	
+   ;	 {
+   ;	   int l,m,n;
+   ;	   cout<<"\n\nInvoice No.: "<<s.invoiceno;
+   ;	
+	mov	bx,word ptr [bp+4]
+	mov	ax,word ptr [bx+1079]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	   dt.out();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+16
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_dt
+	push	ax
+	call	near ptr _puts
+	pop	cx
+   ;	
+   ;	   cout<<"\n#\tItem\tMetal\tWeight\tWast.\tMak.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+23
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	   cout<<"\tPrice\tQty.\tTotal\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+55
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    for(l=1;l<=s.k;l++)
+   ;	
+	mov	di,1
+	jmp	@1@290
+@1@50:
+   ;	
+   ;		    {
+   ;		      cout<<l<<"\t";
+   ;	
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-2],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+74
+	push	ax
+	push	word ptr [bp-2]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.items[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @1@122
+@1@74:
+   ;	
+   ;		      {
+   ;			cout<<s.items[l-1][m];
+   ;	
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,279
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@1@122:
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,279
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @1@74
+   ;	
+   ;		      }
+   ;		       cout<<"\t";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+76
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.metal[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @1@218
+@1@170:
+   ;	
+   ;		      {
+   ;			cout<<s.metal[l-1][m];
+   ;	
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,679
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@1@218:
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,679
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @1@170
+   ;	
+   ;		      }
+   ;		      cout<<"\t"<<s.weigh[l-1]<<"\t"<<s.wastag[l-1]<<"\t"<<s.make_charg[l-1];
+   ;	
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1285
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1205
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-36]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1125
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-46]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+78
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-4],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+80
+	push	ax
+	push	word ptr [bp-4]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-4]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-6],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+82
+	push	ax
+	push	word ptr [bp-6]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-6]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      cout<<"\t"<<s.pric[l-1]<<"\t"<<s.quan[l-1]<<"\t"<<s.total[l-1]<<"\n";
+   ;	
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1445
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1081
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1365
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-40]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+84
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-8],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+86
+	push	ax
+	push	word ptr [bp-8]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-8]
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-10],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+88
+	push	ax
+	push	word ptr [bp-10]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-10]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-12],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+90
+	push	ax
+	push	word ptr [bp-12]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	di
+@1@290:
+	mov	bx,word ptr [bp+4]
+	cmp	word ptr [bx+1121],di
+	jl	@@0
+	jmp	@1@50
+@@0:
+   ;	
+   ;		    }
+   ;	
+   ;		    cout<<"\nSubtotal: "<<s.subtotal;
+   ;	
+	mov	bx,word ptr [bp+4]
+	FLD	dword ptr [bx+1525]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+92
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@show_sale$q5salec	endp
+   ;	
+   ;	void cust_menu(customer &cus)
+   ;	
+	assume	cs:_TEXT
+@cust_menu$qr8customer	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,3664
+	push	si
+	push	di
+	mov	si,word ptr [bp+4]
+   ;	
+   ;	{
+   ;	  int ch, ex;
+   ;	  salec s;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1475]
+	FLDZ	
+	FSTP	dword ptr [bp-1295]
+	FWAIT	
+	mov	word ptr [bp-429],0
+	mov	word ptr [bp-427],0
+	mov	word ptr [bp-471],0
+	FLDZ	
+	FSTP	dword ptr [bp-25]
+	FLDZ	
+	FSTP	dword ptr [bp-17]
+	FWAIT	
+@2@50:
+   ;	
+   ;	  char n[20], ans;
+   ;	  do{
+   ;	
+   ;	  cout<<"\n1. Add a customer.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+104
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n2. Display all customers.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+124
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n3. Search customer.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+151
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n4. Delete a customer.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+172
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n5. Go to Home.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+195
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\nEnter your choice: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+211
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cin>>ch;
+   ;	
+	lea	ax,word ptr [bp-2]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;	  switch(ch)
+   ;	
+	mov	bx,word ptr [bp-2]
+	dec	bx
+	cmp	bx,4
+	jbe	@@1
+	jmp	@2@1010
+@@1:
+	shl	bx,1
+	jmp	word ptr cs:@2@C4096[bx]
+@2@146:
+   ;	
+   ;	  {
+   ;	   case 1:    clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+232
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      ofstream f2("customers.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+237
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1648]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		      cus.inc();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+251
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+281
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	inc	ax
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+289
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,21
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+297
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,35
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+307
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,55
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;		      f2.write((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1608]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;		      f2.close();
+   ;	
+	lea	ax,word ptr [bp-1648]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1648]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	@2@1034
+@2@194:
+   ;	
+   ;		      break;
+   ;	    case 2:   clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+318
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      ifstream f1("customers.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+323
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1728]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	short @2@242
+@2@218:
+   ;	
+   ;		      while(f1.read((char*)&cus,sizeof(cus)))
+   ;		    {
+   ;		      puts(cus.get_name());
+   ;	
+	mov	ax,si
+	inc	ax
+	push	ax
+	call	near ptr _puts
+	pop	cx
+@2@242:
+	mov	ax,79
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1688]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-8],ax
+	mov	bx,word ptr [bp-8]
+	test	word ptr [bx+4],134
+	je	short @2@290
+	xor	ax,ax
+	jmp	short @2@314
+@2@290:
+	mov	ax,word ptr [bp-8]
+@2@314:
+	or	ax,ax
+	jne	short @2@218
+   ;	
+   ;		    }
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1728]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1728]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	@2@1034
+@2@362:
+   ;	
+   ;		    break;
+   ;	    case 3: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+337
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		       customer c;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1733]
+   ;	
+   ;		       ifstream f("customers.dat",ios::binary);
+   ;	
+	FWAIT	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+342
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1888]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		      cout<<"Enter name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+356
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      gets(n);
+   ;	
+	lea	ax,word ptr [bp-1570]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	jmp	@2@626
+@2@386:
+   ;	
+   ;	
+   ;		    while(f.read((char*)&c,sizeof(c)))
+   ;		    {
+   ;		     if(strcmpi(n,c.get_name())==0)
+   ;	
+	lea	ax,word ptr [bp-1807]
+	push	ax
+	lea	ax,word ptr [bp-1570]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@2
+	jmp	@2@626
+@@2:
+   ;	
+   ;		     {
+   ;		      c.outc();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+369
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+389
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-1807]
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+397
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-1787]
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+405
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-1773]
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+415
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-1753]
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	FLD	dword ptr [bp-1733]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-3678]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+426
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      ifstream f3("sales.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+436
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-2126]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@2@506
+@2@458:
+   ;	
+   ;		      while(f3.read((char*)&s,sizeof(s)))
+   ;		      {
+   ;			if(strcmpi(s.cname,n)==0)
+   ;	
+	lea	ax,word ptr [bp-1570]
+	push	ax
+	lea	ax,word ptr [bp-1291]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@3
+	jmp	@2@506
+@@3:
+   ;	
+   ;			{
+   ;			  show_sale(s);
+   ;	
+	mov	al,byte ptr [bp-1550]
+	mov	byte ptr [bp-3664],al
+	lea	ax,word ptr [bp-3663]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1549]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3643]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1529]
+	push	ss
+	push	ax
+	mov	cx,14
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3629]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1515]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3609]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1495]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-1475]
+	FSTP	dword ptr [bp-3589]
+	FWAIT	
+	lea	ax,word ptr [bp-3585]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1471]
+	push	ss
+	push	ax
+	mov	cx,60
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3525]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1411]
+	push	ss
+	push	ax
+	mov	cx,30
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3495]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1381]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3475]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1361]
+	push	ss
+	push	ax
+	mov	cx,30
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3445]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1331]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3425]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1311]
+	push	ss
+	push	ax
+	mov	cx,11
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3414]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1300]
+	push	ss
+	push	ax
+	mov	cx,5
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-1295]
+	FSTP	dword ptr [bp-3409]
+	FWAIT	
+	lea	ax,word ptr [bp-3405]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1291]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3385]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1271]
+	push	ss
+	push	ax
+	mov	cx,400
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2985]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-871]
+	push	ss
+	push	ax
+	mov	cx,400
+	call	near ptr N_SCOPY@
+	mov	ax,word ptr [bp-471]
+	mov	word ptr [bp-2585],ax
+	lea	ax,word ptr [bp-2583]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-469]
+	push	ss
+	push	ax
+	mov	cx,40
+	call	near ptr N_SCOPY@
+	mov	ax,word ptr [bp-429]
+	mov	word ptr [bp-2543],ax
+	mov	ax,word ptr [bp-427]
+	mov	word ptr [bp-2541],ax
+	lea	ax,word ptr [bp-2539]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-425]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2459]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-345]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2379]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-265]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2299]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-185]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2219]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-105]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-25]
+	FSTP	dword ptr [bp-2139]
+	FLD	dword ptr [bp-21]
+	FSTP	dword ptr [bp-2135]
+	FLD	dword ptr [bp-17]
+	FSTP	dword ptr [bp-2131]
+	FWAIT	
+	lea	ax,word ptr [bp-3664]
+	push	ax
+	call	near ptr @show_sale$q5salec
+	pop	cx
+@2@506:
+	mov	ax,1537
+	push	ax
+	lea	ax,word ptr [bp-1550]
+	push	ax
+	lea	ax,word ptr [bp-2086]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @2@554
+	xor	ax,ax
+	jmp	short @2@578
+@2@554:
+	mov	ax,di
+@2@578:
+	or	ax,ax
+	je	@@4
+	jmp	@2@458
+@@4:
+   ;	
+   ;			}
+   ;		      }
+   ;		     f3.close();
+   ;	
+	lea	ax,word ptr [bp-2126]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-2126]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+@2@626:
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-1808]
+	push	ax
+	lea	ax,word ptr [bp-1848]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-10],ax
+	mov	bx,word ptr [bp-10]
+	test	word ptr [bx+4],134
+	je	short @2@674
+	xor	ax,ax
+	jmp	short @2@698
+@2@674:
+	mov	ax,word ptr [bp-10]
+@2@698:
+	or	ax,ax
+	je	@@5
+	jmp	@2@386
+@@5:
+   ;	
+   ;		     }
+   ;		    }
+   ;		    f.close();
+   ;	
+	lea	ax,word ptr [bp-1888]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1888]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	@2@1034
+@2@746:
+   ;	
+   ;		   break;
+   ;	
+   ;	    case 4: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+446
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      ifstream f6("customers.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+451
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1968]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		    cout<<"Enter name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+465
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    gets(n);
+   ;	
+	lea	ax,word ptr [bp-1570]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;		    ofstream f4("temp.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+478
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-2046]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@2@866
+@2@770:
+   ;	
+   ;		    while(f6.read((char*)&cus,sizeof(cus)))
+   ;		    {
+   ;		     if(strcmpi(n,cus.get_name())!=0)
+   ;	
+	mov	ax,si
+	inc	ax
+	push	ax
+	lea	ax,word ptr [bp-1570]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	short @2@818
+   ;	
+   ;		     {
+   ;		       f4.write((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-2006]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+	jmp	@2@866
+@2@818:
+   ;	
+   ;		     }
+   ;		     else
+   ;		     {
+   ;		       cus.outc();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+487
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+507
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	inc	ax
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+515
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,21
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+523
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,35
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+533
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,55
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	FLD	dword ptr [si+75]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-3678]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+544
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		       cout<<"\nDo you really wish to delete?(y/n): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+554
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		       cin>>ans;
+   ;	
+	lea	ax,word ptr [bp-5]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;		       if(ans=='n')
+   ;	
+	cmp	byte ptr [bp-5],110
+	jne	short @2@866
+   ;	
+   ;			f4.write((char*)&cus, sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-2006]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+@2@866:
+	mov	ax,79
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1928]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-12],ax
+	mov	bx,word ptr [bp-12]
+	test	word ptr [bx+4],134
+	je	short @2@914
+	xor	ax,ax
+	jmp	short @2@938
+@2@914:
+	mov	ax,word ptr [bp-12]
+@2@938:
+	or	ax,ax
+	je	@@6
+	jmp	@2@770
+@@6:
+   ;	
+   ;		     }
+   ;		    }
+   ;		    f6.close();
+   ;	
+	lea	ax,word ptr [bp-1968]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f4.close();
+   ;	
+	lea	ax,word ptr [bp-2046]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    remove("customers.dat");
+   ;	
+	mov	ax,offset DGROUP:s@+592
+	push	ax
+	call	near ptr _unlink
+	pop	cx
+   ;	
+   ;		    rename("temp.dat","customer.dat");
+   ;	
+	mov	ax,offset DGROUP:s@+615
+	push	ax
+	mov	ax,offset DGROUP:s@+606
+	push	ax
+	call	near ptr _rename
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-2046]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1968]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	short @2@1034
+@2@986:
+   ;	
+   ;		    break;
+   ;	    case 5: ex=1;
+   ;	
+	mov	word ptr [bp-4],1
+	jmp	short @2@1034
+@2@1010:
+   ;	
+   ;		    break;
+   ;	    default: cout<<"Invalid Choice!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+628
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@2@1034:
+   ;	
+   ;		 }
+   ;	    }
+   ;	    while(ex!=1);
+   ;	
+	cmp	word ptr [bp-4],1
+	je	@@7
+	jmp	@2@50
+@@7:
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@cust_menu$qr8customer	endp
+@2@C4096	label	word
+	dw	@2@146
+	dw	@2@194
+	dw	@2@362
+	dw	@2@746
+	dw	@2@986
+   ;	
+   ;	void show_list(salec &s)
+   ;	
+	assume	cs:_TEXT
+@show_list$qr5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,12
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	   int l,m,n;
+   ;	   if(s.k!=0)
+   ;	
+	mov	bx,word ptr [bp+4]
+	cmp	word ptr [bx+1121],0
+	jne	@@8
+	jmp	@3@362
+@@8:
+   ;	
+   ;	   { cout<<"\n#\tItem\tMet.\tWeight\tWast.\tMak.C.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+644
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     cout<<"\tPrice\tQuant.\tTotal\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+677
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     cout<<"-----------------------------------------------------------------------\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+698
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    for(l=1;l<=s.k;l++)
+   ;	
+	mov	di,1
+	jmp	@3@314
+@3@74:
+   ;	
+   ;		    {
+   ;		      cout<<l<<"\t";
+   ;	
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-2],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+771
+	push	ax
+	push	word ptr [bp-2]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.items[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @3@146
+@3@98:
+   ;	
+   ;		      {
+   ;			cout<<s.items[l-1][m];
+   ;	
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,279
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@3@146:
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,279
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @3@98
+   ;	
+   ;		      }
+   ;		       cout<<"\t";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+773
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.metal[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @3@242
+@3@194:
+   ;	
+   ;		      {
+   ;			cout<<s.metal[l-1][m];
+   ;	
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,679
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@3@242:
+	mov	ax,di
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,word ptr [bp+4]
+	add	bx,679
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @3@194
+   ;	
+   ;		      }
+   ;		      cout<<"\t"<<s.weigh[l-1]<<"\t"<<s.wastag[l-1]<<"\t"<<s.make_charg[l-1];
+   ;	
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1285
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1205
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-36]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1125
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-46]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+775
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-4],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+777
+	push	ax
+	push	word ptr [bp-4]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-4]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-6],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+779
+	push	ax
+	push	word ptr [bp-6]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-6]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      cout<<"\t"<<s.pric[l-1]<<"\t"<<s.quan[l-1]<<"\t"<<s.total[l-1]<<"\n";
+   ;	
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1445
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	FWAIT	
+	mov	bx,word ptr [bp+4]
+	add	bx,1081
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,di
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,word ptr [bp+4]
+	add	bx,1365
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-40]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+781
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-8],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+783
+	push	ax
+	push	word ptr [bp-8]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-8]
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-10],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+785
+	push	ax
+	push	word ptr [bp-10]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-10]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-12],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+787
+	push	ax
+	push	word ptr [bp-12]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	di
+@3@314:
+	mov	bx,word ptr [bp+4]
+	cmp	word ptr [bx+1121],di
+	jl	@@9
+	jmp	@3@74
+@@9:
+   ;	
+   ;		    }
+   ;		    cout<<"\nSubtotal: "<<s.subtotal;
+   ;	
+	mov	bx,word ptr [bp+4]
+	FLD	dword ptr [bx+1525]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-26]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+789
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+@3@362:
+   ;	
+   ;	  }
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@show_list$qr5salec	endp
+   ;	
+   ;	void save_bill(salec &s)
+   ;	
+	assume	cs:_TEXT
+@save_bill$qr5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,300
+	push	si
+	push	di
+	mov	di,word ptr [bp+4]
+   ;	
+   ;	{
+   ;	  ++s.invoiceno;
+   ;	
+	inc	word ptr [di+1079]
+   ;	
+   ;	  int l,m,n;
+   ;	  Store st;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-26]
+   ;	
+   ;		    ifstream f2("stores.dat",ios::binary);
+   ;	
+	FWAIT	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+801
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-222]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		    ofstream f1("Invoice.docx",ios::out);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,2
+	push	ax
+	mov	ax,offset DGROUP:s@+812
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-300]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@4@122
+@4@50:
+   ;	
+   ;		    while(f2.read((char*)&st,sizeof(st)))
+   ;		    {
+   ;		     if((strcmpi(user,st.get_uname())==0)&&(strcmpi(st.get_pin(),p)==0))
+   ;	
+	lea	ax,word ptr [bp-62]
+	push	ax
+	mov	ax,offset DGROUP:_user
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@10
+	jmp	@4@122
+@@10:
+	mov	ax,offset DGROUP:_p
+	push	ax
+	lea	ax,word ptr [bp-31]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@11
+	jmp	@4@122
+@@11:
+   ;	
+   ;		     {
+   ;		      f1<<st.get_store();
+   ;	
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-142]
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      f1<<"\t\t\t\t\t\t\tRates:\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+825
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      f1<<st.Store::get_email()<<"\t\t\t\t\t\t\t  Gold: "<<cr.goldrate();
+   ;	
+	FLD	dword ptr DGROUP:_cr
+	add	sp,65526
+	FSTP	tbyte ptr [bp-314]
+	xor	ax,ax
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-92]
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	mov	word ptr [bp-6],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+840
+	push	ax
+	push	word ptr [bp-6]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-6]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      f1<<"\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+856
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      f1<<st.Store::get_phone()<<"\t\t\t\t\t\t\t\t        Silver: "<<cr.silverrate();
+   ;	
+	FLD	dword ptr DGROUP:_cr+4
+	add	sp,65526
+	FSTP	tbyte ptr [bp-314]
+	xor	ax,ax
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-42]
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	mov	word ptr [bp-8],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+858
+	push	ax
+	push	word ptr [bp-8]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-8]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      f1<<"\nInvoice No.: "<<s.invoiceno<<"\t\t\t\t\t\t\t  Date: "<<dt.get_da()<<"\n";
+   ;	
+	mov	ax,word ptr [di+1079]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+883
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-10],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+898
+	push	ax
+	push	word ptr [bp-10]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:_dt
+	push	ax
+	push	word ptr [bp-10]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+914
+	push	ax
+	push	word ptr [bp-10]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@4@122:
+	mov	ax,120
+	push	ax
+	lea	ax,word ptr [bp-142]
+	push	ax
+	lea	ax,word ptr [bp-182]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-4],ax
+	mov	bx,word ptr [bp-4]
+	test	word ptr [bx+4],134
+	je	short @4@170
+	xor	ax,ax
+	jmp	short @4@194
+@4@170:
+	mov	ax,word ptr [bp-4]
+@4@194:
+	or	ax,ax
+	je	@@12
+	jmp	@4@50
+@@12:
+   ;	
+   ;		     }
+   ;		    }
+   ;		    f1<<"-----------------------------------------------------------------------\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+916
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    f1<<"\t\t\t\t\t   INVOICE\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+989
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    f1<<"-----------------------------------------------------------------------\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1006
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    f1<<"\n#\tItem\tMetal\tWeight\tWast.\tMak.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1079
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    f1<<"\tPrice\tQuant.\tTotal\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1111
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    f1<<"-----------------------------------------------------------------------\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1132
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    for(l=1;l<=s.k;l++)
+   ;	
+	mov	word ptr [bp-2],1
+	jmp	@4@482
+@4@242:
+   ;	
+   ;		    {
+   ;		      f1<<l<<"\t";
+   ;	
+	mov	ax,word ptr [bp-2]
+	cwd	
+	push	dx
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-12],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1205
+	push	ax
+	push	word ptr [bp-12]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.items[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @4@314
+@4@266:
+   ;	
+   ;		      {
+   ;			f1<<s.items[l-1][m];
+   ;	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,di
+	add	bx,279
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@4@314:
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,di
+	add	bx,279
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @4@266
+   ;	
+   ;		      }
+   ;		       f1<<"\t";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1207
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      for(m=0;s.metal[l-1][m]!='\0';++m)
+   ;	
+	xor	si,si
+	jmp	short @4@410
+@4@362:
+   ;	
+   ;		      {
+   ;			f1<<s.metal[l-1][m];
+   ;	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,di
+	add	bx,679
+	add	bx,ax
+	mov	al,byte ptr [bx+si]
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@4@410:
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	mov	dx,20
+	imul	dx
+	mov	bx,di
+	add	bx,679
+	add	bx,ax
+	cmp	byte ptr [bx+si],0
+	jne	short @4@362
+   ;	
+   ;		      }
+   ;		      f1<<"\t"<<s.weigh[l-1]<<"\t"<<s.wastag[l-1]<<"\t"<<s.make_charg[l-1];
+   ;	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,di
+	add	bx,1285
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-314]
+	FWAIT	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,di
+	add	bx,1205
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-324]
+	FWAIT	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,di
+	add	bx,1125
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-334]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1209
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-14],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1211
+	push	ax
+	push	word ptr [bp-14]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-14]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-16],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1213
+	push	ax
+	push	word ptr [bp-16]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-16]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		      f1<<"\t"<<s.pric[l-1]<<"\t"<<s.quan[l-1]<<"\t"<<s.total[l-1]<<"\n";
+   ;	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,di
+	add	bx,1445
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-314]
+	FWAIT	
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	mov	bx,di
+	add	bx,1081
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,word ptr [bp-2]
+	dec	ax
+	shl	ax,1
+	shl	ax,1
+	mov	bx,di
+	add	bx,1365
+	add	bx,ax
+	FLD	dword ptr [bx]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-328]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1215
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-18],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1217
+	push	ax
+	push	word ptr [bp-18]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-18]
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	mov	word ptr [bp-20],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1219
+	push	ax
+	push	word ptr [bp-20]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	word ptr [bp-20]
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	word ptr [bp-22],ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1221
+	push	ax
+	push	word ptr [bp-22]
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	word ptr [bp-2]
+@4@482:
+	mov	ax,word ptr [di+1121]
+	cmp	ax,word ptr [bp-2]
+	jl	@@13
+	jmp	@4@242
+@@13:
+   ;	
+   ;		    }
+   ;		    f1<<"\nSubtotal: "<<s.subtotal;
+   ;	
+	FLD	dword ptr [di+1525]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-314]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1223
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		    cout<<"\nBill Saved in BIN folder.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1235
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-300]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-222]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@save_bill$qr5salec	endp
+   ;	
+   ;	void add_item(salec &s)
+   ;	
+	assume	cs:_TEXT
+@add_item$qr5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,260
+	push	si
+	push	di
+	mov	si,word ptr [bp+4]
+   ;	
+   ;	{
+   ;	  int quant, count=0;
+   ;	
+	mov	word ptr [bp-4],0
+   ;	
+   ;	  item i;
+   ;	  long pos;
+   ;	  int q,flag=0;
+   ;	
+	mov	word ptr [bp-12],0
+   ;	
+   ;	  char itemn[20], ch,c;
+   ;	  ifstream f1("items.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+1262
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-176]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  cout<<"\nEnter item name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1272
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		  gets(itemn);
+   ;	
+	lea	ax,word ptr [bp-96]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	jmp	short @5@98
+@5@50:
+   ;	
+   ;	       while(f1.read((char*)&i,sizeof(i)))
+   ;	       {
+   ;		if(strcmpi(itemn,i.get_name())==0)
+   ;	
+	lea	ax,word ptr [bp-76]
+	push	ax
+	lea	ax,word ptr [bp-96]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @5@98
+   ;	
+   ;		{
+   ;		   count++;
+   ;	
+	inc	word ptr [bp-4]
+	jmp	short @5@194
+@5@98:
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-76]
+	push	ax
+	lea	ax,word ptr [bp-136]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @5@146
+	xor	ax,ax
+	jmp	short @5@170
+@5@146:
+	mov	ax,di
+@5@170:
+	or	ax,ax
+	jne	short @5@50
+@5@194:
+   ;	
+   ;		   break;
+   ;		}
+   ;	       }
+   ;	
+   ;		if(count==1)
+   ;	
+	cmp	word ptr [bp-4],1
+	je	@@14
+	jmp	@5@602
+@@14:
+@5@218:
+   ;	
+   ;		{
+   ;		  label: cout<<"\nEnter quantity: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1291
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cin>>quant;
+   ;	
+	lea	ax,word ptr [bp-2]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;			if(quant>i.get_quantity())
+   ;	
+	mov	ax,word ptr [bp-2]
+	cmp	ax,word ptr [bp-42]
+	jg	@@15
+	jmp	@5@482
+@@15:
+   ;	
+   ;			{
+   ;			  cout<<"\nNot enough stock!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1309
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			  cout<<"\nAvailable Stock: "<<i.get_quantity();
+   ;	
+	mov	ax,word ptr [bp-42]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1328
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;			  cout<<"\nDo u want to increase this item's stock?(y/n): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1347
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			  cin>>c;
+   ;	
+	lea	ax,word ptr [bp-14]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;			  if(c=='y')
+   ;	
+	cmp	byte ptr [bp-14],121
+	je	@@16
+	jmp	@5@458
+@@16:
+   ;	
+   ;			  { f1.close();
+   ;	
+	lea	ax,word ptr [bp-176]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;			    fstream f("items.dat",ios::binary|ios::in|ios::out);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,131
+	push	ax
+	mov	ax,offset DGROUP:s@+1396
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @fstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@5@362
+@5@314:
+   ;	
+   ;			    while(!f.eof())
+   ;			    {
+   ;			      pos=f.tellg();
+   ;	
+	lea	ax,word ptr [bp-220]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-8],ax
+	mov	word ptr [bp-6],dx
+   ;	
+   ;			      f.read((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-76]
+	push	ax
+	lea	ax,word ptr [bp-220]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;			      if(strcmpi(i.get_name(),itemn)==0)
+   ;	
+	lea	ax,word ptr [bp-96]
+	push	ax
+	lea	ax,word ptr [bp-76]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @5@362
+   ;	
+   ;			      {
+   ;			       cout<<"Enter by how much u want to increase: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1406
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			       cin>>q;
+   ;	
+	lea	ax,word ptr [bp-10]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;			       i.increase_q(q);
+   ;	
+	mov	ax,word ptr [bp-10]
+	add	word ptr [bp-42],ax
+   ;	
+   ;			       f.seekg(pos);
+   ;	
+	push	word ptr [bp-6]
+	push	word ptr [bp-8]
+	lea	ax,word ptr [bp-220]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			       f.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-76]
+	push	ax
+	lea	ax,word ptr [bp-214]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			       cout<<"Stock Updated!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1445
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			       flag=1;
+   ;	
+	mov	word ptr [bp-12],1
+	jmp	short @5@386
+@5@362:
+	mov	bx,word ptr [bp-260]
+	test	word ptr [bx+4],1
+	jne	@@17
+	jmp	@5@314
+@@17:
+@5@386:
+   ;	
+   ;			       break;
+   ;			      }
+   ;			    }
+   ;			    if(flag==0)
+   ;	
+	cmp	word ptr [bp-12],0
+	jne	short @5@434
+   ;	
+   ;			    {
+   ;			      cout<<"Item does not exist in stock!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1460
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@5@434:
+   ;	
+   ;			    }
+   ;			    f.close();
+   ;	
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-260]
+	push	ax
+	call	near ptr @fstream@$bdtr$qv
+	pop	cx
+	pop	cx
+@5@458:
+	jmp	@5@578
+@5@482:
+   ;	
+   ;			  }
+   ;			}
+   ;			else
+   ;			{
+   ;			  s.quan[s.j]=quant;
+   ;	
+	mov	ax,word ptr [si+1123]
+	shl	ax,1
+	mov	bx,si
+	add	bx,1081
+	add	bx,ax
+	mov	ax,word ptr [bp-2]
+	mov	word ptr [bx],ax
+   ;	
+   ;			  i.calc_price();
+   ;	
+	lea	ax,word ptr [bp-52]
+	push	ax
+	mov	ax,offset DGROUP:s@+1490
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @5@530
+	FLD	dword ptr [bp-40]
+	FLD	dword ptr DGROUP:_cr
+	FLD	dword ptr [bp-56]
+	FLD	dword ptr DGROUP:s@+1495
+	FDIVR	dword ptr [bp-36]
+	FMUL	
+	FADD	dword ptr [bp-56]
+	FMUL	
+	FADD	
+	FSTP	dword ptr [bp-20]
+	FWAIT	
+	jmp	short @5@554
+@5@530:
+	FLD	dword ptr [bp-40]
+	FLD	dword ptr DGROUP:_cr+4
+	FMUL	dword ptr [bp-56]
+	FADD	
+	FSTP	dword ptr [bp-20]
+	FWAIT	
+@5@554:
+   ;	
+   ;			  s.total[s.j]=i.get_price()*s.quan[s.j];
+   ;	
+	mov	ax,word ptr [si+1123]
+	shl	ax,1
+	mov	bx,si
+	add	bx,1081
+	add	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-16],ax
+	FILD	word ptr [bp-16]
+	FMUL	dword ptr [bp-20]
+	mov	ax,word ptr [si+1123]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1445
+	add	bx,ax
+	FSTP	dword ptr [bx]
+   ;	
+   ;			  s.subtotal+=s.total[s.j];
+   ;	
+	FWAIT	
+	mov	ax,word ptr [si+1123]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1445
+	add	bx,ax
+	FLD	dword ptr [bx]
+	FADD	dword ptr [si+1525]
+	FSTP	dword ptr [si+1525]
+   ;	
+   ;			  s.j++;
+   ;	
+	FWAIT	
+	inc	word ptr [si+1123]
+   ;	
+   ;			  strcpy(s.items[s.k],i.get_name());
+   ;	
+	lea	ax,word ptr [bp-76]
+	push	ax
+	mov	ax,word ptr [si+1121]
+	mov	dx,20
+	imul	dx
+	mov	dx,si
+	add	dx,279
+	add	dx,ax
+	push	dx
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;			  strcpy(s.metal[s.k],i.get_metal());
+   ;	
+	lea	ax,word ptr [bp-52]
+	push	ax
+	mov	ax,word ptr [si+1121]
+	mov	dx,20
+	imul	dx
+	mov	dx,si
+	add	dx,679
+	add	dx,ax
+	push	dx
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;			  s.weigh[s.k]=i.get_weight();
+   ;	
+	mov	ax,word ptr [si+1121]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1125
+	add	bx,ax
+	FLD	dword ptr [bp-56]
+	FSTP	dword ptr [bx]
+   ;	
+   ;			  s.wastag[s.k]=i.get_wastage();
+   ;	
+	FWAIT	
+	mov	ax,word ptr [si+1121]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1205
+	add	bx,ax
+	FLD	dword ptr [bp-36]
+	FSTP	dword ptr [bx]
+   ;	
+   ;			  s.make_charg[s.k]=i.get_make_charge();
+   ;	
+	FWAIT	
+	mov	ax,word ptr [si+1121]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1285
+	add	bx,ax
+	FLD	dword ptr [bp-40]
+	FSTP	dword ptr [bx]
+   ;	
+   ;			  s.pric[s.k]=i.get_price();
+   ;	
+	FWAIT	
+	mov	ax,word ptr [si+1121]
+	shl	ax,1
+	shl	ax,1
+	mov	bx,si
+	add	bx,1365
+	add	bx,ax
+	FLD	dword ptr [bp-20]
+	FSTP	dword ptr [bx]
+   ;	
+   ;			  s.k++;
+   ;	
+	FWAIT	
+	inc	word ptr [si+1121]
+   ;	
+   ;			  f1.close();
+   ;	
+	lea	ax,word ptr [bp-176]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+@5@578:
+	jmp	@5@722
+@5@602:
+   ;	
+   ;			}
+   ;		}
+   ;		else
+   ;		{ cout<<"\nItem does not exist in stock.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1499
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		  cout<<"\nDo u want to add item in stock(y/n): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1530
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		  cin>>ch;
+   ;	
+	lea	ax,word ptr [bp-13]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;		  if(ch=='y')
+   ;	
+	cmp	byte ptr [bp-13],121
+	je	@@18
+	jmp	@5@722
+@@18:
+   ;	
+   ;		  {
+   ;		    ofstream f2("items.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+1569
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-254]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;		    i.init();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1579
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1606
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-76]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1614
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-56]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1623
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-52]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1631
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-42]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1639
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-36]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1651
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-40]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1667
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-24]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1698
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	lea	ax,word ptr [bp-28]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	lea	ax,word ptr [bp-52]
+	push	ax
+	mov	ax,offset DGROUP:s@+1725
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @5@674
+	FLD	dword ptr [bp-40]
+	FLD	dword ptr DGROUP:_cr
+	FLD	dword ptr [bp-56]
+	FLD	dword ptr DGROUP:s@+1495
+	FDIVR	dword ptr [bp-36]
+	FMUL	
+	FADD	dword ptr [bp-56]
+	FMUL	
+	FADD	
+	FSTP	dword ptr [bp-20]
+	FWAIT	
+	jmp	short @5@698
+@5@674:
+	FLD	dword ptr [bp-40]
+	FLD	dword ptr DGROUP:_cr+4
+	FMUL	dword ptr [bp-56]
+	FADD	
+	FSTP	dword ptr [bp-20]
+	FWAIT	
+@5@698:
+	FLD	dword ptr [bp-24]
+	FDIV	dword ptr DGROUP:s@+1495
+	FMUL	dword ptr [bp-56]
+	FMUL	dword ptr [bp-28]
+	FSTP	dword ptr [bp-32]
+   ;	
+   ;		    f2.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	FWAIT	
+	lea	ax,word ptr [bp-76]
+	push	ax
+	lea	ax,word ptr [bp-214]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-254]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    cout<<"Item added successfully!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1730
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-254]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;		    goto label;
+   ;	
+	jmp	@5@218
+@5@722:
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-176]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;		  }
+   ;		}
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@add_item$qr5salec	endp
+   ;	
+   ;	void del(salec &s)
+   ;	
+	assume	cs:_TEXT
+@del$qr5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,1538
+   ;	
+   ;	{
+   ;	  salec s1;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1463]
+	FLDZ	
+	FSTP	dword ptr [bp-1283]
+	FWAIT	
+	mov	word ptr [bp-417],0
+	mov	word ptr [bp-415],0
+	mov	word ptr [bp-459],0
+	FLDZ	
+	FSTP	dword ptr [bp-13]
+	FLDZ	
+	FSTP	dword ptr [bp-5]
+   ;	
+   ;	  s=s1;
+   ;	
+	push	ds
+	FWAIT	
+	push	word ptr [bp+4]
+	lea	ax,word ptr [bp-1538]
+	push	ss
+	push	ax
+	mov	cx,1537
+	call	near ptr N_SCOPY@
+   ;	
+   ;	}
+   ;	
+	mov	sp,bp
+	pop	bp
+	ret	
+@del$qr5salec	endp
+   ;	
+   ;	void make_payment(int &flag1,salec &s)
+   ;	
+	assume	cs:_TEXT
+@make_payment$qrir5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,326
+	push	si
+	push	di
+	mov	di,word ptr [bp+6]
+   ;	
+   ;	{
+   ;	  float payA, b;
+   ;	  char ch1;
+   ;	  item i;
+   ;	  customer cus;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-83]
+   ;	
+   ;	  int l;
+   ;	  long pos;
+   ;	  int a;
+   ;	
+   ;	  fstream f1("items.dat",ios::binary|ios::out|ios::in);
+   ;	
+	FWAIT	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,131
+	push	ax
+	mov	ax,offset DGROUP:s@+1755
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-242]
+	push	ax
+	call	near ptr @fstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  fstream f2("customers.dat",ios::binary|ios::out|ios::in);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,131
+	push	ax
+	mov	ax,offset DGROUP:s@+1765
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-326]
+	push	ax
+	call	near ptr @fstream@$bctr$qpxzcii
+	add	sp,10
+@7@50:
+   ;	
+   ;	  label2: cout<<"\nMake Payment(Enter Amount): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1779
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		  cin>>payA;
+   ;	
+	lea	ax,word ptr [bp-4]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+   ;	
+   ;		  if(payA==s.subtotal)
+   ;	
+	FLD	dword ptr [di+1525]
+	FCOMP	dword ptr [bp-4]
+	FSTSW	word ptr [bp-18]
+	FWAIT	
+	mov	ax,word ptr [bp-18]
+	sahf	
+	je	@@19
+	jmp	@7@290
+@@19:
+   ;	
+   ;		  {
+   ;		    s.acceptAmount(payA);
+   ;	
+	FLD	dword ptr [bp-4]
+	call	near ptr N_FTOL@
+	mov	word ptr [bp-18],ax
+	FILD	word ptr [bp-18]
+	FADD	dword ptr [di+255]
+	FSTP	dword ptr [di+255]
+   ;	
+   ;		    a=0;
+   ;	
+	FWAIT	
+	mov	word ptr [bp-16],0
+	jmp	@7@242
+@7@98:
+   ;	
+   ;		    while(!f1.eof())
+   ;		    {
+   ;		      pos=f1.tellg();
+   ;	
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f1.read((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(i.get_name(),s.items[a])==0)
+   ;	
+	mov	ax,word ptr [bp-16]
+	mov	dx,20
+	imul	dx
+	mov	dx,di
+	add	dx,279
+	add	dx,ax
+	push	dx
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @7@242
+   ;	
+   ;		      {
+   ;			 for(l=1;l<=s.quan[a];l++)
+   ;	
+	mov	si,1
+	jmp	short @7@194
+@7@146:
+   ;	
+   ;			 {
+   ;			  i.makeSale();
+   ;	
+	dec	word ptr [bp-44]
+	inc	si
+@7@194:
+	mov	ax,word ptr [bp-16]
+	shl	ax,1
+	mov	bx,di
+	add	bx,1081
+	add	bx,ax
+	cmp	word ptr [bx],si
+	jge	short @7@146
+   ;	
+   ;			 }
+   ;			 f1.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f1.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-196]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			 ++a;
+   ;	
+	inc	word ptr [bp-16]
+@7@242:
+	mov	bx,word ptr [bp-242]
+	test	word ptr [bx+4],1
+	jne	@@20
+	jmp	@7@98
+@@20:
+   ;	
+   ;		      }
+   ;		    }
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-242]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    cout<<"Purchase Successful!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1809
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    flag1=1;
+   ;	
+	mov	bx,word ptr [bp+4]
+	mov	word ptr [bx],1
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    save_bill(s);
+   ;	
+	push	di
+	call	near ptr @save_bill$qr5salec
+	pop	cx
+	jmp	@7@986
+@7@290:
+   ;	
+   ;		  }
+   ;		  else if(payA>s.subtotal)
+   ;	
+	FLD	dword ptr [di+1525]
+	FCOMP	dword ptr [bp-4]
+	FSTSW	word ptr [bp-18]
+	FWAIT	
+	mov	ax,word ptr [bp-18]
+	sahf	
+	jb	@@21
+	jmp	@7@626
+@@21:
+   ;	
+   ;		  { s.acceptAmount(payA);
+   ;	
+	FLD	dword ptr [bp-4]
+	call	near ptr N_FTOL@
+	mov	word ptr [bp-18],ax
+	FILD	word ptr [bp-18]
+	FADD	dword ptr [di+255]
+	FSTP	dword ptr [di+255]
+   ;	
+   ;		    a=0;
+   ;	
+	FWAIT	
+	mov	word ptr [bp-16],0
+	jmp	@7@482
+@7@338:
+   ;	
+   ;		    while(!f1.eof())
+   ;		    {
+   ;		      pos=f1.tellg();
+   ;	
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f1.read((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(i.get_name(),s.items[a])==0)
+   ;	
+	mov	ax,word ptr [bp-16]
+	mov	dx,20
+	imul	dx
+	mov	dx,di
+	add	dx,279
+	add	dx,ax
+	push	dx
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @7@482
+   ;	
+   ;		      {
+   ;			 for(l=1;l<=s.quan[a];l++)
+   ;	
+	mov	si,1
+	jmp	short @7@434
+@7@386:
+   ;	
+   ;			 {
+   ;			  i.makeSale();
+   ;	
+	dec	word ptr [bp-44]
+	inc	si
+@7@434:
+	mov	ax,word ptr [bp-16]
+	shl	ax,1
+	mov	bx,di
+	add	bx,1081
+	add	bx,ax
+	cmp	word ptr [bx],si
+	jge	short @7@386
+   ;	
+   ;			 }
+   ;			 f1.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f1.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-196]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			 ++a;
+   ;	
+	inc	word ptr [bp-16]
+@7@482:
+	mov	bx,word ptr [bp-242]
+	test	word ptr [bx+4],1
+	jne	@@22
+	jmp	@7@338
+@@22:
+   ;	
+   ;		      }
+   ;		    }
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-242]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;	
+   ;		    b=payA-s.subtotal;
+   ;	
+	FLD	dword ptr [di+1525]
+	FSUBR	dword ptr [bp-4]
+	FSTP	dword ptr [bp-8]
+	FWAIT	
+	jmp	short @7@578
+@7@530:
+   ;	
+   ;		    while(!f2.eof())
+   ;		    {
+   ;		      pos=f2.tellg();
+   ;	
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f2.read((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-158]
+	push	ax
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(cus.get_name(),s.cname)==0)
+   ;	
+	mov	ax,di
+	add	ax,259
+	push	ax
+	lea	ax,word ptr [bp-157]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @7@578
+   ;	
+   ;		      {
+   ;			 cus.decrease_balae(b);
+   ;	
+	FLD	dword ptr [bp-8]
+	FSUBR	dword ptr [bp-83]
+	FSTP	dword ptr [bp-83]
+   ;	
+   ;			 f2.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f2.write((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-158]
+	push	ax
+	lea	ax,word ptr [bp-280]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+@7@578:
+	mov	bx,word ptr [bp-326]
+	test	word ptr [bx+4],1
+	je	short @7@530
+   ;	
+   ;		      }
+   ;		    }
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-326]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;	
+   ;		    cout<<"Purchase Successful!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1831
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    flag1=1;
+   ;	
+	mov	bx,word ptr [bp+4]
+	mov	word ptr [bx],1
+   ;	
+   ;		    cout<<"\nExtra adjusted in balance.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1853
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    save_bill(s);
+   ;	
+	push	di
+	call	near ptr @save_bill$qr5salec
+	pop	cx
+	jmp	@7@986
+@7@626:
+   ;	
+   ;		  }
+   ;		  else
+   ;		  {
+   ;		    cout<<"Payment is lesser than Subtotal.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1881
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    cout<<"\nDo u want to add remaining to balance?(y/n): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1914
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    cin>>ch1;
+   ;	
+	lea	ax,word ptr [bp-9]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;		    if(ch1=='y')
+   ;	
+	cmp	byte ptr [bp-9],121
+	je	@@23
+	jmp	@7@962
+@@23:
+   ;	
+   ;		    {
+   ;		      s.acceptAmount(payA);
+   ;	
+	FLD	dword ptr [bp-4]
+	call	near ptr N_FTOL@
+	mov	word ptr [bp-18],ax
+	FILD	word ptr [bp-18]
+	FADD	dword ptr [di+255]
+	FSTP	dword ptr [di+255]
+   ;	
+   ;		      a=0;
+   ;	
+	FWAIT	
+	mov	word ptr [bp-16],0
+	jmp	@7@818
+@7@674:
+   ;	
+   ;		     while(!f1.eof())
+   ;		     {
+   ;		      pos=f1.tellg();
+   ;	
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f1.read((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(i.get_name(),s.items[a])==0)
+   ;	
+	mov	ax,word ptr [bp-16]
+	mov	dx,20
+	imul	dx
+	mov	dx,di
+	add	dx,279
+	add	dx,ax
+	push	dx
+	lea	ax,word ptr [bp-78]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @7@818
+   ;	
+   ;		      {
+   ;			 for(l=1;l<=s.quan[a];l++)
+   ;	
+	mov	si,1
+	jmp	short @7@770
+@7@722:
+   ;	
+   ;			 {
+   ;			  i.makeSale();
+   ;	
+	dec	word ptr [bp-44]
+	inc	si
+@7@770:
+	mov	ax,word ptr [bp-16]
+	shl	ax,1
+	mov	bx,di
+	add	bx,1081
+	add	bx,ax
+	cmp	word ptr [bx],si
+	jge	short @7@722
+   ;	
+   ;			 }
+   ;			 f1.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-202]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f1.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-78]
+	push	ax
+	lea	ax,word ptr [bp-196]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			 ++a;
+   ;	
+	inc	word ptr [bp-16]
+@7@818:
+	mov	bx,word ptr [bp-242]
+	test	word ptr [bx+4],1
+	jne	@@24
+	jmp	@7@674
+@@24:
+   ;	
+   ;		      }
+   ;		    }
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-242]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		      b=s.subtotal-payA;
+   ;	
+	FLD	dword ptr [di+1525]
+	FSUB	dword ptr [bp-4]
+	FSTP	dword ptr [bp-8]
+	FWAIT	
+	jmp	short @7@914
+@7@866:
+   ;	
+   ;		     while(!f2.eof())
+   ;		     {
+   ;		      pos=f2.tellg();
+   ;	
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f2.read((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-158]
+	push	ax
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(cus.get_name(),s.cname)==0)
+   ;	
+	mov	ax,di
+	add	ax,259
+	push	ax
+	lea	ax,word ptr [bp-157]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @7@914
+   ;	
+   ;		      {
+   ;			 cus.increase_balae(b);
+   ;	
+	FLD	dword ptr [bp-8]
+	FADD	dword ptr [bp-83]
+	FSTP	dword ptr [bp-83]
+   ;	
+   ;			 f2.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-286]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f2.write((char*)&cus,sizeof(cus));
+   ;	
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-158]
+	push	ax
+	lea	ax,word ptr [bp-280]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+@7@914:
+	mov	bx,word ptr [bp-326]
+	test	word ptr [bx+4],1
+	je	short @7@866
+   ;	
+   ;		      }
+   ;		     }
+   ;		     f2.close();
+   ;	
+	lea	ax,word ptr [bp-326]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		      cout<<"Purchase Successful!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1961
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      flag1=1;
+   ;	
+	mov	bx,word ptr [bp+4]
+	mov	word ptr [bx],1
+   ;	
+   ;		      getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		      save_bill(s);
+   ;	
+	push	di
+	call	near ptr @save_bill$qr5salec
+	pop	cx
+   ;	
+   ;		      del(s);
+   ;	
+	push	di
+	call	near ptr @del$qr5salec
+	pop	cx
+	jmp	short @7@986
+@7@962:
+   ;	
+   ;		    }
+   ;		    else
+   ;		    {
+   ;		      goto label2;
+   ;	
+	jmp	@7@50
+@7@986:
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-326]
+	push	ax
+	call	near ptr @fstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-242]
+	push	ax
+	call	near ptr @fstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;		    }
+   ;		  }
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@make_payment$qrir5salec	endp
+   ;	
+   ;	void sale_menu(salec s)
+   ;	
+	assume	cs:_TEXT
+@sale_menu$q5salec	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,246
+	push	si
+	push	di
+	mov	si,word ptr [bp+4]
+   ;	
+   ;	{
+   ;	  int ex=0, flag1=-1;
+   ;	
+	mov	word ptr [bp-2],0
+	mov	word ptr [bp-4],65535
+   ;	
+   ;	  char chh;
+   ;	  int count=0;
+   ;	
+	mov	word ptr [bp-8],0
+   ;	
+   ;	  customer c1;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-13]
+   ;	
+   ;	  s.invoiceno=0;
+   ;	
+	FWAIT	
+	mov	word ptr [si+1079],0
+   ;	
+   ;	  ifstream f1("customers.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+1983
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-168]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  cout<<"Enter Customer's Name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+1997
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(s.cname);
+   ;	
+	mov	ax,si
+	add	ax,259
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	jmp	short @8@122
+@8@50:
+   ;	
+   ;	  while(f1.read((char*)&c1,sizeof(c1)))
+   ;	  {
+   ;	   if(strcmpi(s.cname,c1.get_name())==0)
+   ;	
+	lea	ax,word ptr [bp-87]
+	push	ax
+	mov	ax,si
+	add	ax,259
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @8@122
+   ;	
+   ;	    { count++;
+   ;	
+	inc	word ptr [bp-8]
+   ;	
+   ;	      if(count==1)
+   ;	
+	cmp	word ptr [bp-8],1
+	jne	short @8@122
+	jmp	short @8@218
+@8@122:
+	mov	ax,79
+	push	ax
+	lea	ax,word ptr [bp-88]
+	push	ax
+	lea	ax,word ptr [bp-128]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @8@170
+	xor	ax,ax
+	jmp	short @8@194
+@8@170:
+	mov	ax,di
+@8@194:
+	or	ax,ax
+	jne	short @8@50
+@8@218:
+   ;	
+   ;	      { break;
+   ;	      }
+   ;	    }
+   ;	  }
+   ;	  f1.close();
+   ;	
+	lea	ax,word ptr [bp-168]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;	   if(count==1)
+   ;	
+	cmp	word ptr [bp-8],1
+	je	@@25
+	jmp	@8@602
+@@25:
+@8@242:
+   ;	
+   ;	   {
+   ;	    do{
+   ;	     cout<<"\n1. Add item to bill.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2021
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     cout<<"\n2. Accept Payment.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2043
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     cout<<"\n3. Go to Home.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2063
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     cout<<"\nEnter your choice.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2079
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     chh=getch();
+   ;	
+	call	near ptr _getch
+	mov	byte ptr [bp-5],al
+   ;	
+   ;	     switch(chh)
+   ;	
+	mov	al,byte ptr [bp-5]
+	cbw	
+	cmp	ax,49
+	je	short @8@386
+	cmp	ax,50
+	je	short @8@410
+	cmp	ax,51
+	jne	@@26
+	jmp	@8@482
+@@26:
+	jmp	@8@506
+@8@386:
+   ;	
+   ;	     {
+   ;	      case '1': clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;			main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;			store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;			cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2099
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			add_item(s);
+   ;	
+	push	si
+	call	near ptr @add_item$qr5salec
+	pop	cx
+   ;	
+   ;			show_list(s);
+   ;	
+	push	si
+	call	near ptr @show_list$qr5salec
+	pop	cx
+	jmp	@8@530
+@8@410:
+   ;	
+   ;			break;
+   ;	      case '2': clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;			main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;			store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;			cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2104
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			make_payment(flag1,s);
+   ;	
+	push	si
+	lea	ax,word ptr [bp-4]
+	push	ax
+	call	near ptr @make_payment$qrir5salec
+	pop	cx
+	pop	cx
+   ;	
+   ;			if(flag1==1)
+   ;	
+	cmp	word ptr [bp-4],1
+	jne	short @8@458
+   ;	
+   ;			{
+   ;			  ofstream f("sales.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+2109
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-246]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;			  f.write((char*)&s,sizeof(s));
+   ;	
+	mov	ax,1537
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-206]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			  f.close();
+   ;	
+	lea	ax,word ptr [bp-246]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;			  del(s);
+   ;	
+	push	si
+	call	near ptr @del$qr5salec
+	pop	cx
+   ;	
+   ;			  getch();
+   ;	
+	call	near ptr _getch
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-246]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+@8@458:
+	jmp	short @8@530
+@8@482:
+   ;	
+   ;			}
+   ;			break;
+   ;	      case '3': ex=1;
+   ;	
+	mov	word ptr [bp-2],1
+   ;	
+   ;			del(s);
+   ;	
+	push	si
+	call	near ptr @del$qr5salec
+	pop	cx
+	jmp	short @8@530
+@8@506:
+   ;	
+   ;			break;
+   ;	      default: cout<<"Invalid Choice!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2119
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@8@530:
+   ;	
+   ;	     }
+   ;	    }
+   ;	    while(flag1!=1&&ex!=1);
+   ;	
+	cmp	word ptr [bp-4],1
+	je	short @8@578
+	cmp	word ptr [bp-2],1
+	je	@@27
+	jmp	@8@242
+@@27:
+@8@578:
+	jmp	short @8@626
+@8@602:
+   ;	
+   ;	   }
+   ;	   else
+   ;	   {
+   ;	      cout<<"Customer Not Found! Go to Home and add Customer.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2135
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@8@626:
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-168]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	   }
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@sale_menu$q5salec	endp
+   ;	
+   ;	void item_menu(item &it)
+   ;	
+	assume	cs:_TEXT
+@item_menu$qr4item	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,1956
+	push	si
+	push	di
+	mov	si,word ptr [bp+4]
+   ;	
+   ;	{
+   ;	  int q, flag=0;
+   ;	
+	mov	word ptr [bp-4],0
+   ;	
+   ;	  int ch, ex;
+   ;	  char n[20], ans;
+   ;	  salec s;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1501]
+	FLDZ	
+	FSTP	dword ptr [bp-1321]
+	FWAIT	
+	mov	word ptr [bp-455],0
+	mov	word ptr [bp-453],0
+	mov	word ptr [bp-497],0
+	FLDZ	
+	FSTP	dword ptr [bp-51]
+	FLDZ	
+	FSTP	dword ptr [bp-43]
+	FWAIT	
+@9@50:
+   ;	
+   ;	  long pos;
+   ;	  do{
+   ;	    clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	    main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;	    store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;	    cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2184
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  ifstream f1("items.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+2189
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  ofstream f2("items.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+2199
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  cout<<"\n1. Add an item.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2209
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n2. Display all items.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2226
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n3. Search an item.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2249
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n4. Increase Stock.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2269
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n5. Delete an item.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2289
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\n6. Go to Home.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2309
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\nEnter your choice: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2325
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cin>>ch;
+   ;	
+	lea	ax,word ptr [bp-6]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;	  switch(ch)
+   ;	
+	mov	bx,word ptr [bp-6]
+	dec	bx
+	cmp	bx,5
+	jbe	@@28
+	jmp	@9@1226
+@@28:
+	shl	bx,1
+	jmp	word ptr cs:@9@C4740[bx]
+@9@170:
+   ;	
+   ;	  {
+   ;	    case 1: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		    main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		    store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		    cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2346
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    it.init();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2351
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2378
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2386
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,20
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2395
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,24
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2403
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,34
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2411
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,40
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2423
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,36
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2439
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,52
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2470
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,48
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+	mov	ax,si
+	add	ax,24
+	push	ax
+	mov	ax,offset DGROUP:s@+2497
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @9@218
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr
+	FLD	dword ptr [si+20]
+	FLD	dword ptr DGROUP:s@+1495
+	FDIVR	dword ptr [si+40]
+	FMUL	
+	FADD	dword ptr [si+20]
+	FMUL	
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+	jmp	short @9@242
+@9@218:
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr+4
+	FMUL	dword ptr [si+20]
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+@9@242:
+	FLD	dword ptr [si+52]
+	FDIV	dword ptr DGROUP:s@+1495
+	FMUL	dword ptr [si+20]
+	FMUL	dword ptr [si+48]
+	FSTP	dword ptr [si+44]
+   ;	
+   ;		    f2.write((char*)&it,sizeof(it));
+   ;	
+	mov	ax,60
+	push	ax
+	push	si
+	FWAIT	
+	lea	ax,word ptr [bp-1694]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    cout<<"Item added successfully!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2502
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+	jmp	@9@1250
+@9@266:
+   ;	
+   ;		    break;
+   ;	    case 2: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2527
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	jmp	short @9@314
+@9@290:
+   ;	
+   ;		    while(f1.read((char*)&it,sizeof(it)))
+   ;		    {
+   ;		      puts(it.get_name());
+   ;	
+	push	si
+	call	near ptr _puts
+	pop	cx
+@9@314:
+	mov	ax,60
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1616]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-16],ax
+	mov	bx,word ptr [bp-16]
+	test	word ptr [bx+4],134
+	je	short @9@362
+	xor	ax,ax
+	jmp	short @9@386
+@9@362:
+	mov	ax,word ptr [bp-16]
+@9@386:
+	or	ax,ax
+	jne	short @9@290
+   ;	
+   ;		    }
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	jmp	@9@1250
+@9@434:
+   ;	
+   ;		    break;
+   ;	    case 3: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2532
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    cout<<"Enter name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2537
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    gets(n);
+   ;	
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+	jmp	@9@578
+@9@458:
+   ;	
+   ;		    while(f1.read((char*)&it,sizeof(it)))
+   ;		    {
+   ;		     if(strcmpi(n,it.get_name())==0)
+   ;	
+	push	si
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@29
+	jmp	@9@578
+@@29:
+   ;	
+   ;		     {
+   ;		      it.outit();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2550
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2566
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr _puts
+	pop	cx
+	FLD	dword ptr [si+20]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2574
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2583
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,24
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	mov	ax,word ptr [si+34]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2592
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	FLD	dword ptr [si+40]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2600
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+36]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2613
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+52]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2630
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+48]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2662
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	ax,si
+	add	ax,24
+	push	ax
+	mov	ax,offset DGROUP:s@+2718
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @9@530
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr
+	FLD	dword ptr [si+20]
+	FLD	dword ptr DGROUP:s@+1495
+	FDIVR	dword ptr [si+40]
+	FMUL	
+	FADD	dword ptr [si+20]
+	FMUL	
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+	jmp	short @9@554
+@9@530:
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr+4
+	FMUL	dword ptr [si+20]
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+@9@554:
+	FLD	dword ptr [si+52]
+	FDIV	dword ptr DGROUP:s@+1495
+	FMUL	dword ptr [si+20]
+	FMUL	dword ptr [si+48]
+	FSTP	dword ptr [si+44]
+	FLD	dword ptr [si+44]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2690
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+56]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2704
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+@9@578:
+	mov	ax,60
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1616]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	ax,word ptr [bx]
+	mov	word ptr [bp-18],ax
+	mov	bx,word ptr [bp-18]
+	test	word ptr [bx+4],134
+	je	short @9@626
+	xor	ax,ax
+	jmp	short @9@650
+@9@626:
+	mov	ax,word ptr [bp-18]
+@9@650:
+	or	ax,ax
+	je	@@30
+	jmp	@9@458
+@@30:
+   ;	
+   ;		     }
+   ;		    }
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	jmp	@9@1250
+@9@698:
+   ;	
+   ;		    break;
+   ;	    case 4: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		    main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		    store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2723
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    cout<<"Enter name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2728
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    gets(n);
+   ;	
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;		    item i;
+   ;		    fstream f("items.dat",ios::binary|ios::in|ios::out);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,131
+	push	ax
+	mov	ax,offset DGROUP:s@+2741
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1878]
+	push	ax
+	call	near ptr @fstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@9@794
+@9@746:
+   ;	
+   ;		    while(!f.eof())
+   ;		    {
+   ;		      pos=f.tellg();
+   ;	
+	lea	ax,word ptr [bp-1838]
+	push	ax
+	call	near ptr @istream@tellg$qv
+	pop	cx
+	mov	word ptr [bp-14],ax
+	mov	word ptr [bp-12],dx
+   ;	
+   ;		      f.read((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-1794]
+	push	ax
+	lea	ax,word ptr [bp-1838]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+   ;	
+   ;		      if(strcmpi(i.get_name(),n)==0)
+   ;	
+	lea	ax,word ptr [bp-38]
+	push	ax
+	lea	ax,word ptr [bp-1794]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @9@794
+   ;	
+   ;		      {
+   ;			 cout<<"Enter by how much u want to increase: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2751
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			 cin>>q;
+   ;	
+	lea	ax,word ptr [bp-2]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qri
+	pop	cx
+	pop	cx
+   ;	
+   ;			 i.increase_q(q);
+   ;	
+	mov	ax,word ptr [bp-2]
+	add	word ptr [bp-1760],ax
+   ;	
+   ;			 f.seekg(pos);
+   ;	
+	push	word ptr [bp-12]
+	push	word ptr [bp-14]
+	lea	ax,word ptr [bp-1838]
+	push	ax
+	call	near ptr @istream@seekg$ql
+	add	sp,6
+   ;	
+   ;			 f.write((char*)&i,sizeof(i));
+   ;	
+	mov	ax,60
+	push	ax
+	lea	ax,word ptr [bp-1794]
+	push	ax
+	lea	ax,word ptr [bp-1832]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;			 cout<<"Stock Updated!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2790
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			 flag=1;
+   ;	
+	mov	word ptr [bp-4],1
+	jmp	short @9@818
+@9@794:
+	mov	bx,word ptr [bp-1878]
+	test	word ptr [bx+4],1
+	jne	@@31
+	jmp	@9@746
+@@31:
+@9@818:
+   ;	
+   ;			 break;
+   ;		      }
+   ;		    }
+   ;		    if(flag==0)
+   ;	
+	cmp	word ptr [bp-4],0
+	jne	short @9@866
+   ;	
+   ;		    {
+   ;		      cout<<"Item does not exist in stock!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2805
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@9@866:
+   ;	
+   ;		    }
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    f.close();
+   ;	
+	lea	ax,word ptr [bp-1878]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1878]
+	push	ax
+	call	near ptr @fstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	@9@1250
+@9@890:
+   ;	
+   ;		    break;
+   ;	    case 5: clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		    main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		    store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		    cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2835
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    cout<<"Enter name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2840
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    gets(n);
+   ;	
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;		    ofstream f3("temp.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+2853
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-1956]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+	jmp	@9@1082
+@9@914:
+   ;	
+   ;		    while(f1.read((char*)&it,sizeof(it)))
+   ;		    {
+   ;		     if(strcmpi(n,it.get_name())!=0)
+   ;	
+	push	si
+	lea	ax,word ptr [bp-38]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	short @9@962
+   ;	
+   ;		     {
+   ;		       f3.write((char*)&it,sizeof(it));
+   ;	
+	mov	ax,60
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1916]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+	jmp	@9@1082
+@9@962:
+   ;	
+   ;		     }
+   ;		     else
+   ;		     {
+   ;		       it.outit();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2862
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2878
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	push	si
+	call	near ptr _puts
+	pop	cx
+	FLD	dword ptr [si+20]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2886
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2895
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,si
+	add	ax,24
+	push	ax
+	call	near ptr _puts
+	pop	cx
+	mov	ax,word ptr [si+34]
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2904
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	FLD	dword ptr [si+40]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2912
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+36]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2925
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+52]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2942
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+48]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2974
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	mov	ax,si
+	add	ax,24
+	push	ax
+	mov	ax,offset DGROUP:s@+3030
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @9@1010
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr
+	FLD	dword ptr [si+20]
+	FLD	dword ptr DGROUP:s@+1495
+	FDIVR	dword ptr [si+40]
+	FMUL	
+	FADD	dword ptr [si+20]
+	FMUL	
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+	jmp	short @9@1034
+@9@1010:
+	FLD	dword ptr [si+36]
+	FLD	dword ptr DGROUP:_cr+4
+	FMUL	dword ptr [si+20]
+	FADD	
+	FSTP	dword ptr [si+56]
+	FWAIT	
+@9@1034:
+	FLD	dword ptr [si+52]
+	FDIV	dword ptr DGROUP:s@+1495
+	FMUL	dword ptr [si+20]
+	FMUL	dword ptr [si+48]
+	FSTP	dword ptr [si+44]
+	FLD	dword ptr [si+44]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3002
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+	FLD	dword ptr [si+56]
+	add	sp,65526
+	FSTP	tbyte ptr [bp-1970]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3016
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;		       cout<<"\nDo you really wish to delete?(y/n): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3035
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		       cin>>ans;
+   ;	
+	lea	ax,word ptr [bp-9]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrzc
+	pop	cx
+	pop	cx
+   ;	
+   ;		       if(ans=='n')
+   ;	
+	cmp	byte ptr [bp-9],110
+	jne	short @9@1082
+   ;	
+   ;			f3.write((char*)&it, sizeof(it));
+   ;	
+	mov	ax,60
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1916]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+@9@1082:
+	mov	ax,60
+	push	ax
+	push	si
+	lea	ax,word ptr [bp-1616]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @9@1130
+	xor	ax,ax
+	jmp	short @9@1154
+@9@1130:
+	mov	ax,di
+@9@1154:
+	or	ax,ax
+	je	@@32
+	jmp	@9@914
+@@32:
+   ;	
+   ;		     }
+   ;		    }
+   ;		    cout<<"Item Deleted Successfully!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3073
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		    getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;		    f1.close();
+   ;	
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f2.close();
+   ;	
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    f3.close();
+   ;	
+	lea	ax,word ptr [bp-1956]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;		    remove("items.dat");
+   ;	
+	mov	ax,offset DGROUP:s@+3100
+	push	ax
+	call	near ptr _unlink
+	pop	cx
+   ;	
+   ;		    rename("temp.dat","Items.dat");
+   ;	
+	mov	ax,offset DGROUP:s@+3119
+	push	ax
+	mov	ax,offset DGROUP:s@+3110
+	push	ax
+	call	near ptr _rename
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1956]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	jmp	short @9@1250
+@9@1202:
+   ;	
+   ;		    break;
+   ;	    case 6: ex=1;
+   ;	
+	mov	word ptr [bp-8],1
+	jmp	short @9@1250
+@9@1226:
+   ;	
+   ;		    break;
+   ;	    default: cout<<"Invalid Choice!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3129
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@9@1250:
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1734]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-1656]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;		 }
+   ;	    }
+   ;	    while(ex!=1);
+   ;	
+	cmp	word ptr [bp-8],1
+	je	@@33
+	jmp	@9@50
+@@33:
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@item_menu$qr4item	endp
+@9@C4740	label	word
+	dw	@9@170
+	dw	@9@266
+	dw	@9@434
+	dw	@9@698
+	dw	@9@890
+	dw	@9@1202
+   ;	
+   ;	void login(int &flag)
+   ;	
+	assume	cs:_TEXT
+@login$qri	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,200
+	push	si
+	push	di
+   ;	
+   ;	  {
+   ;	    Store st;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-4]
+   ;	
+   ;	    ifstream f1("stores.dat",ios::binary);
+   ;	
+	FWAIT	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+3145
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-200]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	    cout<<"       \t\t\t\tLOGIN";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3156
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	    cout<<"\nUser Name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3173
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	    gets(user);
+   ;	
+	mov	ax,offset DGROUP:_user
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	    cout<<"PIN: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3186
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	    for(int i=0;i<4;i++)
+   ;	
+	xor	si,si
+	jmp	short @10@98
+@10@50:
+   ;	
+   ;	    {
+   ;	      p[i] = getch();
+   ;	
+	call	near ptr _getch
+	mov	byte ptr DGROUP:_p[si],al
+   ;	
+   ;	      cout<<"*";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3192
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	si
+@10@98:
+	cmp	si,4
+	jl	short @10@50
+   ;	
+   ;	    }
+   ;	    p[4]='\0';
+   ;	
+	mov	byte ptr DGROUP:_p+4,0
+	jmp	short @10@218
+@10@146:
+   ;	
+   ;	    while(f1.read((char*)&st,sizeof(st)))
+   ;	    {
+   ;	     if((strcmpi(user,st.get_uname())==0)&&(strcmpi(st.get_pin(),p)==0))
+   ;	
+	lea	ax,word ptr [bp-40]
+	push	ax
+	mov	ax,offset DGROUP:_user
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @10@218
+	mov	ax,offset DGROUP:_p
+	push	ax
+	lea	ax,word ptr [bp-9]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	jne	short @10@218
+   ;	
+   ;	     { flag=1;
+   ;	
+	mov	bx,word ptr [bp+4]
+	mov	word ptr [bx],1
+@10@218:
+	mov	ax,120
+	push	ax
+	lea	ax,word ptr [bp-120]
+	push	ax
+	lea	ax,word ptr [bp-160]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @10@266
+	xor	ax,ax
+	jmp	short @10@290
+@10@266:
+	mov	ax,di
+@10@290:
+	or	ax,ax
+	jne	short @10@146
+   ;	
+   ;	     }
+   ;	    }
+   ;	     f1.close();
+   ;	
+	lea	ax,word ptr [bp-200]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-200]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	  }
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@login$qri	endp
+   ;	
+   ;	void signup()
+   ;	
+	assume	cs:_TEXT
+@signup$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,316
+	push	si
+   ;	
+   ;	{
+   ;	  char st[30], ye[20], em[30], un[20], ph[11], pi[5];
+   ;	  Store sto;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-122]
+   ;	
+   ;	  cout<<"       \t\t\t\tSIGN UP";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3194
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\nEnter the details.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3213
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"\nStore's Name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3233
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(st);
+   ;	
+	lea	ax,word ptr [bp-36]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	  sto.set_store(st);
+   ;	
+	lea	ax,word ptr [bp-36]
+	push	ax
+	lea	ax,word ptr [bp-238]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  cout<<"Year of Startup: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3249
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(ye);
+   ;	
+	lea	ax,word ptr [bp-56]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	  sto.set_year(ye);
+   ;	
+	lea	ax,word ptr [bp-56]
+	push	ax
+	lea	ax,word ptr [bp-208]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  cout<<"User Name: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3267
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(un);
+   ;	
+	lea	ax,word ptr [bp-106]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	  sto.set_uname(un);
+   ;	
+	lea	ax,word ptr [bp-106]
+	push	ax
+	lea	ax,word ptr [bp-158]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  cout<<"User Pin (4 digits long): ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3279
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  for(int i=0;i<4;i++)
+   ;	
+	xor	si,si
+	jmp	short @11@98
+@11@50:
+   ;	
+   ;	  {
+   ;	    pi[i] = getch();
+   ;	
+	call	near ptr _getch
+	mov	byte ptr [bp+si-6],al
+   ;	
+   ;	    cout<<"*";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3306
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	inc	si
+@11@98:
+	cmp	si,4
+	jl	short @11@50
+   ;	
+   ;	  }
+   ;	  pi[4]='\0';
+   ;	
+	mov	byte ptr [bp-2],0
+   ;	
+   ;	  sto.set_pin(pi);
+   ;	
+	lea	ax,word ptr [bp-6]
+	push	ax
+	lea	ax,word ptr [bp-127]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  cout<<"\nPhone Number: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3308
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(ph);
+   ;	
+	lea	ax,word ptr [bp-118]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	  sto.set_phone(ph);
+   ;	
+	lea	ax,word ptr [bp-118]
+	push	ax
+	lea	ax,word ptr [bp-138]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  cout<<"Email-id: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3324
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  gets(em);
+   ;	
+	lea	ax,word ptr [bp-86]
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;	  sto.set_email(em);
+   ;	
+	lea	ax,word ptr [bp-86]
+	push	ax
+	lea	ax,word ptr [bp-188]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	  ofstream f1("stores.dat",ios::binary|ios::app);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,136
+	push	ax
+	mov	ax,offset DGROUP:s@+3335
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-316]
+	push	ax
+	call	near ptr @ofstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  f1.write((char*)&sto,sizeof(sto));
+   ;	
+	mov	ax,120
+	push	ax
+	lea	ax,word ptr [bp-238]
+	push	ax
+	lea	ax,word ptr [bp-276]
+	push	ax
+	call	near ptr @ostream@write$qpxzci
+	add	sp,6
+   ;	
+   ;	  cout<<"Sign Up Successful!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3346
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  f1.close();
+   ;	
+	lea	ax,word ptr [bp-316]
+	push	ax
+	call	near ptr @fstreambase@close$qv
+	pop	cx
+   ;	
+   ;	  getch();
+   ;	
+	call	near ptr _getch
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-316]
+	push	ax
+	call	near ptr @ofstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	 }
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@signup$qv	endp
+   ;	
+   ;	void store_head()
+   ;	
+	assume	cs:_TEXT
+@store_head$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,230
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	  int i;
+   ;	  ifstream f1("stores.dat",ios::binary);
+   ;	
+	push	word ptr DGROUP:@filebuf@openprot
+	mov	ax,128
+	push	ax
+	mov	ax,offset DGROUP:s@+3367
+	push	ax
+	xor	ax,ax
+	push	ax
+	lea	ax,word ptr [bp-80]
+	push	ax
+	call	near ptr @ifstream@$bctr$qpxzcii
+	add	sp,10
+   ;	
+   ;	  char stn[30];
+   ;	  Store st;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-114]
+	FWAIT	
+	jmp	@12@218
+@12@50:
+   ;	
+   ;	  while(f1.read((char*)&st,sizeof(st)))
+   ;	  {
+   ;	    if((strcmpi(user,st.get_uname())==0)&&(strcmpi(st.get_pin(),p)==0))
+   ;	
+	lea	ax,word ptr [bp-150]
+	push	ax
+	mov	ax,offset DGROUP:_user
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@34
+	jmp	@12@218
+@@34:
+	mov	ax,offset DGROUP:_p
+	push	ax
+	lea	ax,word ptr [bp-119]
+	push	ax
+	call	near ptr _stricmp
+	pop	cx
+	pop	cx
+	or	ax,ax
+	je	@@35
+	jmp	@12@218
+@@35:
+   ;	
+   ;	    {
+   ;	     strcpy(stn,st.get_store());
+   ;	
+	lea	ax,word ptr [bp-230]
+	push	ax
+	lea	ax,word ptr [bp-110]
+	push	ax
+	call	near ptr _strcpy
+	pop	cx
+	pop	cx
+   ;	
+   ;	     cout<<"\n\t=================� ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3378
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	     for(i=0;stn[i]!='\0';i++)
+   ;	
+	xor	si,si
+	jmp	short @12@170
+@12@122:
+   ;	
+   ;	     {
+   ;	       cout<<stn[i];
+   ;	
+	mov	al,byte ptr [bp+si-110]
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+	inc	si
+@12@170:
+	cmp	byte ptr [bp+si-110],0
+	jne	short @12@122
+   ;	
+   ;	     }
+   ;	     cout<<" �=================";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3400
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	
+   ;	    cout<<"\nCurrent Rates:";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3420
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	    cout<<"\t\t\t\t\t\t\t";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3436
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	    dt.out();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3444
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_dt
+	push	ax
+	call	near ptr _puts
+	pop	cx
+   ;	
+   ;	    cout<<"Gold: "<<cr.goldrate();
+   ;	
+	FLD	dword ptr DGROUP:_cr
+	add	sp,65526
+	FSTP	tbyte ptr [bp-244]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3451
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+   ;	
+   ;	    cout<<"\nSilver: "<<cr.silverrate();
+   ;	
+	FLD	dword ptr DGROUP:_cr+4
+	add	sp,65526
+	FSTP	tbyte ptr [bp-244]
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3458
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qg
+	add	sp,12
+@12@218:
+	mov	ax,120
+	push	ax
+	lea	ax,word ptr [bp-230]
+	push	ax
+	lea	ax,word ptr [bp-40]
+	push	ax
+	call	near ptr @istream@read$qpzci
+	add	sp,6
+	mov	bx,ax
+	mov	di,word ptr [bx]
+	test	word ptr [di+4],134
+	je	short @12@266
+	xor	ax,ax
+	jmp	short @12@290
+@12@266:
+	mov	ax,di
+@12@290:
+	or	ax,ax
+	je	@@36
+	jmp	@12@50
+@@36:
+	mov	ax,2
+	push	ax
+	lea	ax,word ptr [bp-80]
+	push	ax
+	call	near ptr @ifstream@$bdtr$qv
+	pop	cx
+	pop	cx
+   ;	
+   ;	    }
+   ;	  }
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@store_head$qv	endp
+   ;	
+   ;	void main_head()
+   ;	
+	assume	cs:_TEXT
+@main_head$qv	proc	near
+	push	bp
+	mov	bp,sp
+   ;	
+   ;	{
+   ;	  cout<<"같같같같같같같같같같같같같 JEWELLERY SHOP MANAGEMENT 같같같같같같같같같같같같같�";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3468
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	}
+   ;	
+	pop	bp
+	ret	
+@main_head$qv	endp
+   ;	
+   ;	void home()
+   ;	
+	assume	cs:_TEXT
+@home$qv	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,3218
+	push	si
+   ;	
+   ;	{
+   ;	  salec s;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1465]
+	FLDZ	
+	FSTP	dword ptr [bp-1285]
+	FWAIT	
+	mov	word ptr [bp-419],0
+	mov	word ptr [bp-417],0
+	mov	word ptr [bp-461],0
+	FLDZ	
+	FSTP	dword ptr [bp-15]
+	FLDZ	
+	FSTP	dword ptr [bp-7]
+   ;	
+   ;	  customer cus;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-1545]
+   ;	
+   ;	  item it;
+   ;	  char ch;
+   ;	  int ex=0;
+   ;	
+	xor	si,si
+	FWAIT	
+@14@50:
+   ;	
+   ;	 do{
+   ;	    clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	    main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;	    store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;	 cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3549
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 cout<<"\n1. Sale";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3554
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 cout<<"\n2. Customers";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3563
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 cout<<"\n3. Items";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3577
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 cout<<"\n4. Logout";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3587
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 cout<<"\nChoose your option.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3598
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	 ch=getch();
+   ;	
+	call	near ptr _getch
+	mov	byte ptr [bp-1],al
+   ;	
+   ;	 switch(ch)
+   ;	
+	mov	al,byte ptr [bp-1]
+	cbw	
+	sub	ax,49
+	mov	bx,ax
+	cmp	bx,3
+	jbe	@@37
+	jmp	@14@266
+@@37:
+	shl	bx,1
+	jmp	word ptr cs:@14@C1290[bx]
+@14@146:
+   ;	
+   ;	 {
+   ;	   case '1' : clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3619
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      sale_menu(s);
+   ;	
+	mov	al,byte ptr [bp-1540]
+	mov	byte ptr [bp-3218],al
+	lea	ax,word ptr [bp-3217]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1539]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3197]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1519]
+	push	ss
+	push	ax
+	mov	cx,14
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3183]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1505]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3163]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1485]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-1465]
+	FSTP	dword ptr [bp-3143]
+	FWAIT	
+	lea	ax,word ptr [bp-3139]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1461]
+	push	ss
+	push	ax
+	mov	cx,60
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3079]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1401]
+	push	ss
+	push	ax
+	mov	cx,30
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3049]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1371]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-3029]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1351]
+	push	ss
+	push	ax
+	mov	cx,30
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2999]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1321]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2979]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1301]
+	push	ss
+	push	ax
+	mov	cx,11
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2968]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1290]
+	push	ss
+	push	ax
+	mov	cx,5
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-1285]
+	FSTP	dword ptr [bp-2963]
+	FWAIT	
+	lea	ax,word ptr [bp-2959]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1281]
+	push	ss
+	push	ax
+	mov	cx,20
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2939]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-1261]
+	push	ss
+	push	ax
+	mov	cx,400
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2539]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-861]
+	push	ss
+	push	ax
+	mov	cx,400
+	call	near ptr N_SCOPY@
+	mov	ax,word ptr [bp-461]
+	mov	word ptr [bp-2139],ax
+	lea	ax,word ptr [bp-2137]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-459]
+	push	ss
+	push	ax
+	mov	cx,40
+	call	near ptr N_SCOPY@
+	mov	ax,word ptr [bp-419]
+	mov	word ptr [bp-2097],ax
+	mov	ax,word ptr [bp-417]
+	mov	word ptr [bp-2095],ax
+	lea	ax,word ptr [bp-2093]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-415]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-2013]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-335]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-1933]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-255]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-1853]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-175]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	lea	ax,word ptr [bp-1773]
+	push	ss
+	push	ax
+	lea	ax,word ptr [bp-95]
+	push	ss
+	push	ax
+	mov	cx,80
+	call	near ptr N_SCOPY@
+	FLD	dword ptr [bp-15]
+	FSTP	dword ptr [bp-1693]
+	FLD	dword ptr [bp-11]
+	FSTP	dword ptr [bp-1689]
+	FLD	dword ptr [bp-7]
+	FSTP	dword ptr [bp-1685]
+	FWAIT	
+	lea	ax,word ptr [bp-3218]
+	push	ax
+	call	near ptr @sale_menu$q5salec
+	pop	cx
+	jmp	short @14@290
+@14@194:
+   ;	
+   ;		      break;
+   ;	   case '2' : clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3624
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      cust_menu(cus);
+   ;	
+	lea	ax,word ptr [bp-1620]
+	push	ax
+	call	near ptr @cust_menu$qr8customer
+	pop	cx
+	jmp	short @14@290
+@14@218:
+   ;	
+   ;		      break;
+   ;	   case '3' : clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;		      main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;		      store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;		      cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3629
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      item_menu(it);
+   ;	
+	lea	ax,word ptr [bp-1680]
+	push	ax
+	call	near ptr @item_menu$qr4item
+	pop	cx
+	jmp	short @14@290
+@14@242:
+   ;	
+   ;		      break;
+   ;	   case '4' : ex=1;
+   ;	
+	mov	si,1
+	jmp	short @14@290
+@14@266:
+   ;	
+   ;		      break;
+   ;	   default: cout<<"Invalid Choice!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3634
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@14@290:
+   ;	
+   ;	 }
+   ;	 }
+   ;	 while(ex!=1);
+   ;	
+	cmp	si,1
+	je	@@38
+	jmp	@14@50
+@@38:
+   ;	
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+@home$qv	endp
+@14@C1290	label	word
+	dw	@14@146
+	dw	@14@194
+	dw	@14@218
+	dw	@14@242
+   ;	
+   ;	void main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,132
+	push	si
+   ;	
+   ;	{
+   ;	  int ex=0;
+   ;	
+	xor	si,si
+   ;	
+   ;	  clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	  Store st;
+   ;	
+	FLDZ	
+	FSTP	dword ptr [bp-16]
+	FWAIT	
+@15@50:
+   ;	
+   ;	  char ch;
+   ;	  int flag;
+   ;	  float g,s;
+   ;	  do{
+   ;	  clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	  main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;	  cout<<"\n\n\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3650
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"1. Sign Up.\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3657
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"2. Login.\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3670
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"3. Close App.\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3681
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  cout<<"Choose your option.\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3696
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	  ch=getch();
+   ;	
+	call	near ptr _getch
+	mov	byte ptr [bp-1],al
+   ;	
+   ;	  clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	  main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;	  switch(ch)
+   ;	
+	mov	al,byte ptr [bp-1]
+	cbw	
+	cmp	ax,49
+	jne	@@39
+	jmp	@15@290
+@@39:
+	cmp	ax,50
+	je	short @15@194
+	cmp	ax,51
+	jne	@@40
+	jmp	@15@314
+@@40:
+	jmp	@15@338
+@15@194:
+   ;	
+   ;	  {
+   ;	    case '2': cout<<"\n\n\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3717
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      login(flag);
+   ;	
+	lea	ax,word ptr [bp-4]
+	push	ax
+	call	near ptr @login$qri
+	pop	cx
+   ;	
+   ;		      if(flag==1)
+   ;	
+	cmp	word ptr [bp-4],1
+	je	@@41
+	jmp	@15@242
+@@41:
+   ;	
+   ;		      {
+   ;			cout<<"\nLogin Successful. Welcome back!!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3724
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cout<<"\nPress any key to continue.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3758
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;			clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;			main_head();
+   ;	
+	call	near ptr @main_head$qv
+   ;	
+   ;			store_head();
+   ;	
+	call	near ptr @store_head$qv
+   ;	
+   ;			cout<<"\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3786
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			dt.in();
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3791
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_dt
+	push	ax
+	call	near ptr _gets
+	pop	cx
+   ;	
+   ;			cout<<"\nEnter Current Rate.";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3824
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cout<<"\nGold: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3845
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cin>>g;
+   ;	
+	lea	ax,word ptr [bp-8]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+   ;	
+   ;			cr.set_grate(g);
+   ;	
+	FLD	dword ptr [bp-8]
+	FSTP	dword ptr DGROUP:_cr
+   ;	
+   ;			cout<<"Silver: ";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3853
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	FWAIT	
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			cin>>s;
+   ;	
+	lea	ax,word ptr [bp-12]
+	push	ax
+	mov	ax,offset DGROUP:_cin
+	push	ax
+	call	near ptr @istream@$brsh$qrf
+	pop	cx
+	pop	cx
+   ;	
+   ;			cr.set_srate(s);
+   ;	
+	FLD	dword ptr [bp-12]
+	FSTP	dword ptr DGROUP:_cr+4
+   ;	
+   ;			home();
+   ;	
+	FWAIT	
+	call	near ptr @home$qv
+	jmp	short @15@266
+@15@242:
+   ;	
+   ;		      }
+   ;		      else
+   ;		      { cout<<"\nInvalid Username or PIN!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3862
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;			getch();
+   ;	
+	call	near ptr _getch
+@15@266:
+	jmp	short @15@362
+@15@290:
+   ;	
+   ;		      }
+   ;		      break;
+   ;	    case '1': cout<<"\n\n\n\n\n\n";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3888
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;		      signup();
+   ;	
+	call	near ptr @signup$qv
+	jmp	short @15@362
+@15@314:
+   ;	
+   ;		      break;
+   ;	    case '3': ex=1;
+   ;	
+	mov	si,1
+	jmp	short @15@362
+@15@338:
+   ;	
+   ;		      break;
+   ;	    default:  cout<<"Invalid Choice!";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+3895
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@15@362:
+   ;	
+   ;	  }
+   ;	 }
+   ;	 while(ex!=1);
+   ;	
+	cmp	si,1
+	je	@@42
+	jmp	@15@50
+@@42:
+   ;	
+   ;	  getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	10
+	db	10
+	db	'Invoice No.: '
+	db	0
+	db	'Date: '
+	db	0
+	db	10
+	db	'#'
+	db	9
+	db	'Item'
+	db	9
+	db	'Metal'
+	db	9
+	db	'Weight'
+	db	9
+	db	'Wast.'
+	db	9
+	db	'Mak.'
+	db	0
+	db	9
+	db	'Price'
+	db	9
+	db	'Qty.'
+	db	9
+	db	'Total'
+	db	10
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	10
+	db	0
+	db	10
+	db	'Subtotal: '
+	db	0
+	db	10
+	db	'1. Add a customer.'
+	db	0
+	db	10
+	db	'2. Display all customers.'
+	db	0
+	db	10
+	db	'3. Search customer.'
+	db	0
+	db	10
+	db	'4. Delete a customer.'
+	db	0
+	db	10
+	db	'5. Go to Home.'
+	db	0
+	db	10
+	db	'Enter your choice: '
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'customers.dat'
+	db	0
+	db	'Enter the customer'
+	db	39
+	db	's details:'
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Phone: '
+	db	0
+	db	'Address: '
+	db	0
+	db	'Email Id: '
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'customers.dat'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'customers.dat'
+	db	0
+	db	'Enter name: '
+	db	0
+	db	'Customer'
+	db	39
+	db	's details:'
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Phone: '
+	db	0
+	db	'Address: '
+	db	0
+	db	'Email Id: '
+	db	0
+	db	'Balance: '
+	db	0
+	db	'sales.dat'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'customers.dat'
+	db	0
+	db	'Enter name: '
+	db	0
+	db	'temp.dat'
+	db	0
+	db	'Customer'
+	db	39
+	db	's details:'
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Phone: '
+	db	0
+	db	'Address: '
+	db	0
+	db	'Email Id: '
+	db	0
+	db	'Balance: '
+	db	0
+	db	10
+	db	'Do you really wish to delete?(y/n): '
+	db	0
+	db	'customers.dat'
+	db	0
+	db	'temp.dat'
+	db	0
+	db	'customer.dat'
+	db	0
+	db	'Invalid Choice!'
+	db	0
+	db	10
+	db	'#'
+	db	9
+	db	'Item'
+	db	9
+	db	'Met.'
+	db	9
+	db	'Weight'
+	db	9
+	db	'Wast.'
+	db	9
+	db	'Mak.C.'
+	db	0
+	db	9
+	db	'Price'
+	db	9
+	db	'Quant.'
+	db	9
+	db	'Total'
+	db	10
+	db	0
+	db	'-------------------------------------------------------------'
+	db	'----------'
+	db	10
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	10
+	db	0
+	db	10
+	db	'Subtotal: '
+	db	0
+	db	'stores.dat'
+	db	0
+	db	'Invoice.docx'
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'Rates:'
+	db	10
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'  Gold: '
+	db	0
+	db	10
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'        Silver: '
+	db	0
+	db	10
+	db	'Invoice No.: '
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'  Date: '
+	db	0
+	db	10
+	db	0
+	db	'-------------------------------------------------------------'
+	db	'----------'
+	db	10
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'   INVOICE'
+	db	10
+	db	0
+	db	'-------------------------------------------------------------'
+	db	'----------'
+	db	10
+	db	0
+	db	10
+	db	'#'
+	db	9
+	db	'Item'
+	db	9
+	db	'Metal'
+	db	9
+	db	'Weight'
+	db	9
+	db	'Wast.'
+	db	9
+	db	'Mak.'
+	db	0
+	db	9
+	db	'Price'
+	db	9
+	db	'Quant.'
+	db	9
+	db	'Total'
+	db	10
+	db	0
+	db	'-------------------------------------------------------------'
+	db	'----------'
+	db	10
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	9
+	db	0
+	db	10
+	db	0
+	db	10
+	db	'Subtotal: '
+	db	0
+	db	10
+	db	'Bill Saved in BIN folder.'
+	db	0
+	db	'items.dat'
+	db	0
+	db	10
+	db	'Enter item name: '
+	db	0
+	db	10
+	db	'Enter quantity: '
+	db	0
+	db	10
+	db	'Not enough stock!'
+	db	0
+	db	10
+	db	'Available Stock: '
+	db	0
+	db	10
+	db	'Do u want to increase this item'
+	db	39
+	db	's stock?(y/n): '
+	db	0
+	db	'items.dat'
+	db	0
+	db	'Enter by how much u want to increase: '
+	db	0
+	db	'Stock Updated!'
+	db	0
+	db	'Item does not exist in stock!'
+	db	0
+	db	'Gold'
+	db	0
+	db	0
+	db	0
+	db	-56
+	db	'B'
+	db	10
+	db	'Item does not exist in stock.'
+	db	0
+	db	10
+	db	'Do u want to add item in stock(y/n): '
+	db	0
+	db	'items.dat'
+	db	0
+	db	'Enter Details of the Item.'
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Weight: '
+	db	0
+	db	'Metal: '
+	db	0
+	db	'Stock: '
+	db	0
+	db	'% Wastage: '
+	db	0
+	db	'Making Charge: '
+	db	0
+	db	'Weight % at which you bought: '
+	db	0
+	db	'Rate at which you bought: '
+	db	0
+	db	'Gold'
+	db	0
+	db	'Item added successfully!'
+	db	0
+	db	'items.dat'
+	db	0
+	db	'customers.dat'
+	db	0
+	db	10
+	db	'Make Payment(Enter Amount): '
+	db	0
+	db	'Purchase Successful!!'
+	db	0
+	db	'Purchase Successful!!'
+	db	0
+	db	10
+	db	'Extra adjusted in balance.'
+	db	0
+	db	'Payment is lesser than Subtotal.'
+	db	0
+	db	10
+	db	'Do u want to add remaining to balance?(y/n): '
+	db	0
+	db	'Purchase Successful!!'
+	db	0
+	db	'customers.dat'
+	db	0
+	db	'Enter Customer'
+	db	39
+	db	's Name: '
+	db	0
+	db	10
+	db	'1. Add item to bill.'
+	db	0
+	db	10
+	db	'2. Accept Payment.'
+	db	0
+	db	10
+	db	'3. Go to Home.'
+	db	0
+	db	10
+	db	'Enter your choice.'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'sales.dat'
+	db	0
+	db	'Invalid Choice!'
+	db	0
+	db	'Customer Not Found! Go to Home and add Customer.'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'items.dat'
+	db	0
+	db	'items.dat'
+	db	0
+	db	10
+	db	'1. Add an item.'
+	db	0
+	db	10
+	db	'2. Display all items.'
+	db	0
+	db	10
+	db	'3. Search an item.'
+	db	0
+	db	10
+	db	'4. Increase Stock.'
+	db	0
+	db	10
+	db	'5. Delete an item.'
+	db	0
+	db	10
+	db	'6. Go to Home.'
+	db	0
+	db	10
+	db	'Enter your choice: '
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Enter Details of the Item.'
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Weight: '
+	db	0
+	db	'Metal: '
+	db	0
+	db	'Stock: '
+	db	0
+	db	'% Wastage: '
+	db	0
+	db	'Making Charge: '
+	db	0
+	db	'Weight % at which you bought: '
+	db	0
+	db	'Rate at which you bought: '
+	db	0
+	db	'Gold'
+	db	0
+	db	'Item added successfully!'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Enter name: '
+	db	0
+	db	10
+	db	'Item Details: '
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Weight: '
+	db	0
+	db	10
+	db	'Metal: '
+	db	0
+	db	'Stock: '
+	db	0
+	db	10
+	db	'% Wastage: '
+	db	0
+	db	10
+	db	'Making Charge: '
+	db	0
+	db	10
+	db	'Weight % at which you bought: '
+	db	0
+	db	10
+	db	'Rate at which you bought: '
+	db	0
+	db	10
+	db	'Cost Price: '
+	db	0
+	db	10
+	db	'Sale Price: '
+	db	0
+	db	'Gold'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Enter name: '
+	db	0
+	db	'items.dat'
+	db	0
+	db	'Enter by how much u want to increase: '
+	db	0
+	db	'Stock Updated!'
+	db	0
+	db	'Item does not exist in stock!'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Enter name: '
+	db	0
+	db	'temp.dat'
+	db	0
+	db	10
+	db	'Item Details: '
+	db	0
+	db	10
+	db	'Name: '
+	db	0
+	db	'Weight: '
+	db	0
+	db	10
+	db	'Metal: '
+	db	0
+	db	'Stock: '
+	db	0
+	db	10
+	db	'% Wastage: '
+	db	0
+	db	10
+	db	'Making Charge: '
+	db	0
+	db	10
+	db	'Weight % at which you bought: '
+	db	0
+	db	10
+	db	'Rate at which you bought: '
+	db	0
+	db	10
+	db	'Cost Price: '
+	db	0
+	db	10
+	db	'Sale Price: '
+	db	0
+	db	'Gold'
+	db	0
+	db	10
+	db	'Do you really wish to delete?(y/n): '
+	db	0
+	db	'Item Deleted Successfully!'
+	db	0
+	db	'items.dat'
+	db	0
+	db	'temp.dat'
+	db	0
+	db	'Items.dat'
+	db	0
+	db	'Invalid Choice!'
+	db	0
+	db	'stores.dat'
+	db	0
+	db	'       '
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'LOGIN'
+	db	0
+	db	10
+	db	'User Name: '
+	db	0
+	db	'PIN: '
+	db	0
+	db	'*'
+	db	0
+	db	'       '
+	db	9
+	db	9
+	db	9
+	db	9
+	db	'SIGN UP'
+	db	0
+	db	10
+	db	'Enter the details.'
+	db	0
+	db	10
+	db	'Store'
+	db	39
+	db	's Name: '
+	db	0
+	db	'Year of Startup: '
+	db	0
+	db	'User Name: '
+	db	0
+	db	'User Pin (4 digits long): '
+	db	0
+	db	'*'
+	db	0
+	db	10
+	db	'Phone Number: '
+	db	0
+	db	'Email-id: '
+	db	0
+	db	'stores.dat'
+	db	0
+	db	'Sign Up Successful!!'
+	db	0
+	db	'stores.dat'
+	db	0
+	db	10
+	db	9
+	db	'================='
+	db	-75
+	db	' '
+	db	0
+	db	' '
+	db	-58
+	db	'================='
+	db	0
+	db	10
+	db	'Current Rates:'
+	db	0
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	9
+	db	0
+	db	'Date: '
+	db	0
+	db	'Gold: '
+	db	0
+	db	10
+	db	'Silver: '
+	db	0
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	' JEWELLERY SHOP MANAGEMENT '
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	-80
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	'1. Sale'
+	db	0
+	db	10
+	db	'2. Customers'
+	db	0
+	db	10
+	db	'3. Items'
+	db	0
+	db	10
+	db	'4. Logout'
+	db	0
+	db	10
+	db	'Choose your option.'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Invalid Choice!'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'1. Sign Up.'
+	db	10
+	db	0
+	db	'2. Login.'
+	db	10
+	db	0
+	db	'3. Close App.'
+	db	10
+	db	0
+	db	'Choose your option.'
+	db	10
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	10
+	db	'Login Successful. Welcome back!!'
+	db	0
+	db	10
+	db	'Press any key to continue.'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Enter Today'
+	db	39
+	db	's Date(DD/MM/YYYY): '
+	db	0
+	db	10
+	db	'Enter Current Rate.'
+	db	0
+	db	10
+	db	'Gold: '
+	db	0
+	db	'Silver: '
+	db	0
+	db	10
+	db	'Invalid Username or PIN!'
+	db	0
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	10
+	db	0
+	db	'Invalid Choice!'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+	extrn	__turboFloat:word
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	$comm	@filebuf@openprot,near,2,1
+	public	_user
+	public	_p
+	public	_dt
+	public	_cr
+	public	@show_sale$q5salec
+	extrn	@ostream@$blsh$ql:near
+	extrn	_cout:word
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_puts:near
+	extrn	@ostream@$blsh$qzc:near
+	extrn	@ostream@$blsh$qg:near
+	extrn	_getch:near
+	public	@cust_menu$qr8customer
+	extrn	@istream@$brsh$qri:near
+	extrn	_cin:word
+	extrn	_clrscr:near
+	public	@main_head$qv
+	public	@store_head$qv
+	extrn	@ofstream@$bctr$qpxzcii:near
+	extrn	_gets:near
+	extrn	@ostream@write$qpxzci:near
+	extrn	@fstreambase@close$qv:near
+	extrn	@ofstream@$bdtr$qv:near
+	extrn	@ifstream@$bctr$qpxzcii:near
+	extrn	@istream@read$qpzci:near
+	extrn	@ifstream@$bdtr$qv:near
+	extrn	_stricmp:near
+	extrn	N_SCOPY@:near
+	extrn	@istream@$brsh$qrzc:near
+	extrn	_unlink:near
+	extrn	_rename:near
+	public	@show_list$qr5salec
+	public	@save_bill$qr5salec
+	public	@add_item$qr5salec
+	extrn	@fstream@$bctr$qpxzcii:near
+	extrn	@istream@tellg$qv:near
+	extrn	@istream@seekg$ql:near
+	extrn	@fstream@$bdtr$qv:near
+	extrn	_strcpy:near
+	extrn	@istream@$brsh$qrf:near
+	public	@del$qr5salec
+	public	@make_payment$qrir5salec
+	extrn	N_FTOL@:near
+	public	@sale_menu$q5salec
+	public	@item_menu$qr4item
+	public	@login$qri
+	public	@signup$qv
+	public	@home$qv
+	public	_main
+	end
+

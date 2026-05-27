@@ -1,0 +1,1508 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SRC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _options_mailphone
+PUBLIC  _dialog_func
+PUBLIC  _d_howmany
+PUBLIC  _d_canihave
+PUBLIC  _d_whichisit
+PUBLIC  _d_whichbridge
+PUBLIC  _d_whatsprob
+PUBLIC  _d_whatcanido
+PUBLIC  _d_have100jewels
+PUBLIC  _d_wellhowdo
+PUBLIC  _d_wannatrade
+PUBLIC  _options_buy1
+PUBLIC  _options_bobstv
+PUBLIC  _options_tv
+PUBLIC  _options_bridge1
+PUBLIC  _options_bridge2
+PUBLIC  _options_hermit
+EXTRN	_pause:NEAR
+EXTRN	_rotate_pal:NEAR
+EXTRN	_delete_object:NEAR
+EXTRN	_actor_speaks:NEAR
+EXTRN	_display_health:NEAR
+EXTRN	_xcopyd2d:NEAR
+EXTRN	_display_magic:NEAR
+EXTRN	_display_jewels:NEAR
+EXTRN	_display_keys:NEAR
+EXTRN	_play_sound:NEAR
+EXTRN	_thor_damaged:NEAR
+EXTRN	_add_jewels:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_add_health:NEAR
+EXTRN	_select_option:NEAR
+EXTRN	_xdisplay_actors:NEAR
+EXTRN	_timer_cnt:WORD
+EXTRN	_scrn:BYTE
+EXTRN	_actor:BYTE
+EXTRN	_thor:WORD
+EXTRN	_display_page:WORD
+EXTRN	_thor_info:BYTE
+EXTRN	_options_yesno:BYTE
+EXTRN	_setup:BYTE
+EXTRN	_sd_data:DWORD
+_DATA      SEGMENT
+$SG1176	DB	'So, How Many Ya Want?',  00H
+$SG1178	DB	'Well, Can I have it?',  00H
+$SG1180	DB	'What Needs Fixed?',  00H
+$SG1182	DB	'Which Bridge?',  00H
+$SG1184	DB	'What''s the Problem?',  00H
+$SG1186	DB	'What do you want to know?',  00H
+$SG1188	DB	'Can I have 100 jewels?',  00H
+$SG1190	DB	'Well, how we gonna do this?',  00H
+$SG1192	DB	'Well, Do you want to trade?',  00H
+$SG1194	DB	'5 Apples Please',  00H
+$SG1195	DB	'Fill ''er Up',  00H
+$SG1196	DB	'Never mind',  00H
+$SG1198	DB	'My TV',  00H
+$SG1199	DB	'A Bridge ',  00H
+$SG1200	DB	'Forget it',  00H
+$SG1202	DB	'Bad Picture Tube',  00H
+$SG1203	DB	'Horizontal Syncapation ',  00H
+$SG1204	DB	'Nothing',  00H
+$SG1206	DB	'London Bridge',  00H
+$SG1207	DB	'Dental Bridge',  00H
+$SG1208	DB	'I forgot',  00H
+$SG1210	DB	'London Bridge',  00H
+$SG1211	DB	'Dental Bridge',  00H
+$SG1212	DB	'Creekin''s Bridge',  00H
+$SG1213	DB	'I forgot',  00H
+$SG1215	DB	'What''s the doll for?',  00H
+$SG1216	DB	'How do I find Jormangund?',  00H
+$SG1217	DB	'Nothing',  00H
+$SG1219	DB	'I want to order by mail',  00H
+$SG1220	DB	'I want to order by phone',  00H
+	ORG	$+1
+_dialog_func	DW	_dialog_one
+	DW	_dialog_two
+	DW	_dialog_three
+	DW	_dialog_four
+	DW	_dialog_five
+	DW	_dialog_six
+	DW	_dialog_seven
+	DW	_dialog_eight
+	DW	_dialog_nine
+	DW	_dialog_ten
+	DW	_dialog_eleven
+	DW	_dialog_twelve
+	DW	_dialog_thirteen
+	DW	_dialog_fourteen
+_d_howmany	DW	DGROUP:$SG1176
+_d_canihave	DW	DGROUP:$SG1178
+_d_whichisit	DW	DGROUP:$SG1180
+_d_whichbridge	DW	DGROUP:$SG1182
+_d_whatsprob	DW	DGROUP:$SG1184
+_d_whatcanido	DW	DGROUP:$SG1186
+_d_have100jewels	DW	DGROUP:$SG1188
+_d_wellhowdo	DW	DGROUP:$SG1190
+_d_wannatrade	DW	DGROUP:$SG1192
+_options_buy1	DW	DGROUP:$SG1194
+	DW	DGROUP:$SG1195
+	DW	DGROUP:$SG1196
+	DW	00H
+_options_bobstv	DW	DGROUP:$SG1198
+	DW	DGROUP:$SG1199
+	DW	DGROUP:$SG1200
+	DW	00H
+_options_tv	DW	DGROUP:$SG1202
+	DW	DGROUP:$SG1203
+	DW	DGROUP:$SG1204
+	DW	00H
+_options_bridge1	DW	DGROUP:$SG1206
+	DW	DGROUP:$SG1207
+	DW	DGROUP:$SG1208
+	DW	00H
+_options_bridge2	DW	DGROUP:$SG1210
+	DW	DGROUP:$SG1211
+	DW	DGROUP:$SG1212
+	DW	DGROUP:$SG1213
+	DW	00H
+_options_hermit	DW	DGROUP:$SG1215
+	DW	DGROUP:$SG1216
+	DW	DGROUP:$SG1217
+	DW	00H
+_options_mailphone	DW	DGROUP:$SG1219
+	DW	DGROUP:$SG1220
+	DW	00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 4
+; Line 5
+; Line 6
+; Line 7
+; Line 9
+; Line 10
+; Line 11
+; Line 121
+	PUBLIC	_d_restore
+_d_restore	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 123
+	mov	ax,320
+	push	ax
+	push	ax
+	push	WORD PTR _display_page
+	mov	cx,-30816
+	push	cx
+	sub	cx,cx
+	push	cx
+	push	cx
+	mov	dx,192
+	push	dx
+	push	ax
+	push	cx
+	push	cx
+	call	_xcopyd2d
+	add	sp,20
+; Line 124
+	push	WORD PTR _display_page
+	mov	ax,OFFSET _actor+8772
+	push	ax
+	call	_xdisplay_actors
+	add	sp,4
+; Line 125
+	ret	
+
+_d_restore	ENDP
+; Line 127
+	PUBLIC	_buy_apples
+_buy_apples	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	flag = -2
+;	amount = 8
+;	num = 6
+;	actr = 4
+; Line 130
+	mov	WORD PTR [bp-2],0	;flag
+; Line 131
+	jmp	$L20002
+	nop	
+$FC1229:
+; Line 132
+	mov	ax,WORD PTR [bp+8]	;amount
+	cmp	WORD PTR _thor_info+2,ax
+	jge	$I1231
+; Line 133
+	sub	ax,ax
+	push	ax
+	mov	cx,4002
+	push	cx
+	push	WORD PTR [bp+4]	;actr
+	call	_actor_speaks
+	add	sp,6
+; Line 134
+	call	_d_restore
+; Line 135
+	mov	WORD PTR [bp-2],0	;flag
+; Line 136
+	jmp	SHORT $FB1230
+; Line 137
+; Line 138
+	nop	
+$I1231:
+	mov	bx,WORD PTR _thor
+	mov	al,BYTE PTR [bx+14]
+	cbw	
+	cmp	ax,150
+	jl	$I1232
+; Line 139
+	sub	ax,ax
+	push	ax
+	mov	ax,4003
+	push	ax
+	push	WORD PTR [bp+4]	;actr
+	call	_actor_speaks
+	add	sp,6
+; Line 140
+	call	_d_restore
+; Line 141
+	jmp	SHORT $FB1230
+; Line 142
+; Line 143
+$I1232:
+	dec	WORD PTR [bp+6]	;num
+; Line 144
+	mov	ax,1
+	push	ax
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 145
+	mov	ax,WORD PTR [bp+8]	;amount
+	sub	WORD PTR _thor_info+2,ax
+; Line 146
+	mov	ax,5
+	push	ax
+	call	_add_health
+	add	sp,2
+; Line 147
+	mov	WORD PTR _timer_cnt,0
+; Line 148
+	call	_display_health
+; Line 149
+	call	_display_jewels
+; Line 150
+	jmp	SHORT $L20001
+	nop	
+$FC1234:
+	call	_rotate_pal
+$L20001:
+	cmp	WORD PTR _timer_cnt,20
+	jb	$FC1234
+; Line 151
+	mov	WORD PTR [bp-2],1	;flag
+; Line 152
+$L20002:
+	cmp	WORD PTR [bp+6],0	;num
+	je	$JCC203
+	jmp	$FC1229
+$JCC203:
+$FB1230:
+; Line 153
+	cmp	WORD PTR [bp-2],0	;flag
+	je	$I1236
+; Line 154
+	sub	ax,ax
+	push	ax
+	mov	ax,4007
+	push	ax
+	push	WORD PTR [bp+4]	;actr
+	call	_actor_speaks
+	add	sp,6
+; Line 155
+	call	_d_restore
+; Line 156
+; Line 157
+$I1236:
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_buy_apples	ENDP
+; Line 159
+	PUBLIC	_dialog_one
+_dialog_one	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 163
+	sub	ax,ax
+	push	ax
+	mov	cx,3001
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 164
+	call	_d_restore
+; Line 165
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_howmany
+	mov	ax,OFFSET DGROUP:_options_buy1
+	push	ax
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 166
+	call	_d_restore
+; Line 167
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$I1240
+	mov	ax,5
+	push	ax
+	mov	ax,150
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_buy_apples
+	add	sp,6
+; Line 168
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+$I1240:
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1242
+	mov	ax,5
+	push	ax
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_buy_apples
+; Line 169
+$I1242:
+	sub	ax,ax
+; Line 170
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_one	ENDP
+; Line 172
+	PUBLIC	_dialog_two
+_dialog_two	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 176
+	sub	ax,ax
+	push	ax
+	mov	cx,3002
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 177
+	call	_d_restore
+; Line 178
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_howmany
+	mov	ax,OFFSET DGROUP:_options_buy1
+	push	ax
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 179
+	call	_d_restore
+; Line 180
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$I1246
+	mov	ax,2
+	push	ax
+	mov	ax,150
+	jmp	SHORT $L20003
+$I1246:
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1248
+	mov	ax,2
+	push	ax
+	mov	ax,5
+$L20003:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_buy_apples
+	add	sp,6
+; Line 182
+$I1248:
+	cmp	WORD PTR [bp-2],0	;sel
+	je	$I1249
+; Line 183
+	sub	ax,ax
+	push	ax
+	mov	ax,4007
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 184
+	call	_d_restore
+; Line 185
+; Line 186
+$I1249:
+	sub	ax,ax
+; Line 187
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_two	ENDP
+; Line 189
+	PUBLIC	_dialog_three
+_dialog_three	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	act = 4
+; Line 192
+	test	BYTE PTR _setup,1
+	je	$I1252
+; Line 193
+	sub	ax,ax
+	push	ax
+	mov	ax,4004
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	mov	sp,bp
+; Line 194
+	call	_d_restore
+; Line 195
+; Line 196
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$I1252:
+; Line 197
+	sub	ax,ax
+	push	ax
+	mov	ax,3003
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	mov	sp,bp
+; Line 198
+	call	_d_restore
+; Line 199
+	mov	ax,1
+	push	ax
+	mov	ax,3
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 200
+	inc	BYTE PTR _thor_info+1
+; Line 201
+	call	_display_keys
+; Line 202
+	or	BYTE PTR _setup,1
+; Line 203
+; Line 204
+	sub	ax,ax
+; Line 205
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_three	ENDP
+; Line 207
+	PUBLIC	_dialog_four
+_dialog_four	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 210
+	test	BYTE PTR _setup,2
+	je	$I1257
+; Line 211
+	sub	ax,ax
+	push	ax
+	mov	ax,3008
+	jmp	SHORT $L20004
+$I1257:
+; Line 215
+	test	BYTE PTR _thor_info+8,64
+	je	$I1259
+; Line 216
+	sub	ax,ax
+	push	ax
+	mov	cx,3007
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 217
+	call	_d_restore
+; Line 219
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_canihave
+	mov	cx,OFFSET _options_yesno
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+	dec	ax
+	jne	$I1260
+; Line 220
+	call	_delete_object
+; Line 221
+	sub	BYTE PTR _scrn+258,2
+; Line 222
+	sub	BYTE PTR _scrn+259,2
+; Line 223
+	sub	BYTE PTR _scrn+260,2
+; Line 224
+	sub	BYTE PTR _scrn+261,2
+; Line 225
+	mov	WORD PTR _actor+992,16
+; Line 226
+	or	BYTE PTR _setup,2
+; Line 227
+	sub	ax,ax
+	push	ax
+	mov	ax,3010
+	jmp	SHORT $L20004
+	nop	
+$I1260:
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$I1263
+; Line 231
+	sub	ax,ax
+	push	ax
+	mov	ax,3009
+	jmp	SHORT $L20004
+$I1259:
+; Line 236
+	sub	ax,ax
+	push	ax
+	mov	ax,3006
+$L20004:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 237
+	call	_d_restore
+; Line 238
+$I1263:
+; Line 239
+; Line 240
+	sub	ax,ax
+; Line 241
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_four	ENDP
+; Line 243
+	PUBLIC	_dialog_five
+_dialog_five	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	act = 4
+; Line 245
+	test	BYTE PTR _setup,8
+	jne	$I1266
+	sub	ax,ax
+	push	ax
+	mov	ax,102
+	jmp	SHORT $L20005
+	nop	
+$I1266:
+	sub	ax,ax
+	push	ax
+	mov	ax,110
+$L20005:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 247
+	call	_d_restore
+; Line 248
+	or	BYTE PTR _setup,4
+; Line 249
+	sub	ax,ax
+; Line 250
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_five	ENDP
+; Line 252
+	PUBLIC	_d_fix_tv
+_d_fix_tv	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 255
+	sub	ax,ax
+	push	ax
+	mov	cx,3012
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+	or	ax,ax
+	je	$EX1270
+; Line 256
+$FC1274:
+; Line 257
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_whatsprob
+	mov	cx,OFFSET DGROUP:_options_tv
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 258
+	call	_d_restore
+; Line 259
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1276
+; Line 260
+	sub	ax,ax
+	push	ax
+	mov	cx,3013
+	jmp	SHORT $L20006
+$I1276:
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$EX1270
+; Line 263
+	sub	ax,ax
+	push	ax
+	mov	cx,3014
+$L20006:
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+	or	ax,ax
+	jne	$FC1274
+$EX1270:
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_d_fix_tv	ENDP
+; Line 269
+	PUBLIC	_d_fix_bridge
+_d_fix_bridge	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,6
+	call	__aNchkstk
+;	sel = -2
+;	lvl = -6
+;	act = 4
+; Line 273
+	sub	ax,ax
+	push	ax
+	mov	cx,3015
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+	or	ax,ax
+	jne	$JCC885
+	jmp	$FB1290
+$JCC885:
+; Line 274
+$FC1289:
+; Line 275
+	test	BYTE PTR _setup,4
+	je	$I1291
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_whichbridge
+	mov	ax,OFFSET DGROUP:_options_bridge2
+	push	ax
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 276
+	jmp	SHORT $I1293
+	nop	
+$I1291:
+; Line 278
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_whichbridge
+	mov	cx,OFFSET DGROUP:_options_bridge1
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+	cmp	ax,3
+	jne	$I1293
+	mov	WORD PTR [bp-2],0	;sel
+; Line 279
+$I1293:
+; Line 280
+	call	_d_restore
+; Line 281
+	cmp	WORD PTR [bp-2],0	;sel
+	je	$FB1290
+; Line 283
+	cmp	WORD PTR [bp-2],3	;sel
+	jne	$I1295
+; Line 284
+	sub	ax,ax
+	push	ax
+	mov	ax,3018
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 286
+	les	bx,DWORD PTR _sd_data
+	add	bh,104
+	mov	WORD PTR [bp-6],bx	;lvl
+	mov	WORD PTR [bp-4],es
+	mov	BYTE PTR es:[bx+138],147
+; Line 287
+	les	bx,DWORD PTR [bp-6]	;lvl
+	mov	BYTE PTR es:[bx+158],148
+; Line 288
+	or	BYTE PTR _setup,8
+; Line 289
+	mov	sp,bp
+	pop	bp
+	ret	
+$I1295:
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1297
+; Line 292
+	sub	ax,ax
+	push	ax
+	mov	cx,3016
+	jmp	SHORT $L20007
+$I1297:
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$FB1290
+; Line 295
+	sub	ax,ax
+	push	ax
+	mov	cx,3017
+$L20007:
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+	or	ax,ax
+	je	$JCC1056
+	jmp	$FC1289
+$JCC1056:
+$FB1290:
+; Line 299
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_d_fix_bridge	ENDP
+; Line 301
+	PUBLIC	_dialog_six
+_dialog_six	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 304
+	test	BYTE PTR _setup,16
+	jne	$I1306
+; Line 305
+	sub	ax,ax
+	push	ax
+	mov	cx,3020
+$L20009:
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 306
+$L20008:
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 307
+; Line 308
+$I1306:
+	test	BYTE PTR _setup,8
+	je	$I1307
+; Line 309
+	sub	ax,ax
+	push	ax
+	mov	cx,3019
+	jmp	SHORT $L20009
+; Line 311
+; Line 312
+	nop	
+$I1307:
+	sub	ax,ax
+	push	ax
+	mov	cx,3011
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+	or	ax,ax
+	je	$L20008
+; Line 313
+$FC1310:
+; Line 314
+	test	BYTE PTR _setup,8
+	jne	$L20008
+; Line 315
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_whichisit
+	mov	ax,OFFSET DGROUP:_options_bobstv
+	push	ax
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 316
+	call	_d_restore
+; Line 317
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1313
+	push	WORD PTR [bp+4]	;act
+	call	_d_fix_tv
+$L20010:
+	add	sp,2
+; Line 318
+	jmp	SHORT $FC1310
+	nop	
+$I1313:
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$L20008
+	push	WORD PTR [bp+4]	;act
+	call	_d_fix_bridge
+	jmp	SHORT $L20010
+
+_dialog_six	ENDP
+; Line 324
+	PUBLIC	_dialog_seven
+_dialog_seven	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 327
+	test	BYTE PTR _setup,16
+	je	$I1320
+; Line 328
+	mov	ax,1
+	push	ax
+	mov	ax,9
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 329
+	jmp	SHORT $L20011
+$I1320:
+; Line 332
+	test	BYTE PTR _thor_info+8,64
+	je	$I1323
+; Line 333
+	sub	ax,ax
+	push	ax
+	mov	ax,3022
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 334
+	call	_d_restore
+; Line 335
+	or	BYTE PTR _setup,16
+; Line 336
+	call	_delete_object
+; Line 337
+	jmp	SHORT $L20011
+$jump1321:
+; Line 338
+; Line 339
+; Line 342
+	sub	ax,ax
+	push	ax
+	mov	ax,3023
+$L20012:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 343
+	call	_d_restore
+; Line 344
+; Line 345
+$L20011:
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_whatcanido
+	mov	cx,OFFSET DGROUP:_options_hermit
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 340
+	call	_d_restore
+; Line 341
+	cmp	WORD PTR [bp-2],1	;sel
+	je	$jump1321
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$I1331
+; Line 346
+	sub	ax,ax
+	push	ax
+	mov	ax,3024
+	jmp	SHORT $L20012
+$I1323:
+; Line 353
+	sub	ax,ax
+	push	ax
+	mov	ax,3021
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 354
+	call	_d_restore
+; Line 355
+	or	BYTE PTR _setup,64
+; Line 356
+$I1331:
+; Line 357
+	sub	ax,ax
+; Line 359
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_seven	ENDP
+; Line 361
+	PUBLIC	_dialog_eight
+_dialog_eight	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	act = 4
+; Line 364
+	test	BYTE PTR _setup,32
+	je	$I1334
+; Line 365
+	sub	ax,ax
+	push	ax
+	mov	ax,4004
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	mov	sp,bp
+; Line 366
+	call	_d_restore
+; Line 367
+; Line 368
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$I1334:
+; Line 369
+	sub	ax,ax
+	push	ax
+	mov	ax,3029
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	mov	sp,bp
+; Line 370
+	call	_d_restore
+; Line 371
+	mov	ax,1
+	push	ax
+	mov	ax,3
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 372
+	inc	BYTE PTR _thor_info+1
+; Line 373
+	call	_display_keys
+; Line 374
+	or	BYTE PTR _setup,32
+; Line 375
+; Line 376
+	sub	ax,ax
+; Line 377
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_eight	ENDP
+; Line 379
+	PUBLIC	_dialog_nine
+_dialog_nine	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 382
+	sub	ax,ax
+	push	ax
+	mov	ax,3026
+	jmp	SHORT $L20015
+	nop	
+$FC1340:
+; Line 389
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1343
+; Line 390
+	sub	ax,ax
+	push	ax
+	mov	ax,3027
+	jmp	SHORT $L20015
+$I1343:
+	cmp	WORD PTR [bp-2],2	;sel
+	jne	$I1345
+; Line 394
+	sub	ax,ax
+	push	ax
+	mov	ax,3028
+$L20015:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 395
+	call	_d_restore
+; Line 396
+; Line 397
+$I1345:
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_wellhowdo
+	mov	cx,OFFSET DGROUP:_options_mailphone
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 387
+	call	_d_restore
+; Line 388
+	cmp	WORD PTR [bp-2],0	;sel
+	jne	$FC1340
+; Line 398
+	sub	ax,ax
+; Line 399
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_nine	ENDP
+; Line 401
+	PUBLIC	_dialog_ten
+_dialog_ten	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 404
+	test	BYTE PTR _setup+1,1
+	je	$I1349
+	test	BYTE PTR _setup+1,2
+	je	$I1349
+; Line 405
+	sub	ax,ax
+	push	ax
+	mov	cx,4008
+	push	cx
+$L20017:
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 406
+	call	_d_restore
+; Line 407
+$L20016:
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 408
+; Line 409
+$I1349:
+	mov	ax,1
+	push	ax
+	mov	cx,9
+	push	cx
+	call	_play_sound
+	add	sp,4
+; Line 410
+	mov	ax,1
+	push	ax
+	push	WORD PTR _d_have100jewels
+	mov	cx,OFFSET _options_yesno
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 411
+	call	_d_restore
+; Line 412
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$L20016
+; Line 413
+	cmp	WORD PTR _thor_info+2,100
+	jl	$I1351
+; Line 414
+	mov	ax,-100
+	push	ax
+	call	_add_jewels
+	add	sp,2
+; Line 415
+	mov	ax,WORD PTR _thor_info+2
+	mov	WORD PTR _thor_info+14,ax
+; Line 416
+	test	BYTE PTR _setup+1,1
+	jne	$I1352
+; Line 417
+	sub	ax,ax
+	push	ax
+	mov	ax,3025
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 418
+	call	_d_restore
+; Line 419
+	or	BYTE PTR _setup+1,1
+; Line 420
+; Line 421
+	jmp	SHORT $L20016
+$I1352:
+	test	BYTE PTR _setup+1,2
+	jne	$L20016
+; Line 422
+	sub	ax,ax
+	push	ax
+	mov	ax,3032
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 423
+	call	_d_restore
+; Line 424
+	or	BYTE PTR _setup+1,2
+; Line 425
+; Line 426
+; Line 427
+	jmp	$L20016
+$I1351:
+; Line 428
+	sub	ax,ax
+	push	ax
+	mov	ax,4002
+	push	ax
+	jmp	$L20017
+; Line 433
+
+_dialog_ten	ENDP
+; Line 435
+	PUBLIC	_dialog_eleven
+_dialog_eleven	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 438
+	mov	ax,1
+	push	ax
+	mov	cx,9
+	push	cx
+	call	_play_sound
+	add	sp,4
+; Line 439
+	mov	ax,1
+	push	ax
+	push	WORD PTR _d_have100jewels
+	mov	cx,OFFSET _options_yesno
+	push	cx
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 440
+	call	_d_restore
+; Line 441
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1359
+; Line 442
+	cmp	WORD PTR _thor_info+2,100
+	jl	$I1360
+; Line 443
+	mov	ax,-100
+	push	ax
+	call	_add_jewels
+	add	sp,2
+; Line 444
+	mov	ax,WORD PTR _thor_info+2
+	mov	WORD PTR _thor_info+14,ax
+; Line 445
+	sub	ax,ax
+	push	ax
+	mov	ax,3005
+	jmp	SHORT $L20018
+$I1360:
+; Line 449
+	sub	ax,ax
+	push	ax
+	mov	ax,4002
+$L20018:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 450
+	call	_d_restore
+; Line 451
+; Line 452
+; Line 453
+$I1359:
+	sub	ax,ax
+; Line 454
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_eleven	ENDP
+; Line 457
+	PUBLIC	_dialog_twelve
+_dialog_twelve	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	act = 4
+; Line 459
+	sub	ax,ax
+	push	ax
+	mov	cx,11
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	mov	sp,bp
+; Line 460
+	call	_d_restore
+; Line 461
+	mov	ax,1
+	push	ax
+	mov	cx,13
+	push	cx
+	call	_play_sound
+	mov	sp,bp
+; Line 462
+	mov	ax,30
+	push	ax
+	call	_pause
+	mov	sp,bp
+; Line 463
+	mov	ax,1
+	push	ax
+	sub	ax,ax
+	push	ax
+	call	_play_sound
+	mov	sp,bp
+; Line 464
+	mov	bx,WORD PTR [bp+4]	;act
+	mov	BYTE PTR [bx+13],20
+; Line 465
+	push	bx
+	call	_thor_damaged
+; Line 466
+	mov	bx,WORD PTR [bp+4]	;act
+	mov	BYTE PTR [bx+13],0
+; Line 467
+	sub	ax,ax
+; Line 468
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_twelve	ENDP
+; Line 470
+	PUBLIC	_dialog_thirteen
+_dialog_thirteen	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+;	lvl = -4
+;	act = 4
+; Line 473
+	test	BYTE PTR _setup,64
+	je	$I1367
+; Line 474
+	sub	ax,ax
+	push	ax
+	mov	ax,24
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 475
+	call	_d_restore
+; Line 477
+	les	bx,DWORD PTR _sd_data
+	add	bh,60
+	mov	WORD PTR [bp-4],bx	;lvl
+	mov	WORD PTR [bp-2],es
+	mov	BYTE PTR es:[bx+145],224
+; Line 478
+	les	bx,DWORD PTR [bp-4]	;lvl
+	mov	BYTE PTR es:[bx+145],224
+; Line 479
+; Line 480
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$I1367:
+; Line 481
+	sub	ax,ax
+	push	ax
+	mov	ax,23
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 482
+	call	_d_restore
+; Line 483
+; Line 484
+	sub	ax,ax
+; Line 485
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dialog_thirteen	ENDP
+; Line 487
+	PUBLIC	_dialog_fourteen
+_dialog_fourteen	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	sel = -2
+;	act = 4
+; Line 490
+	test	BYTE PTR _setup,128
+	je	$I1372
+; Line 491
+	sub	ax,ax
+	push	ax
+	mov	ax,3031
+$L20019:
+	push	ax
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 492
+	call	_d_restore
+; Line 493
+; Line 494
+	sub	ax,ax
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$I1372:
+; Line 495
+	mov	al,BYTE PTR _thor_info
+	cbw	
+	cmp	ax,149
+	jge	$I1374
+; Line 496
+	sub	ax,ax
+	push	ax
+	mov	ax,4006
+	jmp	SHORT $L20019
+	nop	
+$I1374:
+; Line 500
+	sub	ax,ax
+	push	ax
+	mov	cx,3030
+	push	cx
+	push	WORD PTR [bp+4]	;act
+	call	_actor_speaks
+	add	sp,6
+; Line 501
+	call	_d_restore
+; Line 502
+	sub	ax,ax
+	push	ax
+	push	WORD PTR _d_wannatrade
+	mov	ax,OFFSET _options_yesno
+	push	ax
+	call	_select_option
+	add	sp,6
+	mov	WORD PTR [bp-2],ax	;sel
+; Line 503
+	call	_d_restore
+; Line 504
+	cmp	WORD PTR [bp-2],1	;sel
+	jne	$I1376
+; Line 505
+	mov	BYTE PTR _thor_info,0
+; Line 506
+	call	_display_magic
+; Line 507
+	mov	ax,1
+	push	ax
+	mov	ax,3
+	push	ax
+	call	_play_sound
+	add	sp,4
+; Line 508
+	inc	BYTE PTR _thor_info+1
+; Line 509
+	call	_display_keys
+; Line 510
+	or	BYTE PTR _setup,128
+; Line 511
+; Line 512
+$I1376:
+; Line 513
+; Line 514
+	sub	ax,ax
+; Line 515
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dialog_fourteen	ENDP
+_TEXT	ENDS
+END

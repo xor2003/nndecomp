@@ -1,0 +1,612 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWEND.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_swcolour:NEAR
+EXTRN	_swposcur:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_dispd:NEAR
+EXTRN	_multclos:NEAR
+EXTRN	_asynclos:NEAR
+EXTRN	_set_type:NEAR
+EXTRN	_sound:NEAR
+EXTRN	_swsound:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	__intterm:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_histend:NEAR
+EXTRN	_puts:NEAR
+EXTRN	_swflush:NEAR
+EXTRN	_exit:NEAR
+EXTRN	_playmode:WORD
+EXTRN	_savemode:WORD
+EXTRN	_hires:WORD
+EXTRN	_objtop:WORD
+EXTRN	_multbuff:WORD
+EXTRN	_player:WORD
+EXTRN	_endsts:BYTE
+EXTRN	_endcount:WORD
+EXTRN	_goingsun:WORD
+EXTRN	_objsmax:WORD
+EXTRN	_repflag:WORD
+EXTRN	_inplay:WORD
+_DATA      SEGMENT
+$SG179	DB	0dH,  0aH,  00H
+$SG181	DB	0dH,  0aH,  00H
+$SG183	DB	0dH,  0aH,  00H
+$SG221	DB	'THE END',  00H
+$SG223	DB	0dH,  0aH, 'End of game statictics',  0dH,  0aH,  0dH,  0aH,  00H
+$SG224	DB	'Objects used: ',  00H
+$SG226	DB	0dH,  0aH,  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swend    -      SW end of game
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         87-03-09        Microsoft compiler.
+;|***                         87-03-12        Wounded airplanes.
+;|*** */
+;|*** #include        "sw.h"
+; Line 18
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** extern  int     playmode;               /* Mode of play ( SINGLE, MULTIPLE, */
+;|***                                         /*                or COMPUTER )     */
+;|*** extern  int     savemode;               /* Saved PC video mode              */
+;|*** extern  BOOL    hires;                  /* High res debug/mono flag         */
+;|*** extern  OBJECTS *objtop;                /*  Start of object list.           */
+;|*** extern  MULTIO  *multbuff;              /*  Communications buffer           */
+;|*** extern  int     player;
+;|*** extern  int     endsts[];               /* End of game status and move count*/
+;|*** extern  int     endcount;
+;|*** extern  BOOL    goingsun;               /* Heading for the sun flag         */
+;|*** extern  OBJECTS *objsmax;               /* Maximum object allocated         */
+;|*** extern  BOOL    repflag;                /* Report statictics flag           */
+;|*** extern  BOOL    inplay;                 /*  Currently playing flag          */
+;|*** extern  int     maxcrash;               /* Maximum number of crashes        */
+;|*** 
+;|*** 
+;|*** 
+;|*** swend( msg, update )
+;|*** char    *msg;
+; Line 41
+	PUBLIC	_swend
+_swend	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	33 c0 			xor	ax,ax
+	*** 000005	e8 00 00 		call	__aNchkstk
+	*** 000008	56 			push	si
+;	register si = closmsg
+;	update = 6
+;	msg = 4
+;|*** BOOL    update;
+;|*** {
+;|*** register char   *closmsg = NULL;
+;|*** char            *multclos(), *asynclos();
+;|*** 
+;|*** 
+;|***         set_type( savemode );
+; Line 48
+	*** 000009	ff 36 00 00 		push	WORD PTR _savemode
+	*** 00000d	e8 00 00 		call	_set_type
+	*** 000010	83 c4 02 		add	sp,2
+;|***         hires = FALSE;
+;|*** 
+;|***         sound( 0, 0, NULL );
+; Line 51
+	*** 000013	2b f6 			sub	si,si
+	*** 000015	56 			push	si
+	*** 000016	2b c0 			sub	ax,ax
+	*** 000018	a3 00 00 		mov	WORD PTR _hires,ax
+	*** 00001b	50 			push	ax
+	*** 00001c	50 			push	ax
+	*** 00001d	e8 00 00 		call	_sound
+	*** 000020	83 c4 06 		add	sp,6
+;|***         swsound();
+; Line 52
+	*** 000023	e8 00 00 		call	_swsound
+;|*** 
+;|***         if ( repflag )
+; Line 54
+	*** 000026	39 36 00 00 		cmp	WORD PTR _repflag,si
+	*** 00002a	74 03 			je	$I169
+;|***                 swreport();
+; Line 55
+	*** 00002c	e8 00 00 		call	_swreport
+;|*** 
+;|***         if ( playmode == MULTIPLE )
+; Line 57
+					$I169:
+	*** 00002f	83 3e 00 00 01 		cmp	WORD PTR _playmode,1
+	*** 000034	75 0c 			jne	$I171
+;|***                 closmsg = multclos( update );
+; Line 58
+	*** 000036	ff 76 06 		push	WORD PTR [bp+6]	;update
+	*** 000039	e8 00 00 		call	_multclos
+	*** 00003c	83 c4 02 		add	sp,2
+	*** 00003f	eb 0b 			jmp	SHORT $L20004
+	*** 000041	90 			nop	
+					$I171:
+	*** 000042	83 3e 00 00 03 		cmp	WORD PTR _playmode,3
+	*** 000047	75 05 			jne	$I173
+;|***         else if ( playmode == ASYNCH )
+;|***                 closmsg = asynclos();
+; Line 60
+	*** 000049	e8 00 00 		call	_asynclos
+					$L20004:
+	*** 00004c	8b f0 			mov	si,ax
+;|*** 
+;|***         intsoff();
+; Line 62
+					$I173:
+	*** 00004e	e8 00 00 		call	_intsoff
+;|***         _intterm();
+; Line 63
+	*** 000051	e8 00 00 		call	__intterm
+;|***         intson();
+; Line 64
+	*** 000054	e8 00 00 		call	_intson
+;|***         histend();
+; Line 65
+	*** 000057	e8 00 00 		call	_histend
+;|*** 
+;|***         puts( "\r\n" );
+; Line 67
+	*** 00005a	b8 00 00 		mov	ax,OFFSET DGROUP:$SG179
+	*** 00005d	50 			push	ax
+	*** 00005e	e8 00 00 		call	_puts
+	*** 000061	83 c4 02 		add	sp,2
+;|***         if ( closmsg ) {
+; Line 68
+	*** 000064	0b f6 			or	si,si
+	*** 000066	74 11 			je	$I180
+;|***                 puts( closmsg );
+; Line 69
+	*** 000068	56 			push	si
+	*** 000069	e8 00 00 		call	_puts
+	*** 00006c	83 c4 02 		add	sp,2
+;|***                 puts( "\r\n" );
+; Line 70
+	*** 00006f	b8 03 00 		mov	ax,OFFSET DGROUP:$SG181
+	*** 000072	50 			push	ax
+	*** 000073	e8 00 00 		call	_puts
+	*** 000076	83 c4 02 		add	sp,2
+;|***         }
+; Line 71
+;|***         if ( msg ) {
+; Line 72
+					$I180:
+	*** 000079	83 7e 04 00 		cmp	WORD PTR [bp+4],0	;msg
+	*** 00007d	74 13 			je	$I182
+;|***                 puts( msg );
+; Line 73
+	*** 00007f	ff 76 04 		push	WORD PTR [bp+4]	;msg
+	*** 000082	e8 00 00 		call	_puts
+	*** 000085	83 c4 02 		add	sp,2
+;|***                 puts( "\r\n" );
+; Line 74
+	*** 000088	b8 06 00 		mov	ax,OFFSET DGROUP:$SG183
+	*** 00008b	50 			push	ax
+	*** 00008c	e8 00 00 		call	_puts
+	*** 00008f	83 c4 02 		add	sp,2
+;|***         }
+; Line 75
+;|*** 
+;|***         inplay = FALSE;
+; Line 77
+					$I182:
+	*** 000092	c7 06 00 00 00 00 	mov	WORD PTR _inplay,0
+;|***         swflush();
+; Line 78
+	*** 000098	e8 00 00 		call	_swflush
+;|***         if ( msg || closmsg )
+; Line 79
+	*** 00009b	83 7e 04 00 		cmp	WORD PTR [bp+4],0	;msg
+	*** 00009f	75 04 			jne	$I186
+	*** 0000a1	0b f6 			or	si,si
+	*** 0000a3	74 05 			je	$I185
+					$I186:
+;|***                 exit( YES );
+; Line 80
+	*** 0000a5	b8 01 00 		mov	ax,1
+	*** 0000a8	eb 02 			jmp	SHORT $L20003
+					$I185:
+;|***         else
+;|***                 exit( NO );
+; Line 82
+	*** 0000aa	2b c0 			sub	ax,ax
+					$L20003:
+	*** 0000ac	50 			push	ax
+	*** 0000ad	e8 00 00 		call	_exit
+	*** 0000b0	83 c4 02 		add	sp,2
+;|*** }
+; Line 83
+	*** 0000b3	5e 			pop	si
+	*** 0000b4	8b e5 			mov	sp,bp
+	*** 0000b6	5d 			pop	bp
+	*** 0000b7	c3 			ret	
+
+_swend	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** endgame( targclr )
+;|*** int     targclr;
+; Line 90
+	PUBLIC	_endgame
+_endgame	PROC NEAR
+	*** 0000b8	55 			push	bp
+	*** 0000b9	8b ec 			mov	bp,sp
+	*** 0000bb	33 c0 			xor	ax,ax
+	*** 0000bd	e8 00 00 		call	__aNchkstk
+	*** 0000c0	57 			push	di
+	*** 0000c1	56 			push	si
+;	register si = winclr
+;	register di = ob
+;	targclr = 4
+;|*** {
+;|*** register int     winclr;
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         if ( ( ( playmode != MULTIPLE ) && ( playmode != ASYNCH ) )
+;|***                 || ( multbuff->mu_maxplyr == 1 ) )
+; Line 96
+	*** 0000c2	83 3e 00 00 01 		cmp	WORD PTR _playmode,1
+	*** 0000c7	74 07 			je	$I196
+	*** 0000c9	83 3e 00 00 03 		cmp	WORD PTR _playmode,3
+	*** 0000ce	75 09 			jne	$I195
+					$I196:
+	*** 0000d0	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0000d4	83 3f 01 		cmp	WORD PTR [bx],1
+	*** 0000d7	75 05 			jne	$I194
+					$I195:
+;|***                 winclr = 1;
+; Line 97
+	*** 0000d9	be 01 00 		mov	si,1
+;|***         else
+; Line 98
+	*** 0000dc	eb 25 			jmp	SHORT $I199
+					$I194:
+;|***                 if ( ( objtop +1 )->ob_score == objtop->ob_score )
+; Line 99
+	*** 0000de	8b 1e 00 00 		mov	bx,WORD PTR _objtop
+	*** 0000e2	8b 47 16 		mov	ax,WORD PTR [bx+22]
+	*** 0000e5	39 87 8c 00 		cmp	WORD PTR [bx+140],ax
+	*** 0000e9	75 09 			jne	$I198
+;|***                         winclr = 3 - targclr;
+; Line 100
+	*** 0000eb	be 03 00 		mov	si,3
+	*** 0000ee	2b 76 04 		sub	si,WORD PTR [bp+4]	;targclr
+;|***                 else
+; Line 101
+	*** 0000f1	eb 10 			jmp	SHORT $I199
+	*** 0000f3	90 			nop	
+					$I198:
+;|***                         winclr = ( ( objtop + 1 )->ob_score > objtop->ob_score )
+;|***                                  + 1;
+; Line 103
+	*** 0000f4	39 87 8c 00 		cmp	WORD PTR [bx+140],ax
+	*** 0000f8	7e 06 			jle	$L20001
+	*** 0000fa	be 01 00 		mov	si,1
+	*** 0000fd	eb 03 			jmp	SHORT $L20002
+	*** 0000ff	90 			nop	
+					$L20001:
+	*** 000100	2b f6 			sub	si,si
+					$L20002:
+	*** 000102	46 			inc	si
+					$I199:
+;|*** 
+;|***         ob = objtop;
+; Line 105
+	*** 000103	8b 3e 00 00 		mov	di,WORD PTR _objtop
+;|***         while ( ob->ob_type == PLANE ) {
+; Line 106
+	*** 000107	eb 43 			jmp	SHORT $L20006
+	*** 000109	90 			nop	
+					$FC201:
+;|***                 if ( !endsts[ob->ob_index] )
+; Line 107
+	*** 00010a	8b 5d 38 		mov	bx,WORD PTR [di+56]
+	*** 00010d	d1 e3 			shl	bx,1
+	*** 00010f	83 bf 00 00 00 		cmp	WORD PTR _endsts[bx],0
+	*** 000114	75 33 			jne	$I203
+;|***                         if ( ( ob->ob_clr == winclr )
+;|***                                   && ( ( ob->ob_crashcnt < ( MAXCRASH - 1 ) )
+;|***                                || ( ( ob->ob_crashcnt < MAXCRASH )
+;|***                                   && ( ( ob->ob_state == FLYING )
+;|***                                     || ( ob->ob_state == STALLED )
+;|***                                     || ( ob->ob_state == WOUNDED )
+;|***                                     || ( ob->ob_state == WOUNDSTALL )
+;|***                                 ) ) ) )
+; Line 115
+	*** 000116	39 75 2a 		cmp	WORD PTR [di+42],si
+	*** 000119	75 27 			jne	$I204
+	*** 00011b	83 7d 4c 04 		cmp	WORD PTR [di+76],4
+	*** 00011f	7c 1a 			jl	$I206
+	*** 000121	83 7d 4c 05 		cmp	WORD PTR [di+76],5
+	*** 000125	7d 1b 			jge	$I204
+	*** 000127	83 3d 01 		cmp	WORD PTR [di],1
+	*** 00012a	74 0f 			je	$I206
+	*** 00012c	83 3d 07 		cmp	WORD PTR [di],7
+	*** 00012f	74 0a 			je	$I206
+	*** 000131	83 3d 09 		cmp	WORD PTR [di],9
+	*** 000134	74 05 			je	$I206
+	*** 000136	83 3d 0a 		cmp	WORD PTR [di],10
+	*** 000139	75 07 			jne	$I204
+					$I206:
+;|***                                 winner( ob );
+; Line 116
+	*** 00013b	57 			push	di
+	*** 00013c	e8 00 00 		call	_winner
+	*** 00013f	eb 05 			jmp	SHORT $L20005
+	*** 000141	90 			nop	
+					$I204:
+;|***                         else
+;|***                                 loser( ob );
+; Line 118
+	*** 000142	57 			push	di
+	*** 000143	e8 00 00 		call	_loser
+					$L20005:
+	*** 000146	83 c4 02 		add	sp,2
+;|***                 ob = ob->ob_next;
+; Line 119
+					$I203:
+	*** 000149	8b 7d 34 		mov	di,WORD PTR [di+52]
+;|***         }
+; Line 120
+					$L20006:
+	*** 00014c	83 7d 60 01 		cmp	WORD PTR [di+96],1
+	*** 000150	74 b8 			je	$FC201
+;|*** }
+; Line 121
+	*** 000152	5e 			pop	si
+	*** 000153	5f 			pop	di
+	*** 000154	8b e5 			mov	sp,bp
+	*** 000156	5d 			pop	bp
+	*** 000157	c3 			ret	
+
+_endgame	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** winner( obp )
+;|*** OBJECTS *obp;
+; Line 128
+	PUBLIC	_winner
+_winner	PROC NEAR
+	*** 000158	55 			push	bp
+	*** 000159	8b ec 			mov	bp,sp
+	*** 00015b	33 c0 			xor	ax,ax
+	*** 00015d	e8 00 00 		call	__aNchkstk
+	*** 000160	57 			push	di
+	*** 000161	56 			push	si
+;	register si = n
+;	register di = ob
+;	obp = 4
+;|*** {
+;|*** register int     n;
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         endsts[n = ( ob = obp )->ob_index] = WINNER;
+; Line 133
+	*** 000162	8b 7e 04 		mov	di,WORD PTR [bp+4]	;obp
+	*** 000165	8b 75 38 		mov	si,WORD PTR [di+56]
+	*** 000168	8b de 			mov	bx,si
+	*** 00016a	d1 e3 			shl	bx,1
+	*** 00016c	c7 87 00 00 01 00 	mov	WORD PTR _endsts[bx],1
+;|***         if ( n == player ) {
+; Line 134
+	*** 000172	39 36 00 00 		cmp	WORD PTR _player,si
+	*** 000176	75 28 			jne	$I214
+;|***                 endcount = 72;
+; Line 135
+	*** 000178	c7 06 00 00 48 00 	mov	WORD PTR _endcount,72
+;|***                 goingsun = TRUE;
+; Line 136
+	*** 00017e	c7 06 00 00 01 00 	mov	WORD PTR _goingsun,1
+;|***                 ob->ob_dx = ob->ob_dy = ob->ob_ldx = ob->ob_ldy = 0;
+; Line 137
+	*** 000184	2b c0 			sub	ax,ax
+	*** 000186	89 45 32 		mov	WORD PTR [di+50],ax
+	*** 000189	89 45 30 		mov	WORD PTR [di+48],ax
+	*** 00018c	89 45 08 		mov	WORD PTR [di+8],ax
+	*** 00018f	89 45 06 		mov	WORD PTR [di+6],ax
+;|***                 ob->ob_state = FLYING;
+; Line 138
+	*** 000192	c7 05 01 00 		mov	WORD PTR [di],1
+;|***                 ob->ob_life = MAXFUEL;
+; Line 139
+	*** 000196	c7 45 1e 28 23 		mov	WORD PTR [di+30],9000
+;|***                 ob->ob_speed = MIN_SPEED;
+; Line 140
+	*** 00019b	c7 45 0e 04 00 		mov	WORD PTR [di+14],4
+;|***         }
+; Line 141
+;|*** }
+; Line 142
+					$I214:
+	*** 0001a0	5e 			pop	si
+	*** 0001a1	5f 			pop	di
+	*** 0001a2	8b e5 			mov	sp,bp
+	*** 0001a4	5d 			pop	bp
+	*** 0001a5	c3 			ret	
+
+_winner	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** loser( ob )
+;|*** OBJECTS *ob;
+; Line 148
+	PUBLIC	_loser
+_loser	PROC NEAR
+	*** 0001a6	55 			push	bp
+	*** 0001a7	8b ec 			mov	bp,sp
+	*** 0001a9	33 c0 			xor	ax,ax
+	*** 0001ab	e8 00 00 		call	__aNchkstk
+	*** 0001ae	56 			push	si
+;	register si = n
+;	ob = 4
+;|*** {
+;|*** register int     n;
+;|*** 
+;|***         endsts[n = ob->ob_index] = LOSER;
+; Line 152
+	*** 0001af	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 0001b2	8b 77 38 		mov	si,WORD PTR [bx+56]
+	*** 0001b5	8b de 			mov	bx,si
+	*** 0001b7	c7 80 00 00 02 00 	mov	WORD PTR _endsts[bx][si],2
+;|***         if ( n == player ) {
+; Line 153
+	*** 0001bd	39 36 00 00 		cmp	WORD PTR _player,si
+	*** 0001c1	75 28 			jne	$I218
+;|***                 swcolour( 0x82 );
+; Line 154
+	*** 0001c3	b8 82 00 		mov	ax,130
+	*** 0001c6	50 			push	ax
+	*** 0001c7	e8 00 00 		call	_swcolour
+	*** 0001ca	83 c4 02 		add	sp,2
+;|***                 swposcur( 16, 12 );
+; Line 155
+	*** 0001cd	b8 0c 00 		mov	ax,12
+	*** 0001d0	50 			push	ax
+	*** 0001d1	b8 10 00 		mov	ax,16
+	*** 0001d4	50 			push	ax
+	*** 0001d5	e8 00 00 		call	_swposcur
+	*** 0001d8	83 c4 04 		add	sp,4
+;|***                 puts( "THE END" );
+; Line 156
+	*** 0001db	b8 09 00 		mov	ax,OFFSET DGROUP:$SG221
+	*** 0001de	50 			push	ax
+	*** 0001df	e8 00 00 		call	_puts
+	*** 0001e2	83 c4 02 		add	sp,2
+;|***                 endcount = 20;
+; Line 157
+	*** 0001e5	c7 06 00 00 14 00 	mov	WORD PTR _endcount,20
+;|***         }
+; Line 158
+;|*** }
+; Line 159
+					$I218:
+	*** 0001eb	5e 			pop	si
+	*** 0001ec	8b e5 			mov	sp,bp
+	*** 0001ee	5d 			pop	bp
+	*** 0001ef	c3 			ret	
+
+_loser	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** swreport()
+;|*** {
+; Line 165
+	PUBLIC	_swreport
+_swreport	PROC NEAR
+	*** 0001f0	33 c0 			xor	ax,ax
+	*** 0001f2	e8 00 00 		call	__aNchkstk
+;|***         puts( "\r\nEnd of game statictics\r\n\r\n" );
+; Line 166
+	*** 0001f5	b8 11 00 		mov	ax,OFFSET DGROUP:$SG223
+	*** 0001f8	50 			push	ax
+	*** 0001f9	e8 00 00 		call	_puts
+	*** 0001fc	83 c4 02 		add	sp,2
+;|***         puts( "Objects used: " );
+; Line 167
+	*** 0001ff	b8 2e 00 		mov	ax,OFFSET DGROUP:$SG224
+	*** 000202	50 			push	ax
+	*** 000203	e8 00 00 		call	_puts
+	*** 000206	83 c4 02 		add	sp,2
+;|***         dispd( ( (int) objsmax - (int) objtop + 1 ) / sizeof( OBJECTS ) );
+; Line 168
+	*** 000209	a1 00 00 		mov	ax,WORD PTR _objsmax
+	*** 00020c	2b 06 00 00 		sub	ax,WORD PTR _objtop
+	*** 000210	40 			inc	ax
+	*** 000211	b9 76 00 		mov	cx,118
+	*** 000214	99 			cwd	
+	*** 000215	f7 f9 			idiv	cx
+	*** 000217	50 			push	ax
+	*** 000218	e8 00 00 		call	_dispd
+	*** 00021b	83 c4 02 		add	sp,2
+;|***         puts( "\r\n" );
+; Line 169
+	*** 00021e	b8 3d 00 		mov	ax,OFFSET DGROUP:$SG226
+	*** 000221	50 			push	ax
+	*** 000222	e8 00 00 		call	_puts
+	*** 000225	83 c4 02 		add	sp,2
+;|*** }
+; Line 170
+	*** 000228	c3 			ret	
+	*** 000229	90 			nop	
+
+_swreport	ENDP
+_TEXT	ENDS
+END

@@ -1,0 +1,260 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9107DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	dec	sp
+	dec	sp
+	push	si
+@1@26:
+   ;	
+   ;	{
+   ;	char kode, lagi;
+   ;	atas:
+   ;	clrscr();
+   ;	
+	call	near ptr _clrscr
+   ;	
+   ;	cout<<"INPUT KODE BARANG [A..C] :";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	kode = getche();
+   ;	
+	call	near ptr _getche
+	mov	byte ptr [bp-1],al
+   ;	
+   ;	cout<<'\n';
+   ;	
+	mov	al,10
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	switch (kode)
+   ;	
+	mov	al,byte ptr [bp-1]
+	cbw	
+	mov	si,ax
+	mov	cx,6
+	mov	bx,offset @1@C1152
+@1@98:
+	cmp	word ptr cs:[bx],si
+	je	short @1@170
+	inc	bx
+	inc	bx
+	loop	short @1@98
+	jmp	short @1@266
+@1@170:
+	jmp	word ptr cs:[bx+12]
+@1@194:
+   ;	
+   ;	{case 'A':
+   ;	case 'a':
+   ;	cout<<"Alat Olah Raga";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+27
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	jmp	short @1@290
+@1@218:
+   ;	
+   ;	break;
+   ;	case 'B':
+   ;	case 'b':
+   ;	cout<<"Alat Elektronik";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+42
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	jmp	short @1@290
+@1@242:
+   ;	
+   ;	break;
+   ;	case 'c':
+   ;	case 'C':
+   ;	cout<<"Alat Masak";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+58
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	jmp	short @1@290
+@1@266:
+   ;	
+   ;	break;
+   ;	default:
+   ;	cout<<"Anda Salah Memasukan Kode";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+69
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@1@290:
+   ;	
+   ;	}
+   ;	cout<<'\n';
+   ;	
+	mov	al,10
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$qzc
+	pop	cx
+	pop	cx
+   ;	
+   ;	cout<<"\nIngin pilih lagi [Y/T]:";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+95
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+   ;	
+   ;	lagi = getche();
+   ;	
+	call	near ptr _getche
+	mov	byte ptr [bp-2],al
+   ;	
+   ;	if (lagi == 'Y' || lagi=='y')
+   ;	
+	cmp	byte ptr [bp-2],89
+	je	short @1@338
+	cmp	byte ptr [bp-2],121
+	jne	short @1@362
+@1@338:
+   ;	
+   ;	goto atas;
+   ;	
+	jmp	@1@26
+@1@362:
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+@1@C1152	label	word
+	db	65
+	db	0
+	db	66
+	db	0
+	db	67
+	db	0
+	db	97
+	db	0
+	db	98
+	db	0
+	db	99
+	db	0
+	dw	@1@194
+	dw	@1@218
+	dw	@1@242
+	dw	@1@194
+	dw	@1@218
+	dw	@1@242
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'INPUT KODE BARANG [A..C] :'
+	db	0
+	db	'Alat Olah Raga'
+	db	0
+	db	'Alat Elektronik'
+	db	0
+	db	'Alat Masak'
+	db	0
+	db	'Anda Salah Memasukan Kode'
+	db	0
+	db	10
+	db	'Ingin pilih lagi [Y/T]:'
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	_clrscr:near
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	_getche:near
+	extrn	@ostream@$blsh$qzc:near
+	extrn	_getch:near
+	end
+

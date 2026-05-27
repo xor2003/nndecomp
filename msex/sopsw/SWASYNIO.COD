@@ -1,0 +1,520 @@
+;	Static Name Aliases
+;
+;	$S157_lastkey	EQU	lastkey
+;	$S188_tickwait	EQU	tickwait
+;	$S215_first	EQU	first
+	TITLE   C:\SWASYNIO.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_intson:NEAR
+EXTRN	_histmult:NEAR
+EXTRN	_dispmult:NEAR
+EXTRN	_movemult:NEAR
+EXTRN	_swgetc:NEAR
+EXTRN	_swflush:NEAR
+EXTRN	_commterm:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_commin:NEAR
+EXTRN	_comminit:NEAR
+EXTRN	_clrprmpt:NEAR
+EXTRN	_puts:NEAR
+EXTRN	_commout:NEAR
+EXTRN	_ctlbreak:NEAR
+EXTRN	_initpln:NEAR
+EXTRN	_swend:NEAR
+EXTRN	_initplyr:NEAR
+EXTRN	_movmem:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_player:WORD
+EXTRN	_swgames:BYTE
+EXTRN	_currgame:WORD
+EXTRN	_counttick:WORD
+EXTRN	_multbuff:WORD
+EXTRN	_oobjects:BYTE
+EXTRN	_explseed:WORD
+_DATA      SEGMENT
+$SG186	DB	'Time out on sychronization',  00H
+	ORG	$+3
+$SG211	DB	'Timeout during play',  00H
+	ORG	$+2
+$SG232	DB	'        Waiting for other player',  00H
+$SG235	DB	'Timeout during player assignment',  00H
+	ORG	$-90
+$S157_lastkey	DW	00H
+	ORG	$+20
+$S215_first	DW	01H
+_DATA      ENDS
+_BSS      SEGMENT
+$S188_tickwait	DW 01H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 20
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 39
+synchronize	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = syncount
+;	register di = c
+; Line 43
+$FC164:
+	call	_commin
+	or	ax,ax
+	jge	$FC164
+; Line 44
+$L20005:
+	sub	si,si
+; Line 45
+$FC167:
+; Line 46
+	mov	ax,2
+	push	ax
+	call	settimeout
+	add	sp,2
+; Line 47
+$FC172:
+	call	timeout
+	or	ax,ax
+	je	$FC172
+; Line 48
+	mov	ax,64
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 50
+	call	_ctlbreak
+	or	ax,ax
+	je	$I176
+; Line 51
+	sub	ax,ax
+	push	ax
+	push	ax
+	call	_swend
+	add	sp,4
+; Line 53
+$I176:
+	call	_commin
+	mov	di,ax
+	or	di,di
+	jl	$FC167
+; Line 56
+	cmp	di,64
+	jne	$L20005
+; Line 57
+	inc	si
+	cmp	si,10
+	jne	$FC167
+; Line 63
+	sub	ax,ax
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 65
+$FC182:
+; Line 66
+	call	asynin
+	mov	di,ax
+	cmp	di,-1
+	jne	$I185
+; Line 67
+	sub	ax,ax
+	push	ax
+	mov	ax,OFFSET DGROUP:$SG186
+	push	ax
+	call	_swend
+	add	sp,4
+; Line 68
+$I185:
+	cmp	di,64
+	je	$FC182
+; Line 69
+; Line 71
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+synchronize	ENDP
+; Line 82
+settimeout	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	tick = 4
+; Line 84
+	call	_intsoff
+; Line 85
+	mov	ax,WORD PTR [bp+4]	;tick
+	mov	WORD PTR $S188_tickwait,ax
+; Line 86
+	mov	WORD PTR _counttick,0
+; Line 87
+	call	_intson
+; Line 88
+	mov	sp,bp
+	pop	bp
+	ret	
+
+settimeout	ENDP
+; Line 94
+timeout	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 95
+	mov	ax,WORD PTR $S188_tickwait
+	cmp	WORD PTR _counttick,ax
+	jle	$L20001
+	mov	ax,1
+	ret	
+$L20001:
+	sub	ax,ax
+; Line 96
+	ret	
+	nop	
+
+timeout	ENDP
+; Line 103
+asynin	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = c
+; Line 106
+	mov	ax,180
+	push	ax
+	call	settimeout
+	add	sp,2
+; Line 107
+$FC197:
+; Line 108
+	call	_commin
+	mov	si,ax
+	or	si,si
+	jge	$EX194
+; Line 110
+	call	_ctlbreak
+	or	ax,ax
+	je	$I200
+; Line 111
+	sub	ax,ax
+	push	ax
+	push	ax
+	call	_swend
+	add	sp,4
+; Line 112
+$I200:
+	call	timeout
+	or	ax,ax
+	je	$FC197
+; Line 113
+	mov	ax,-1
+$EX194:
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+asynin	ENDP
+; Line 122
+	PUBLIC	_asynget
+_asynget	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = key
+;	register di = c
+;	ob = 4
+; Line 128
+	mov	bx,WORD PTR [bp+4]	;ob
+	mov	ax,WORD PTR _player
+	cmp	WORD PTR [bx+56],ax
+	jne	$I207
+; Line 129
+	mov	si,WORD PTR $S157_lastkey
+; Line 130
+	mov	WORD PTR $S157_lastkey,0
+; Line 131
+	jmp	SHORT $I208
+	nop	
+$I207:
+; Line 133
+	call	asynin
+	mov	si,ax
+	or	si,si
+	jl	$I210
+	call	asynin
+	mov	di,ax
+	or	di,di
+	jge	$I209
+$I210:
+; Line 134
+	sub	ax,ax
+	push	ax
+	mov	ax,OFFSET DGROUP:$SG211
+	push	ax
+	call	_swend
+	add	sp,4
+; Line 135
+$I209:
+	mov	ax,di
+	mov	ah,al
+	sub	al,al
+	or	si,ax
+; Line 136
+$I208:
+; Line 137
+	push	si
+	mov	bx,WORD PTR [bp+4]	;ob
+	push	WORD PTR [bx+56]
+	call	_histmult
+	add	sp,4
+; Line 138
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_asynget	ENDP
+; Line 144
+	PUBLIC	_asynput
+_asynput	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 148
+	cmp	WORD PTR $S215_first,0
+	je	$I216
+; Line 149
+	mov	WORD PTR $S215_first,0
+; Line 150
+	jmp	SHORT $I217
+$I216:
+; Line 151
+	call	_swgetc
+	mov	WORD PTR $S157_lastkey,ax
+$I217:
+; Line 152
+	call	_swflush
+; Line 154
+	mov	al,BYTE PTR $S157_lastkey
+	sub	ah,ah
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 155
+	mov	al,BYTE PTR $S157_lastkey+1
+	cbw	
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 156
+	ret	
+	nop	
+
+_asynput	ENDP
+; Line 163
+	PUBLIC	_asynclos
+_asynclos	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+;	update = 4
+; Line 165
+	call	_commterm
+; Line 166
+	sub	ax,ax
+; Line 167
+	ret	
+	nop	
+
+_asynclos	ENDP
+; Line 173
+	PUBLIC	_init1asy
+_init1asy	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+	push	di
+	push	si
+;	seed = -2
+;	register si = c1
+;	register di = c2
+; Line 177
+	call	_comminit
+; Line 178
+	call	_clrprmpt
+; Line 179
+	mov	ax,OFFSET DGROUP:$SG232
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 180
+	call	synchronize
+; Line 182
+	mov	al,BYTE PTR _explseed
+	sub	ah,ah
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 183
+	mov	al,BYTE PTR _explseed+1
+	sub	ah,ah
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 185
+	call	asynin
+	mov	si,ax
+	or	si,si
+	jl	$I234
+	call	asynin
+	mov	di,ax
+	or	di,di
+	jge	$I233
+$I234:
+; Line 186
+	sub	ax,ax
+	push	ax
+	mov	ax,OFFSET DGROUP:$SG235
+	push	ax
+	call	_swend
+	add	sp,4
+; Line 187
+$I233:
+; Line 188
+	mov	ax,di
+	mov	ah,al
+	sub	al,al
+	or	ax,si
+	mov	WORD PTR [bp-2],ax	;seed
+	cmp	ax,WORD PTR _explseed
+	jbe	$L20003
+	mov	ax,1
+	jmp	SHORT $L20004
+	nop	
+$L20003:
+	sub	ax,ax
+$L20004:
+	mov	WORD PTR _player,ax
+	or	ax,ax
+	je	$I236
+; Line 189
+	mov	ax,WORD PTR [bp-2]	;seed
+	mov	WORD PTR _explseed,ax
+; Line 191
+$I236:
+	mov	WORD PTR _currgame,OFFSET _swgames
+; Line 192
+	mov	bx,WORD PTR _multbuff
+	mov	WORD PTR [bx],2
+	mov	bx,WORD PTR _multbuff
+	mov	ax,WORD PTR [bx]
+	mov	WORD PTR [bx+2],ax
+; Line 193
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_init1asy	ENDP
+; Line 198
+	PUBLIC	_init2asy
+_init2asy	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = ob
+; Line 202
+	cmp	WORD PTR _player,0
+	jne	$I241
+; Line 203
+	sub	ax,ax
+	push	ax
+	call	_initplyr
+	add	sp,2
+; Line 205
+$I241:
+; Line 206
+	sub	ax,ax
+	push	ax
+	call	_initpln
+	add	sp,2
+	mov	si,ax
+	mov	WORD PTR [si+68],OFFSET _dispmult
+; Line 207
+	mov	WORD PTR [si+70],OFFSET _movemult
+; Line 208
+	mov	ax,WORD PTR [si+56]
+	mov	cx,2
+	cwd	
+	idiv	cx
+	inc	dx
+	mov	WORD PTR [si+42],dx
+; Line 209
+	mov	WORD PTR [si+32],si
+; Line 210
+	mov	WORD PTR [si],1
+; Line 211
+	mov	ax,118
+	push	ax
+	imul	WORD PTR [si+56]
+	add	ax,OFFSET _oobjects
+	push	ax
+	push	si
+	call	_movmem
+	add	sp,6
+; Line 213
+	cmp	WORD PTR _player,0
+	je	$I243
+; Line 214
+	sub	ax,ax
+	push	ax
+	call	_initplyr
+	add	sp,2
+; Line 216
+$I243:
+	sub	ax,ax
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 217
+	sub	ax,ax
+	push	ax
+	call	_commout
+	add	sp,2
+; Line 218
+	pop	si
+	ret	
+	nop	
+
+_init2asy	ENDP
+_TEXT	ENDS
+END

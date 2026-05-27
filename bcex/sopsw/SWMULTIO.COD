@@ -1,0 +1,4511 @@
+;	Static Name Aliases
+;
+;	$S192_first	EQU	first
+;	$S193_errormsg	EQU	errormsg
+;	$S194_errflg1	EQU	errflg1
+;	$S195_errorflg	EQU	errorflg
+;	$S196_multterm	EQU	multterm
+;	$S197_swlocked	EQU	swlocked
+;	$S198_errtab	EQU	errtab
+;	$S199_errwhr	EQU	errwhr
+;	$S200_errptr	EQU	errptr
+;	$S179_prtbuf	EQU	prtbuf
+;	$S180_swbpb	EQU	swbpb
+;	$S181_devfd	EQU	devfd
+;	$S182_multdriv	EQU	multdriv
+;	$S183_commdriv	EQU	commdriv
+;	$S184_multhead	EQU	multhead
+;	$S185_commhead	EQU	commhead
+;	$S186_multtrk	EQU	multtrk
+;	$S187_commtrk	EQU	commtrk
+;	$S188_multsect	EQU	multsect
+;	$S189_commsect	EQU	commsect
+;	$S190_multasect	EQU	multasect
+;	$S191_commasect	EQU	commasect
+;	$S453_first	EQU	first
+;	$S446_curtry	EQU	curtry
+;	$S579_nextdelay	EQU	nextdelay
+;	$S580_maxtry	EQU	maxtry
+;	$S581_mintry	EQU	mintry
+;	$S582_numtry	EQU	numtry
+;	$S583_nummov	EQU	nummov
+;	$S584_numdel	EQU	numdel
+;	$S585_numadjup	EQU	numadjup
+;	$S586_numadjdn	EQU	numadjdn
+;	$S594_upcnt	EQU	upcnt
+;	$S595_dncnt	EQU	dncnt
+	TITLE   C:\SWMULTIO.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _multfile
+PUBLIC  _cmndfile
+EXTRN	__dkioset:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_bseek:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_bread:NEAR
+EXTRN	_puts:NEAR
+EXTRN	_dispd:NEAR
+EXTRN	_swgetc:NEAR
+EXTRN	_swflush:NEAR
+EXTRN	_clrprmpt:NEAR
+EXTRN	__dkproc:NEAR
+EXTRN	__dkiosts:NEAR
+EXTRN	_interpret:NEAR
+EXTRN	_asynget:NEAR
+EXTRN	_initplyr:NEAR
+EXTRN	_movepln:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_initcomp:NEAR
+EXTRN	_dispmult:NEAR
+EXTRN	_histmult:NEAR
+EXTRN	_tolower:NEAR
+EXTRN	_setvdisp:NEAR
+EXTRN	_bopen:NEAR
+EXTRN	__dktick:NEAR
+EXTRN	_dispwobj:NEAR
+EXTRN	_strncmp:NEAR
+EXTRN	_swend:NEAR
+EXTRN	_ctlbreak:NEAR
+EXTRN	_initpln:NEAR
+EXTRN	_movmem:NEAR
+EXTRN	__dkio:NEAR
+EXTRN	_toupper:NEAR
+EXTRN	_dsseg:NEAR
+EXTRN	_sysint21:NEAR
+EXTRN	_bioerr:NEAR
+EXTRN	_bwrite:NEAR
+EXTRN	_getgame:NEAR
+EXTRN	_playmode:WORD
+EXTRN	_swgames:BYTE
+EXTRN	_currgame:WORD
+EXTRN	_multbuff:WORD
+EXTRN	_player:WORD
+EXTRN	_nobjects:WORD
+EXTRN	_oobjects:BYTE
+EXTRN	_repflag:WORD
+EXTRN	_counttick:WORD
+EXTRN	_multtick:WORD
+EXTRN	_auxdisp:BYTE
+EXTRN	_explseed:WORD
+EXTRN	_compplane:WORD
+EXTRN	_plyrplane:WORD
+EXTRN	_currobx:WORD
+EXTRN	_endsts:BYTE
+EXTRN	_dispcnt:WORD
+EXTRN	_endstat:WORD
+EXTRN	_multaddr:WORD
+_BSS      SEGMENT
+COMM NEAR	_multstck:	 1:	 400
+COMM NEAR	_multstack:	BYTE:	 2
+_BSS      ENDS
+_DATA      SEGMENT
+$SG173	DB	'c:sopwith?.dta',  00H
+$SG175	DB	'c:semaphor',  00H, '   ',  00H
+	ORG	$+14
+$SG238	DB	'rw',  00H
+$SG240	DB	'Improper device specification',  00H
+$SG247	DB	'File not found',  00H
+$SG398	DB	'Read error on communications file during close',  00H
+$SG401	DB	'Communications file locked during close',  00H
+$SG405	DB	'Bad player counter',  00H
+$SG416	DB	'Write error on communications file',  00H
+$SG419	DB	'Unlock error on communications file',  00H
+$SG438	DB	'Read error during wait',  00H
+$SG440	DB	'Bad player count',  00H
+$SG471	DB	'Write error during play',  00H
+$SG473	DB	'Bad Player count',  00H
+	ORG	$+4
+$SG510	DB	'Read error during play',  00H
+$SG512	DB	'Bad player count',  00H
+$SG523	DB	0dH,  0aH,  0dH,  0aH,  00H
+$SG525	DB	' i/o errors recorded',  0dH,  0aH,  0dH,  0aH,  00H
+$SG527	DB	'last 50:',  0dH,  0aH,  0dH,  0aH,  00H
+$SG546	DB	'READ      ',  00H
+$SG548	DB	'WRITE     ',  00H
+$SG550	DB	'READPLAY  ',  00H
+$SG552	DB	'WRITEPLAY ',  00H
+$SG558	DB	'TIME OUT',  00H
+$SG560	DB	'BAD SEEK',  00H
+$SG562	DB	'BAD NEC',  00H
+$SG564	DB	'BAD CRC',  00H
+$SG566	DB	'DMA BOUNDARY ',  00H
+$SG568	DB	'BAD DMA',  00H
+$SG570	DB	'RECORD NOT FOUND',  00H
+$SG572	DB	'WRITE PROTECT',  00H
+$SG574	DB	'BAD ADDR MARK ',  00H
+$SG576	DB	'BAD COMMAND',  00H
+$SG578	DB	0dH,  0aH,  00H
+	ORG	$+16
+$SG605	DB	0dH,  0aH, 'Number of moves:        ',  00H
+$SG606	DB	0dH,  0aH, 'Number of read tries:   ',  00H
+$SG607	DB	0dH,  0aH, 'Minimum tries/move:     ',  00H
+$SG610	DB	0dH,  0aH, 'Maximum tries/move:     ',  00H
+$SG611	DB	0dH,  0aH, 'Number of tick delays:  ',  00H
+$SG612	DB	0dH,  0aH, '# of tick adjusts up:   ',  00H
+$SG613	DB	0dH,  0aH, '# of tick adjusts down: ',  00H
+$SG617	DB	0aH,  0dH,  0aH,  0dH,  00H
+$SG619	DB	'Bad player count',  00H
+$SG623	DB	0dH,  0aH, 'Player: ',  00H
+$SG625	DB	'  <- last update ',  00H
+$SG649	DB	'Read error on communications file ',  00H
+$SG651	DB	'Communications file locked ',  00H
+$SG659	DB	'Mamimum number of players already playing',  00H
+$SG675	DB	'Write error on communications file',  00H
+$SG677	DB	'Unlock error on communications file',  00H
+$SG678	DB	'      Waiting for other player(s)',  00H
+$SG681	DB	' Key maximum number of players allowed',  00H
+	ORG	$-1073
+_multfile	DW	DGROUP:$SG173
+_cmndfile	DW	DGROUP:$SG175
+$S179_prtbuf	DW	_auxdisp
+$S195_errorflg	DW	00H
+$S196_multterm	DW	00H
+$S197_swlocked	DW	00H
+$S200_errptr	DW	0ffffH
+	ORG	$+306
+$S446_curtry	DW	00H
+$S453_first	DW	01H
+	ORG	$+244
+$S579_nextdelay	DW	02H
+$S580_maxtry	DW	00H
+$S581_mintry	DW	02710H
+$S582_numtry	DW	00H
+$S583_nummov	DW	00H
+$S584_numdel	DW	00H
+$S585_numadjup	DW	00H
+$S586_numadjdn	DW	00H
+_DATA      ENDS
+_BSS      SEGMENT
+	ORG	$+22
+$S192_first	DW 01H DUP (?)
+	ORG	$-10
+$S193_errormsg	DW 01H DUP (?)
+	ORG	$+116
+$S194_errflg1	DW 01H DUP (?)
+	ORG	$-102
+$S198_errtab	DW 032H DUP (?)
+	ORG	$+2
+$S199_errwhr	DW 032H DUP (?)
+	ORG	$+2
+$S594_upcnt	DW 01H DUP (?)
+	ORG	$-4
+$S595_dncnt	DW 01H DUP (?)
+	ORG	$-216
+$S180_swbpb	DW 01H DUP (?)
+	ORG	$-10
+$S181_devfd	DW 01H DUP (?)
+	ORG	$+4
+$S182_multdriv	DW 01H DUP (?)
+	ORG	$-10
+$S183_commdriv	DW 01H DUP (?)
+	ORG	$-6
+$S184_multhead	DW 01H DUP (?)
+	ORG	$-4
+$S185_commhead	DW 01H DUP (?)
+	ORG	$-4
+$S186_multtrk	DW 01H DUP (?)
+	ORG	$-4
+$S187_commtrk	DW 01H DUP (?)
+	ORG	$+14
+$S188_multsect	DW 01H DUP (?)
+	ORG	$-10
+$S189_commsect	DW 01H DUP (?)
+	ORG	$+18
+$S190_multasect	DW 02H DUP (?)
+	ORG	$-8
+$S191_commasect	DW 02H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swmultio -      SW multiple plane communications I/O
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-10        Development
+;|***                         85-11-15        Atari
+;|***                         87-03-09        Microsoft compiler.
+;|***                         96-12-27        Module replaced by swnetio.c.
+;|***                                         This module is maintained and
+;|***                                         compiled for historical reasons,
+;|***                                         but is not linked.
+;|***                         2000-10-29      Re-inserted into project for
+;|***                                           dependable compile/link.
+;|*** */
+;|*** #include        "sw.h"
+; Line 24
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** extern  int     playmode;               /* Mode of play                     */
+;|*** extern  GAMES   swgames[], *currgame;   /* Game parameters and current game */
+;|*** extern  MULTIO  *multbuff;              /* Communications buffer            */
+;|*** extern  int     multkey;                /* Keystroke to be passed           */
+;|*** extern  int     player;                 /* Pointer to player's object       */
+;|*** extern  OBJECTS *nobjects;              /* Objects list.                    */
+;|*** extern  OBJECTS oobjects[];             /* Original plane object description*/
+;|*** extern  int     keydelay;               /*  Number of displays per keystr   */
+;|*** extern  BOOL    repflag;                /* Report statistics flag           */
+;|*** extern  int     counttick, countmove;   /* Performance counters             */
+;|*** extern  int     multtick;               /*  Multiple user tick delay        */
+;|*** extern  char    auxdisp[];              /* Auxiliary display area used as a */
+;|***                                         /* disk buffer                      */
+;|*** extern  unsigned explseed;              /* explosion seed                 */
+;|*** 
+;|*** extern  int     dispmult(),             /*  Display and move functions      */
+;|***                 movemult();
+;|*** 
+;|*** extern  BOOL    compplane;              /* Moving computer plane flag      */
+;|*** extern  BOOL    plyrplane;              /* Moving player plane flag        */
+;|*** extern  int     currobx;                /* Current object index             */
+;|*** extern  int     endsts[];               /* End of game status and move count*/
+;|*** extern  int     dispcnt;                /* Displays to delay keyboard       */
+;|*** extern  int     endstat;                /* End of game status for curr. move*/
+;|*** extern  int     multaddr;               /* Diskette adapter address         */
+;|*** 
+;|*** 
+;|*** char    multstck[400];                  /* Stack area for I/O processes     */
+;|*** int     *multstack;                     /* Initial stack pointer            */
+;|*** 
+;|*** char    *multfile = COMM_FILE;          /* Multiple user files              */
+;|*** char    *cmndfile = COMM_CMD;
+;|*** 
+;|*** extern  OBJECTS *initpln();
+;|*** 
+;|*** 
+;|*** struct  dirent {                        /* Directory entry structure        */
+;|***     char    dc[32];
+;|*** };
+;|*** 
+;|*** #define DIR_NAME        0
+;|*** #define DIR_EXT         8
+;|*** #define DIR_ATTR        11
+;|*** #define DIR_RES         12
+;|*** #define DIR_TIME        22
+;|*** #define DIR_DATE        24
+;|*** #define DIR_CLU         26
+;|*** #define DIR_SIZE        28
+;|*** 
+;|*** 
+;|*** struct bpbtab {                         /* Disk BPB structure               */
+;|***     char    bc[19];
+;|*** };
+;|*** 
+;|*** #define BP_SECSIZE      0
+;|*** #define BP_CLUSIZE      2
+;|*** #define BP_RESERVED     3
+;|*** #define BP_NFAT         5
+;|*** #define BP_DIRENT       6
+;|*** #define BP_NSECTORS     8
+;|*** #define BP_FATID        10
+;|*** #define BP_FATSIZE      11
+;|*** #define BP_SECPTRK      13
+;|*** #define BP_NHEADS       15
+;|*** #define BP_NHIDDEN      17
+;|*** 
+;|*** static char *prtbuf = auxdisp;
+;|*** static struct bpbtab *swbpb;
+;|*** static BIOFD  devfd;
+;|*** 
+;|*** 
+;|*** static  int     multdriv,  commdriv,   /* Communications file parms        */
+;|***                 multhead,  commhead,
+;|***                 multtrk,   commtrk,
+;|***                 multsect,  commsect;
+;|*** static  long    multasect, commasect;
+;|*** 
+;|*** static  BOOL     first;                 /* first player flag              */
+;|*** static  char    *errormsg;
+;|*** static  BOOL    errflg1;
+;|*** static  BOOL    errorflg = FALSE;
+;|*** static  BOOL    multterm = FALSE;
+;|*** static  BOOL    swlocked  = FALSE;
+;|*** 
+;|*** static  unsigned errtab[50];
+;|*** static  unsigned errwhr[50];
+;|*** static  int      errptr = -1;
+;|*** #define OREAD           1
+;|*** #define OWRITE          2
+;|*** #define OREADPLAY       3
+;|*** #define OWRITEPLAY      4
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** _word( ptr )
+;|*** char    *ptr;
+; Line 123
+	PUBLIC	__word
+__word	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	33 c0 			xor	ax,ax
+	*** 000005	e8 00 00 		call	__aNchkstk
+;	ptr = 4
+;|*** {
+;|***         return( ( *ptr & 0x00FF ) | ( ( *(ptr+1) & 0x00FF ) << 8 ) );
+; Line 125
+	*** 000008	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ptr
+	*** 00000b	8a 67 01 		mov	ah,BYTE PTR [bx+1]
+	*** 00000e	2a c0 			sub	al,al
+	*** 000010	8a 0f 			mov	cl,BYTE PTR [bx]
+	*** 000012	2a ed 			sub	ch,ch
+	*** 000014	0b c1 			or	ax,cx
+;|*** }
+; Line 126
+	*** 000016	8b e5 			mov	sp,bp
+	*** 000018	5d 			pop	bp
+	*** 000019	c3 			ret	
+
+__word	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** _byte( ptr )
+;|*** char    *ptr;
+; Line 131
+	PUBLIC	__byte
+__byte	PROC NEAR
+	*** 00001a	55 			push	bp
+	*** 00001b	8b ec 			mov	bp,sp
+	*** 00001d	33 c0 			xor	ax,ax
+	*** 00001f	e8 00 00 		call	__aNchkstk
+;	ptr = 4
+;|*** {
+;|***         return( *ptr & 0x00FF );
+; Line 133
+	*** 000022	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ptr
+	*** 000025	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000027	2a e4 			sub	ah,ah
+;|*** }
+; Line 134
+	*** 000029	8b e5 			mov	sp,bp
+	*** 00002b	5d 			pop	bp
+	*** 00002c	c3 			ret	
+	*** 00002d	90 			nop	
+
+__byte	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** _fromintel()
+;|*** {
+; Line 139
+	PUBLIC	__fromintel
+__fromintel	PROC NEAR
+	*** 00002e	33 c0 			xor	ax,ax
+	*** 000030	e8 00 00 		call	__aNchkstk
+;|*** #ifdef ATARI
+;|*** register int    *mu, word, i;
+;|*** 
+;|***         mu = (int *) multbuff;
+;|***         for ( i = sizeof( MULTIO ) >> 1; i; --i ) {
+;|***                 word = *mu;
+;|***                 *mu++ = ( ( word >> 8 ) & 0x00FF ) | ( word << 8 );
+;|***         }
+;|*** #endif
+;|*** }
+; Line 149
+	*** 000033	c3 			ret	
+
+__fromintel	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** char    *_tointel()
+;|*** {
+; Line 154
+	PUBLIC	__tointel
+__tointel	PROC NEAR
+	*** 000034	33 c0 			xor	ax,ax
+	*** 000036	e8 00 00 		call	__aNchkstk
+;|*** #ifdef IBMPC
+;|***         return( (char *) multbuff );
+; Line 156
+	*** 000039	a1 00 00 		mov	ax,WORD PTR _multbuff
+;|*** #endif
+;|*** 
+;|*** 
+;|*** #ifdef ATARI
+;|*** static   MULTIO mubuff;
+;|*** register int    *mu1, *mu2, i, word;
+;|*** 
+;|***         mu1 = (int *) multbuff;
+;|***         mu2 = (int *) &mubuff;
+;|***         for ( i = sizeof( MULTIO ) >> 1; i; --i ) {
+;|***                 word = *mu1++;
+;|***                 *mu2++ = ( ( word >> 8 ) & 0x00FF ) | ( word << 8 );
+;|***         }
+;|***         return( (char *) &mubuff );
+;|*** #endif
+;|*** }
+; Line 172
+	*** 00003c	c3 			ret	
+	*** 00003d	90 			nop	
+
+__tointel	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** movemult( obp )
+;|*** OBJECTS *obp;
+; Line 178
+	PUBLIC	_movemult
+_movemult	PROC NEAR
+	*** 00003e	55 			push	bp
+	*** 00003f	8b ec 			mov	bp,sp
+	*** 000041	b8 02 00 		mov	ax,2
+	*** 000044	e8 00 00 		call	__aNchkstk
+	*** 000047	56 			push	si
+;	register si = ob
+;	obp = 4
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** 
+;|***         plyrplane = compplane = FALSE;
+; Line 182
+	*** 000048	2b c0 			sub	ax,ax
+	*** 00004a	a3 00 00 		mov	WORD PTR _compplane,ax
+	*** 00004d	a3 00 00 		mov	WORD PTR _plyrplane,ax
+;|*** 
+;|***         endstat = endsts[currobx = ( ob = obp )->ob_index];
+; Line 184
+	*** 000050	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 000053	8b 5c 38 		mov	bx,WORD PTR [si+56]
+	*** 000056	89 1e 00 00 		mov	WORD PTR _currobx,bx
+	*** 00005a	d1 e3 			shl	bx,1
+	*** 00005c	8b 87 00 00 		mov	ax,WORD PTR _endsts[bx]
+	*** 000060	a3 00 00 		mov	WORD PTR _endstat,ax
+;|*** 
+;|***         if ( !dispcnt )
+; Line 186
+	*** 000063	83 3e 00 00 00 		cmp	WORD PTR _dispcnt,0
+	*** 000068	75 22 			jne	$I214
+;|***                 interpret( ob, ( playmode == MULTIPLE ) ? multget( ob )
+;|***                                                         : asynget( ob ) );
+; Line 188
+	*** 00006a	83 3e 00 00 01 		cmp	WORD PTR _playmode,1
+	*** 00006f	75 07 			jne	$L20001
+	*** 000071	56 			push	si
+	*** 000072	e8 00 00 		call	_multget
+	*** 000075	eb 05 			jmp	SHORT $L20011
+	*** 000077	90 			nop	
+					$L20001:
+	*** 000078	56 			push	si
+	*** 000079	e8 00 00 		call	_asynget
+					$L20011:
+	*** 00007c	83 c4 02 		add	sp,2
+	*** 00007f	89 46 fe 		mov	WORD PTR [bp-2],ax
+	*** 000082	50 			push	ax
+	*** 000083	56 			push	si
+	*** 000084	e8 00 00 		call	_interpret
+	*** 000087	83 c4 04 		add	sp,4
+;|***         else {
+; Line 189
+	*** 00008a	eb 08 			jmp	SHORT $I218
+					$I214:
+;|***                 ob->ob_flaps = 0;
+;|***                 ob->ob_bombing = FALSE;
+; Line 191
+	*** 00008c	2b c0 			sub	ax,ax
+	*** 00008e	89 44 12 		mov	WORD PTR [si+18],ax
+	*** 000091	89 44 26 		mov	WORD PTR [si+38],ax
+;|***         }
+; Line 192
+					$I218:
+;|***         if ( ( ( ob->ob_state == CRASHED ) || ( ob->ob_state == GHOSTCRASHED ))
+;|***                 && ( ob->ob_hitcount <= 0 ) )
+; Line 194
+	*** 000094	83 3c 04 		cmp	WORD PTR [si],4
+	*** 000097	74 05 			je	$I220
+	*** 000099	83 3c 5d 		cmp	WORD PTR [si],93
+	*** 00009c	75 17 			jne	$I221
+					$I220:
+	*** 00009e	83 7c 1a 00 		cmp	WORD PTR [si+26],0
+	*** 0000a2	7f 11 			jg	$I221
+;|***                 if ( ob->ob_life > QUIT ) {
+; Line 195
+	*** 0000a4	81 7c 1e 78 ec 		cmp	WORD PTR [si+30],-5000
+	*** 0000a9	7e 0a 			jle	$I221
+;|***                         ++ob->ob_crashcnt;
+; Line 196
+	*** 0000ab	ff 44 4c 		inc	WORD PTR [si+76]
+;|***                         initpln( ob );
+; Line 197
+	*** 0000ae	56 			push	si
+	*** 0000af	e8 00 00 		call	_initpln
+	*** 0000b2	83 c4 02 		add	sp,2
+;|***                 }
+; Line 198
+;|***         return( movepln( ob ) );
+; Line 199
+					$I221:
+	*** 0000b5	56 			push	si
+	*** 0000b6	e8 00 00 		call	_movepln
+	*** 0000b9	83 c4 02 		add	sp,2
+;|*** }
+; Line 200
+	*** 0000bc	5e 			pop	si
+	*** 0000bd	8b e5 			mov	sp,bp
+	*** 0000bf	5d 			pop	bp
+	*** 0000c0	c3 			ret	
+	*** 0000c1	90 			nop	
+
+_movemult	ENDP
+;|*** 
+;|*** 
+;|*** multopen( cmndfile, multfile )
+;|*** char    *cmndfile, *multfile;
+; Line 204
+	PUBLIC	_multopen
+_multopen	PROC NEAR
+	*** 0000c2	55 			push	bp
+	*** 0000c3	8b ec 			mov	bp,sp
+	*** 0000c5	33 c0 			xor	ax,ax
+	*** 0000c7	e8 00 00 		call	__aNchkstk
+;	multfile = 6
+;	cmndfile = 4
+;|*** {
+;|*** 
+;|*** 
+;|***         multparm( cmndfile );
+; Line 208
+	*** 0000ca	ff 76 04 		push	WORD PTR [bp+4]	;cmndfile
+	*** 0000cd	e8 00 00 		call	_multparm
+	*** 0000d0	8b e5 			mov	sp,bp
+;|*** 
+;|***         commdriv = multdriv;
+; Line 210
+	*** 0000d2	a1 12 00 		mov	ax,WORD PTR $S182_multdriv
+	*** 0000d5	a3 0a 00 		mov	WORD PTR $S183_commdriv,ax
+;|***         commhead = multhead;
+; Line 211
+	*** 0000d8	a1 06 00 		mov	ax,WORD PTR $S184_multhead
+	*** 0000db	a3 04 00 		mov	WORD PTR $S185_commhead,ax
+;|***         commtrk  = multtrk;
+; Line 212
+	*** 0000de	a1 02 00 		mov	ax,WORD PTR $S186_multtrk
+	*** 0000e1	a3 00 00 		mov	WORD PTR $S187_commtrk,ax
+;|***         commsect = multsect;
+; Line 213
+	*** 0000e4	a1 10 00 		mov	ax,WORD PTR $S188_multsect
+	*** 0000e7	a3 08 00 		mov	WORD PTR $S189_commsect,ax
+;|***         commasect = multasect;
+; Line 214
+	*** 0000ea	a1 1c 00 		mov	ax,WORD PTR $S190_multasect
+	*** 0000ed	8b 16 1e 00 		mov	dx,WORD PTR $S190_multasect+2
+	*** 0000f1	a3 18 00 		mov	WORD PTR $S191_commasect,ax
+	*** 0000f4	89 16 1a 00 		mov	WORD PTR $S191_commasect+2,dx
+;|*** 
+;|***         multparm( multfile );
+; Line 216
+	*** 0000f8	ff 76 06 		push	WORD PTR [bp+6]	;multfile
+	*** 0000fb	e8 00 00 		call	_multparm
+;|*** 
+;|*** }
+; Line 218
+	*** 0000fe	8b e5 			mov	sp,bp
+	*** 000100	5d 			pop	bp
+	*** 000101	c3 			ret	
+
+_multopen	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** multparm( multfile )
+;|*** char    *multfile;
+; Line 223
+	PUBLIC	_multparm
+_multparm	PROC NEAR
+	*** 000102	55 			push	bp
+	*** 000103	8b ec 			mov	bp,sp
+	*** 000105	b8 08 00 		mov	ax,8
+	*** 000108	e8 00 00 		call	__aNchkstk
+	*** 00010b	57 			push	di
+	*** 00010c	56 			push	si
+;	dev = -6
+;	fd = -2
+;	register si = i
+;	register di = mf
+;	multfile = 4
+;|*** {
+;|*** char    dev[3];
+;|*** BIOFD   fd;
+;|*** register int    i;
+;|*** register char   *mf;
+;|*** 
+;|***         mf = multfile;
+;|***         dev[2] = 0;
+; Line 231
+	*** 00010d	c6 46 fc 00 		mov	BYTE PTR [bp-4],0
+;|***         if ( ( ( multdriv = ( dev[0] = tolower( *mf++ ) ) - 'a' ) < 0 )
+;|***                 || ( multdriv > 25 )
+;|***                 || ( ( dev[1] = *mf++ ) != ':' )
+;|***                 || ( !( fd = devfd = bopen( dev, "rw") ) ) )
+; Line 235
+	*** 000111	8b 46 04 		mov	ax,WORD PTR [bp+4]	;multfile
+	*** 000114	89 46 f8 		mov	WORD PTR [bp-8],ax
+	*** 000117	bf 01 00 		mov	di,1
+	*** 00011a	03 f8 			add	di,ax
+	*** 00011c	8b d8 			mov	bx,ax
+	*** 00011e	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000120	98 			cbw	
+	*** 000121	50 			push	ax
+	*** 000122	e8 00 00 		call	_tolower
+	*** 000125	83 c4 02 		add	sp,2
+	*** 000128	88 46 fa 		mov	BYTE PTR [bp-6],al	;dev
+	*** 00012b	98 			cbw	
+	*** 00012c	2d 61 00 		sub	ax,97
+	*** 00012f	a3 12 00 		mov	WORD PTR $S182_multdriv,ax
+	*** 000132	0b c0 			or	ax,ax
+	*** 000134	7c 27 			jl	$I237
+	*** 000136	3d 19 00 		cmp	ax,25
+	*** 000139	7f 22 			jg	$I237
+	*** 00013b	8a 05 			mov	al,BYTE PTR [di]
+	*** 00013d	88 46 fb 		mov	BYTE PTR [bp-5],al
+	*** 000140	47 			inc	di
+	*** 000141	3c 3a 			cmp	al,58
+	*** 000143	75 18 			jne	$I237
+	*** 000145	b8 2c 00 		mov	ax,OFFSET DGROUP:$SG238
+	*** 000148	50 			push	ax
+	*** 000149	8d 46 fa 		lea	ax,WORD PTR [bp-6]	;dev
+	*** 00014c	50 			push	ax
+	*** 00014d	e8 00 00 		call	_bopen
+	*** 000150	83 c4 04 		add	sp,4
+	*** 000153	a3 0c 00 		mov	WORD PTR $S181_devfd,ax
+	*** 000156	89 46 fe 		mov	WORD PTR [bp-2],ax	;fd
+	*** 000159	0b c0 			or	ax,ax
+	*** 00015b	75 0d 			jne	$I236
+					$I237:
+;|***                 swend( "Improper device specification", NO );
+; Line 236
+	*** 00015d	2b c0 			sub	ax,ax
+	*** 00015f	50 			push	ax
+	*** 000160	b8 2f 00 		mov	ax,OFFSET DGROUP:$SG240
+	*** 000163	50 			push	ax
+	*** 000164	e8 00 00 		call	_swend
+	*** 000167	83 c4 04 		add	sp,4
+;|*** 
+;|*** 
+;|***         i = 0;
+; Line 239
+					$I236:
+	*** 00016a	2b f6 			sub	si,si
+;|***         while ( mf[i] ) {
+; Line 240
+	*** 00016c	eb 13 			jmp	SHORT $L20012
+					$FC242:
+;|***                 mf[i] = toupper(mf[i]);
+; Line 241
+	*** 00016e	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000170	98 			cbw	
+	*** 000171	50 			push	ax
+	*** 000172	89 5e f8 		mov	WORD PTR [bp-8],bx
+	*** 000175	e8 00 00 		call	_toupper
+	*** 000178	83 c4 02 		add	sp,2
+	*** 00017b	8b 5e f8 		mov	bx,WORD PTR [bp-8]
+	*** 00017e	88 07 			mov	BYTE PTR [bx],al
+;|***                 ++i;
+; Line 242
+	*** 000180	46 			inc	si
+;|***         }
+; Line 243
+					$L20012:
+	*** 000181	8b df 			mov	bx,di
+	*** 000183	03 de 			add	bx,si
+	*** 000185	80 3f 00 		cmp	BYTE PTR [bx],0
+	*** 000188	75 e4 			jne	$FC242
+;|***         if ( !( multsect = name_to_sec( fd, mf )) )
+; Line 244
+	*** 00018a	57 			push	di
+	*** 00018b	ff 76 fe 		push	WORD PTR [bp-2]	;fd
+	*** 00018e	e8 00 00 		call	name_to_sec
+	*** 000191	83 c4 04 		add	sp,4
+	*** 000194	a3 10 00 		mov	WORD PTR $S188_multsect,ax
+	*** 000197	0b c0 			or	ax,ax
+	*** 000199	75 0b 			jne	$I246
+;|***                 swend( "File not found", NO );
+; Line 245
+	*** 00019b	50 			push	ax
+	*** 00019c	b8 4d 00 		mov	ax,OFFSET DGROUP:$SG247
+	*** 00019f	50 			push	ax
+	*** 0001a0	e8 00 00 		call	_swend
+	*** 0001a3	83 c4 04 		add	sp,4
+;|*** 
+;|***         multasect = --multsect;
+; Line 247
+					$I246:
+	*** 0001a6	ff 0e 10 00 		dec	WORD PTR $S188_multsect
+	*** 0001aa	a1 10 00 		mov	ax,WORD PTR $S188_multsect
+	*** 0001ad	99 			cwd	
+	*** 0001ae	a3 1c 00 		mov	WORD PTR $S190_multasect,ax
+	*** 0001b1	89 16 1e 00 		mov	WORD PTR $S190_multasect+2,dx
+;|***         sectparm();
+; Line 248
+	*** 0001b5	e8 00 00 		call	_sectparm
+;|*** }
+; Line 249
+	*** 0001b8	5e 			pop	si
+	*** 0001b9	5f 			pop	di
+	*** 0001ba	8b e5 			mov	sp,bp
+	*** 0001bc	5d 			pop	bp
+	*** 0001bd	c3 			ret	
+
+_multparm	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  name_to_sec( fd, name )
+;|*** BIOFD   fd;
+; Line 254
+name_to_sec	PROC NEAR
+	*** 0001be	55 			push	bp
+	*** 0001bf	8b ec 			mov	bp,sp
+	*** 0001c1	b8 34 00 		mov	ax,52
+	*** 0001c4	e8 00 00 		call	__aNchkstk
+;	bpb = -52
+;	entry = -32
+;	name = 6
+;	fd = 4
+;|*** char    *name;
+;|*** {
+;|*** struct  bpbtab  bpb;
+;|*** struct  dirent  entry;
+;|*** 
+;|***         make_bpb( fd, &bpb );
+; Line 260
+	*** 0001c7	8d 46 cc 		lea	ax,WORD PTR [bp-52]	;bpb
+	*** 0001ca	50 			push	ax
+	*** 0001cb	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 0001ce	e8 00 00 		call	make_bpb
+	*** 0001d1	83 c4 04 		add	sp,4
+;|***         if ( !get_ent( fd, &bpb, name, &entry ))
+; Line 261
+	*** 0001d4	8d 46 e0 		lea	ax,WORD PTR [bp-32]	;entry
+	*** 0001d7	50 			push	ax
+	*** 0001d8	ff 76 06 		push	WORD PTR [bp+6]	;name
+	*** 0001db	8d 46 cc 		lea	ax,WORD PTR [bp-52]	;bpb
+	*** 0001de	50 			push	ax
+	*** 0001df	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 0001e2	e8 00 00 		call	get_ent
+	*** 0001e5	83 c4 08 		add	sp,8
+	*** 0001e8	0b c0 			or	ax,ax
+	*** 0001ea	74 12 			je	$EX251
+;|***                 return(NO);
+;|***         return( clu_to_sec( _word( entry.dc + DIR_CLU ), &bpb ) );
+; Line 263
+	*** 0001ec	8d 46 cc 		lea	ax,WORD PTR [bp-52]	;bpb
+	*** 0001ef	50 			push	ax
+	*** 0001f0	8d 46 fa 		lea	ax,WORD PTR [bp-6]
+	*** 0001f3	50 			push	ax
+	*** 0001f4	e8 09 fe 		call	__word
+	*** 0001f7	83 c4 02 		add	sp,2
+	*** 0001fa	50 			push	ax
+	*** 0001fb	e8 00 00 		call	clu_to_sec
+;|*** }
+; Line 264
+					$EX251:
+	*** 0001fe	8b e5 			mov	sp,bp
+	*** 000200	5d 			pop	bp
+	*** 000201	c3 			ret	
+
+name_to_sec	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  clu_to_sec( cluster, bpb )
+;|*** int             cluster;
+; Line 269
+clu_to_sec	PROC NEAR
+	*** 000202	55 			push	bp
+	*** 000203	8b ec 			mov	bp,sp
+	*** 000205	b8 04 00 		mov	ax,4
+	*** 000208	e8 00 00 		call	__aNchkstk
+	*** 00020b	57 			push	di
+	*** 00020c	56 			push	si
+;	bpb = 6
+;	cluster = 4
+;|*** struct  bpbtab  *bpb;
+;|*** {
+;|***         return( ( cluster - 2 ) * _byte( bpb->bc + BP_CLUSIZE )
+;|***                 + ( _word( bpb->bc + BP_DIRENT ) >> 4 )
+;|***                 + 1
+;|***                 + _word( bpb->bc + BP_RESERVED )
+;|***                 + ( _byte( bpb->bc + BP_NFAT ) * _word( bpb->bc + BP_FATSIZE ) )
+;|***               );
+; Line 277
+	*** 00020d	8b 46 06 		mov	ax,WORD PTR [bp+6]	;bpb
+	*** 000210	05 06 00 		add	ax,6
+	*** 000213	50 			push	ax
+	*** 000214	e8 e9 fd 		call	__word
+	*** 000217	83 c4 02 		add	sp,2
+	*** 00021a	b1 04 			mov	cl,4
+	*** 00021c	d3 f8 			sar	ax,cl
+	*** 00021e	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 000221	41 			inc	cx
+	*** 000222	41 			inc	cx
+	*** 000223	51 			push	cx
+	*** 000224	8b f0 			mov	si,ax
+	*** 000226	e8 f1 fd 		call	__byte
+	*** 000229	83 c4 02 		add	sp,2
+	*** 00022c	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 00022f	83 c1 05 		add	cx,5
+	*** 000232	51 			push	cx
+	*** 000233	8b f8 			mov	di,ax
+	*** 000235	e8 e2 fd 		call	__byte
+	*** 000238	83 c4 02 		add	sp,2
+	*** 00023b	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 00023e	83 c1 0b 		add	cx,11
+	*** 000241	51 			push	cx
+	*** 000242	89 46 fe 		mov	WORD PTR [bp-2],ax
+	*** 000245	e8 b8 fd 		call	__word
+	*** 000248	83 c4 02 		add	sp,2
+	*** 00024b	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 00024e	83 c1 03 		add	cx,3
+	*** 000251	51 			push	cx
+	*** 000252	89 46 fc 		mov	WORD PTR [bp-4],ax
+	*** 000255	e8 a8 fd 		call	__word
+	*** 000258	83 c4 02 		add	sp,2
+	*** 00025b	8b 4e 04 		mov	cx,WORD PTR [bp+4]	;cluster
+	*** 00025e	49 			dec	cx
+	*** 00025f	49 			dec	cx
+	*** 000260	8b d0 			mov	dx,ax
+	*** 000262	8b c7 			mov	ax,di
+	*** 000264	8b da 			mov	bx,dx
+	*** 000266	f7 e9 			imul	cx
+	*** 000268	8b c8 			mov	cx,ax
+	*** 00026a	8b 46 fc 		mov	ax,WORD PTR [bp-4]
+	*** 00026d	f7 6e fe 		imul	WORD PTR [bp-2]
+	*** 000270	03 c1 			add	ax,cx
+	*** 000272	03 c6 			add	ax,si
+	*** 000274	03 c3 			add	ax,bx
+	*** 000276	40 			inc	ax
+;|*** }
+; Line 278
+	*** 000277	5e 			pop	si
+	*** 000278	5f 			pop	di
+	*** 000279	8b e5 			mov	sp,bp
+	*** 00027b	5d 			pop	bp
+	*** 00027c	c3 			ret	
+	*** 00027d	90 			nop	
+
+clu_to_sec	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  make_bpb( fd, bpb )
+;|*** BIOFD           fd;
+; Line 283
+make_bpb	PROC NEAR
+	*** 00027e	55 			push	bp
+	*** 00027f	8b ec 			mov	bp,sp
+	*** 000281	33 c0 			xor	ax,ax
+	*** 000283	e8 00 00 		call	__aNchkstk
+;	bpb = 6
+;	fd = 4
+;|*** struct  bpbtab  *bpb;
+;|*** {
+;|***         bseek( fd, 0l, 0);
+; Line 286
+	*** 000286	2b c0 			sub	ax,ax
+	*** 000288	50 			push	ax
+	*** 000289	50 			push	ax
+	*** 00028a	50 			push	ax
+	*** 00028b	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 00028e	e8 00 00 		call	_bseek
+	*** 000291	8b e5 			mov	sp,bp
+;|***         bread( prtbuf, 512, fd);
+; Line 287
+	*** 000293	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 000296	b8 00 02 		mov	ax,512
+	*** 000299	50 			push	ax
+	*** 00029a	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 00029e	e8 00 00 		call	_bread
+	*** 0002a1	8b e5 			mov	sp,bp
+;|***         movmem( prtbuf + 11, bpb, sizeof( struct bpbtab ) );
+; Line 288
+	*** 0002a3	b8 13 00 		mov	ax,19
+	*** 0002a6	50 			push	ax
+	*** 0002a7	ff 76 06 		push	WORD PTR [bp+6]	;bpb
+	*** 0002aa	a1 22 00 		mov	ax,WORD PTR $S179_prtbuf
+	*** 0002ad	05 0b 00 		add	ax,11
+	*** 0002b0	50 			push	ax
+	*** 0002b1	e8 00 00 		call	_movmem
+;|***         swbpb = bpb;
+; Line 289
+	*** 0002b4	8b 46 06 		mov	ax,WORD PTR [bp+6]	;bpb
+	*** 0002b7	a3 14 00 		mov	WORD PTR $S180_swbpb,ax
+;|*** }
+; Line 290
+	*** 0002ba	8b e5 			mov	sp,bp
+	*** 0002bc	5d 			pop	bp
+	*** 0002bd	c3 			ret	
+
+make_bpb	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  get_ent( fd, bpb, name, entry )
+;|*** BIOFD           fd;
+; Line 296
+get_ent	PROC NEAR
+	*** 0002be	55 			push	bp
+	*** 0002bf	8b ec 			mov	bp,sp
+	*** 0002c1	33 c0 			xor	ax,ax
+	*** 0002c3	e8 00 00 		call	__aNchkstk
+;	entry = 10
+;	name = 8
+;	bpb = 6
+;	fd = 4
+;|*** struct  bpbtab  *bpb;
+;|*** char            *name;
+;|*** struct  dirent  *entry;
+;|*** {
+;|***         if ( *name == '\\' )
+; Line 301
+	*** 0002c6	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;name
+	*** 0002c9	80 3f 5c 		cmp	BYTE PTR [bx],92
+	*** 0002cc	75 03 			jne	$I271
+;|***                 ++name;
+; Line 302
+	*** 0002ce	ff 46 08 		inc	WORD PTR [bp+8]	;name
+;|***         return( lookup( fd, bpb, name, entry ) );
+; Line 303
+					$I271:
+	*** 0002d1	ff 76 0a 		push	WORD PTR [bp+10]	;entry
+	*** 0002d4	ff 76 08 		push	WORD PTR [bp+8]	;name
+	*** 0002d7	ff 76 06 		push	WORD PTR [bp+6]	;bpb
+	*** 0002da	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 0002dd	e8 00 00 		call	lookup
+;|*** }
+; Line 304
+	*** 0002e0	8b e5 			mov	sp,bp
+	*** 0002e2	5d 			pop	bp
+	*** 0002e3	c3 			ret	
+
+get_ent	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  lookup( fd, bpb, name, entry )
+;|*** BIOFD           fd;
+; Line 309
+lookup	PROC NEAR
+	*** 0002e4	55 			push	bp
+	*** 0002e5	8b ec 			mov	bp,sp
+	*** 0002e7	b8 16 00 		mov	ax,22
+	*** 0002ea	e8 00 00 		call	__aNchkstk
+	*** 0002ed	57 			push	di
+	*** 0002ee	56 			push	si
+;	block = -16
+;	strtdir = -18
+;	register si = i
+;	register di = current
+;	want = -12
+;	entry = 10
+;	name = 8
+;	bpb = 6
+;	fd = 4
+;|*** struct  bpbtab  *bpb;
+;|*** char            *name;
+;|*** struct  dirent  *entry;
+;|*** {
+;|*** long             block;
+;|*** int              strtdir;
+;|*** register int     i;
+;|*** register struct  dirent  *current;
+;|*** char             want[12];
+;|*** 
+;|***         for ( i = 0; *name && ( i < 12 ); ++name ) {
+; Line 320
+	*** 0002ef	2b f6 			sub	si,si
+	*** 0002f1	eb 0a 			jmp	SHORT $F283
+	*** 0002f3	90 			nop	
+					$I286:
+;|***                 if ( *name == '.')
+;|***                         while ( i < 8 )
+;|***                                 want[i++] = ' ';
+;|***                 else
+;|***                         want[i++] = *name;
+; Line 325
+	*** 0002f4	8a 07 			mov	al,BYTE PTR [bx]
+	*** 0002f6	88 42 f4 		mov	BYTE PTR [bp-12][si],al
+	*** 0002f9	46 			inc	si
+;|***         }
+; Line 326
+					$FC284:
+	*** 0002fa	ff 46 08 		inc	WORD PTR [bp+8]	;name
+					$F283:
+	*** 0002fd	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;name
+	*** 000300	80 3f 00 		cmp	BYTE PTR [bx],0
+	*** 000303	74 1c 			je	$L20013
+	*** 000305	83 fe 0c 		cmp	si,12
+	*** 000308	7d 17 			jge	$L20013
+;|***                 if ( *name == '.')
+; Line 321
+	*** 00030a	80 3f 2e 		cmp	BYTE PTR [bx],46
+	*** 00030d	75 e5 			jne	$I286
+;|***                         while ( i < 8 )
+; Line 322
+					$FC288:
+	*** 00030f	83 fe 08 		cmp	si,8
+	*** 000312	7d e6 			jge	$FC284
+;|***                                 want[i++] = ' ';
+; Line 323
+	*** 000314	c6 42 f4 20 		mov	BYTE PTR [bp-12][si],32
+	*** 000318	46 			inc	si
+	*** 000319	eb f4 			jmp	SHORT $FC288
+	*** 00031b	90 			nop	
+					$FC292:
+;|***                 else
+;|***                         want[i++] = *name;
+;|***         }
+;|***         while ( i < 11 )
+;|***                 want[i++] = ' ';
+; Line 328
+	*** 00031c	c6 42 f4 20 		mov	BYTE PTR [bp-12][si],32
+	*** 000320	46 			inc	si
+					$L20013:
+	*** 000321	83 fe 0b 		cmp	si,11
+	*** 000324	7c f6 			jl	$FC292
+;|***         want[11] = 0;
+; Line 329
+	*** 000326	c6 46 ff 00 		mov	BYTE PTR [bp-1],0
+;|*** 
+;|***         block = 1 + _word( bpb->bc + BP_RESERVED )
+;|***                + ( _byte( bpb->bc + BP_NFAT ) * _word( bpb->bc + BP_FATSIZE ) );
+;|***         bseek( fd, (long)( ( block - 1 ) << 9 ), 0);
+; Line 333
+	*** 00032a	2b c0 			sub	ax,ax
+	*** 00032c	50 			push	ax
+	*** 00032d	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 000330	83 c1 03 		add	cx,3
+	*** 000333	51 			push	cx
+	*** 000334	e8 c9 fc 		call	__word
+	*** 000337	83 c4 02 		add	sp,2
+	*** 00033a	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 00033d	83 c1 05 		add	cx,5
+	*** 000340	51 			push	cx
+	*** 000341	89 46 ec 		mov	WORD PTR [bp-20],ax
+	*** 000344	e8 d3 fc 		call	__byte
+	*** 000347	83 c4 02 		add	sp,2
+	*** 00034a	8b 4e 06 		mov	cx,WORD PTR [bp+6]	;bpb
+	*** 00034d	83 c1 0b 		add	cx,11
+	*** 000350	51 			push	cx
+	*** 000351	89 46 ea 		mov	WORD PTR [bp-22],ax
+	*** 000354	e8 a9 fc 		call	__word
+	*** 000357	83 c4 02 		add	sp,2
+	*** 00035a	f7 6e ea 		imul	WORD PTR [bp-22]
+	*** 00035d	03 46 ec 		add	ax,WORD PTR [bp-20]
+	*** 000360	40 			inc	ax
+	*** 000361	99 			cwd	
+	*** 000362	89 46 f0 		mov	WORD PTR [bp-16],ax	;block
+	*** 000365	89 56 f2 		mov	WORD PTR [bp-14],dx
+	*** 000368	2d 01 00 		sub	ax,1
+	*** 00036b	83 da 00 		sbb	dx,0
+	*** 00036e	8a f2 			mov	dh,dl
+	*** 000370	8a d4 			mov	dl,ah
+	*** 000372	8a e0 			mov	ah,al
+	*** 000374	2a c0 			sub	al,al
+	*** 000376	d1 e0 			shl	ax,1
+	*** 000378	d1 d2 			rcl	dx,1
+	*** 00037a	52 			push	dx
+	*** 00037b	50 			push	ax
+	*** 00037c	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 00037f	e8 00 00 		call	_bseek
+	*** 000382	83 c4 08 		add	sp,8
+;|***         for ( strtdir = 0;
+;|***                 strtdir < _word( bpb->bc+BP_DIRENT );
+;|***                 strtdir += 0x10 ) {
+; Line 336
+	*** 000385	c7 46 ee 00 00 		mov	WORD PTR [bp-18],0	;strtdir
+	*** 00038a	eb 44 			jmp	SHORT $F294
+;|***                 bread( prtbuf, 512, fd);
+;|***                 for ( current = (struct dirent *)prtbuf, i = 0;
+;|***                         i < 0x10;
+;|***                         ++i, ++current) {
+;|***                         if ( ( current->dc + DIR_NAME )[0] == 0 )
+;|***                                 return(NO);
+;|***                         if ( strncmp( want, current->dc + DIR_NAME,11 ) == 0) {
+; Line 343
+					$I300:
+	*** 00038c	b8 0b 00 		mov	ax,11
+	*** 00038f	50 			push	ax
+	*** 000390	57 			push	di
+	*** 000391	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;want
+	*** 000394	50 			push	ax
+	*** 000395	e8 00 00 		call	_strncmp
+	*** 000398	83 c4 06 		add	sp,6
+	*** 00039b	0b c0 			or	ax,ax
+	*** 00039d	75 17 			jne	$FC298
+;|***                                 movmem( current, entry, sizeof(struct dirent));
+; Line 344
+	*** 00039f	b8 20 00 		mov	ax,32
+	*** 0003a2	50 			push	ax
+	*** 0003a3	ff 76 0a 		push	WORD PTR [bp+10]	;entry
+	*** 0003a6	57 			push	di
+	*** 0003a7	e8 00 00 		call	_movmem
+	*** 0003aa	83 c4 06 		add	sp,6
+;|***                                 return(YES);
+; Line 345
+	*** 0003ad	b8 01 00 		mov	ax,1
+	*** 0003b0	5e 			pop	si
+	*** 0003b1	5f 			pop	di
+	*** 0003b2	8b e5 			mov	sp,bp
+	*** 0003b4	5d 			pop	bp
+	*** 0003b5	c3 			ret	
+;|***                         }
+; Line 346
+;|***                 }
+; Line 347
+					$FC298:
+	*** 0003b6	46 			inc	si
+	*** 0003b7	83 c7 20 		add	di,32
+					$F297:
+	*** 0003ba	83 fe 10 		cmp	si,16
+	*** 0003bd	7d 0d 			jge	$FC295
+;|***                         if ( ( current->dc + DIR_NAME )[0] == 0 )
+; Line 341
+	*** 0003bf	80 3d 00 		cmp	BYTE PTR [di],0
+	*** 0003c2	75 c8 			jne	$I300
+;|***                                 return(NO);
+; Line 342
+					$L20014:
+	*** 0003c4	2b c0 			sub	ax,ax
+	*** 0003c6	5e 			pop	si
+	*** 0003c7	5f 			pop	di
+	*** 0003c8	8b e5 			mov	sp,bp
+	*** 0003ca	5d 			pop	bp
+	*** 0003cb	c3 			ret	
+;|***                         if ( strncmp( want, current->dc + DIR_NAME,11 ) == 0) {
+;|***                                 movmem( current, entry, sizeof(struct dirent));
+;|***                                 return(YES);
+;|***                         }
+;|***                 }
+;|***         }
+; Line 348
+					$FC295:
+	*** 0003cc	83 46 ee 10 		add	WORD PTR [bp-18],16	;strtdir
+					$F294:
+	*** 0003d0	8b 46 06 		mov	ax,WORD PTR [bp+6]	;bpb
+	*** 0003d3	05 06 00 		add	ax,6
+	*** 0003d6	50 			push	ax
+	*** 0003d7	e8 26 fc 		call	__word
+	*** 0003da	83 c4 02 		add	sp,2
+	*** 0003dd	3b 46 ee 		cmp	ax,WORD PTR [bp-18]	;strtdir
+	*** 0003e0	7e e2 			jle	$L20014
+;|***                 bread( prtbuf, 512, fd);
+; Line 337
+	*** 0003e2	ff 76 04 		push	WORD PTR [bp+4]	;fd
+	*** 0003e5	b8 00 02 		mov	ax,512
+	*** 0003e8	50 			push	ax
+	*** 0003e9	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 0003ed	e8 00 00 		call	_bread
+	*** 0003f0	83 c4 06 		add	sp,6
+;|***                 for ( current = (struct dirent *)prtbuf, i = 0;
+;|***                         i < 0x10;
+;|***                         ++i, ++current) {
+; Line 340
+	*** 0003f3	8b 3e 22 00 		mov	di,WORD PTR $S179_prtbuf
+	*** 0003f7	2b f6 			sub	si,si
+	*** 0003f9	eb bf 			jmp	SHORT $F297
+	*** 0003fb	90 			nop	
+
+lookup	ENDP
+;|***                         if ( ( current->dc + DIR_NAME )[0] == 0 )
+;|***                                 return(NO);
+;|***                         if ( strncmp( want, current->dc + DIR_NAME,11 ) == 0) {
+;|***                                 movmem( current, entry, sizeof(struct dirent));
+;|***                                 return(YES);
+;|***                         }
+;|***                 }
+;|***         }
+;|***         return(NO);
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** sectparm()
+;|*** {
+; Line 355
+	PUBLIC	_sectparm
+_sectparm	PROC NEAR
+	*** 0003fc	55 			push	bp
+	*** 0003fd	8b ec 			mov	bp,sp
+	*** 0003ff	b8 5a 00 		mov	ax,90
+	*** 000402	e8 00 00 		call	__aNchkstk
+	*** 000405	56 			push	si
+;	key = -74
+;	reg = -90
+;	iocbuf = -72
+;	spc = -2
+;|*** int     key;
+;|*** #ifdef  IBMPC
+;|*** struct  regval  reg;
+;|*** struct  {
+;|***         char     fill1[55];
+;|***         unsigned firstdrive;
+;|***         char     fill2[2];
+;|***         unsigned diskbase;
+;|***         char     fill3[5];
+;|***         unsigned signat;
+;|*** }       iocbuf;
+;|*** int     spc;
+;|*** 
+;|***         spc = _word( swbpb->bc+BP_SECPTRK ) * _word( swbpb->bc+BP_NHEADS );
+; Line 369
+	*** 000406	a1 14 00 		mov	ax,WORD PTR $S180_swbpb
+	*** 000409	05 0f 00 		add	ax,15
+	*** 00040c	50 			push	ax
+	*** 00040d	e8 f0 fb 		call	__word
+	*** 000410	83 c4 02 		add	sp,2
+	*** 000413	8b c8 			mov	cx,ax
+	*** 000415	a1 14 00 		mov	ax,WORD PTR $S180_swbpb
+	*** 000418	05 0d 00 		add	ax,13
+	*** 00041b	50 			push	ax
+	*** 00041c	8b f1 			mov	si,cx
+	*** 00041e	e8 df fb 		call	__word
+	*** 000421	83 c4 02 		add	sp,2
+	*** 000424	f7 ee 			imul	si
+	*** 000426	89 46 fe 		mov	WORD PTR [bp-2],ax	;spc
+;|***         multtrk = multsect / spc;
+; Line 370
+	*** 000429	a1 10 00 		mov	ax,WORD PTR $S188_multsect
+	*** 00042c	99 			cwd	
+	*** 00042d	f7 7e fe 		idiv	WORD PTR [bp-2]	;spc
+	*** 000430	a3 02 00 		mov	WORD PTR $S186_multtrk,ax
+;|***         multsect -= multtrk * spc;
+; Line 371
+	*** 000433	f7 6e fe 		imul	WORD PTR [bp-2]	;spc
+	*** 000436	29 06 10 00 		sub	WORD PTR $S188_multsect,ax
+;|***         multhead = multsect / _word( swbpb->bc+BP_SECPTRK );
+; Line 372
+	*** 00043a	a1 14 00 		mov	ax,WORD PTR $S180_swbpb
+	*** 00043d	05 0d 00 		add	ax,13
+	*** 000440	50 			push	ax
+	*** 000441	e8 bc fb 		call	__word
+	*** 000444	83 c4 02 		add	sp,2
+	*** 000447	8b c8 			mov	cx,ax
+	*** 000449	a1 10 00 		mov	ax,WORD PTR $S188_multsect
+	*** 00044c	99 			cwd	
+	*** 00044d	f7 f9 			idiv	cx
+	*** 00044f	a3 06 00 		mov	WORD PTR $S184_multhead,ax
+;|***         multsect -= (multhead * _word( swbpb->bc+BP_SECPTRK ) ) - 1;
+; Line 373
+	*** 000452	a1 14 00 		mov	ax,WORD PTR $S180_swbpb
+	*** 000455	05 0d 00 		add	ax,13
+	*** 000458	50 			push	ax
+	*** 000459	e8 a4 fb 		call	__word
+	*** 00045c	83 c4 02 		add	sp,2
+	*** 00045f	f7 2e 06 00 		imul	WORD PTR $S184_multhead
+	*** 000463	48 			dec	ax
+	*** 000464	f7 d8 			neg	ax
+	*** 000466	01 06 10 00 		add	WORD PTR $S188_multsect,ax
+;|*** 
+;|***         reg.axr = 0x4404;
+; Line 375
+	*** 00046a	c7 46 a6 04 44 		mov	WORD PTR [bp-90],17412	;reg
+;|***         reg.bxr = multdriv + 1;
+; Line 376
+	*** 00046f	a1 12 00 		mov	ax,WORD PTR $S182_multdriv
+	*** 000472	40 			inc	ax
+	*** 000473	89 46 a8 		mov	WORD PTR [bp-88],ax
+;|***         reg.cxr = sizeof( iocbuf );
+; Line 377
+	*** 000476	c7 46 aa 46 00 		mov	WORD PTR [bp-86],70
+;|***         reg.dxr = (unsigned) &iocbuf;
+; Line 378
+	*** 00047b	8d 46 b8 		lea	ax,WORD PTR [bp-72]	;iocbuf
+	*** 00047e	89 46 ac 		mov	WORD PTR [bp-84],ax
+;|***         reg.dsr = dsseg();
+; Line 379
+	*** 000481	e8 00 00 		call	_dsseg
+	*** 000484	89 46 b2 		mov	WORD PTR [bp-78],ax
+;|***         sysint21( &reg, &reg );
+; Line 380
+	*** 000487	8d 46 a6 		lea	ax,WORD PTR [bp-90]	;reg
+	*** 00048a	50 			push	ax
+	*** 00048b	50 			push	ax
+	*** 00048c	e8 00 00 		call	_sysint21
+	*** 00048f	83 c4 04 		add	sp,4
+;|***         if ( iocbuf.signat == 0x4003 ) {
+; Line 381
+	*** 000492	81 7e fc 03 40 		cmp	WORD PTR [bp-4],16387
+	*** 000497	75 2e 			jne	$I311
+;|***                 multaddr = iocbuf.diskbase;
+; Line 382
+	*** 000499	8b 46 f4 		mov	ax,WORD PTR [bp-12]
+	*** 00049c	a3 00 00 		mov	WORD PTR _multaddr,ax
+;|***                 multdriv -= iocbuf.firstdrive;
+;|***                 multhead |= ( ( multdriv % 3 ) + 1 ) << 6;
+; Line 384
+	*** 00049f	8b 46 f0 		mov	ax,WORD PTR [bp-16]
+	*** 0004a2	29 06 12 00 		sub	WORD PTR $S182_multdriv,ax
+	*** 0004a6	a1 12 00 		mov	ax,WORD PTR $S182_multdriv
+	*** 0004a9	b9 03 00 		mov	cx,3
+	*** 0004ac	99 			cwd	
+	*** 0004ad	f7 f9 			idiv	cx
+	*** 0004af	42 			inc	dx
+	*** 0004b0	b1 06 			mov	cl,6
+	*** 0004b2	d3 e2 			shl	dx,cl
+	*** 0004b4	09 16 06 00 		or	WORD PTR $S184_multhead,dx
+;|***                 multdriv = 3 - ( multdriv / 3 );
+; Line 385
+	*** 0004b8	a1 12 00 		mov	ax,WORD PTR $S182_multdriv
+	*** 0004bb	b9 fd ff 		mov	cx,-3
+	*** 0004be	99 			cwd	
+	*** 0004bf	f7 f9 			idiv	cx
+	*** 0004c1	05 03 00 		add	ax,3
+	*** 0004c4	a3 12 00 		mov	WORD PTR $S182_multdriv,ax
+;|***         }
+; Line 386
+;|*** #endif
+;|*** 
+;|*** #ifdef  ATARI
+;|***         multhead = 0;
+;|***         multtrk = 0;
+;|*** #endif
+;|*** 
+;|*** /*      puts( "\r\nAddress: " );
+;|***         dispd( multaddr, 6 );
+;|***         puts( "\r\nDrive  : " );
+;|***         dispd( multdriv, 6 );
+;|***         puts( "\r\nHead   : " );
+;|***         dispd( multhead, 6 );
+;|***         puts( "\r\nTrack  : " );
+;|***         dispd( multtrk,  6 );
+;|***         puts( "\r\nSector : " );
+;|***         dispd( multsect, 6 );
+;|***         puts( "\r\nOK? (Y/N)" );
+;|***         FOREVER {
+;|***                 if ( ctlbreak() )
+;|***                         swend( NULL, NO );
+;|***                 if ( ( key = toupper( swgetc() & 0x00FF ) ) == 'Y' )
+;|***                         break;
+;|***                 if ( key == 'N' )
+;|***                         swend( NULL, NO );
+;|***         }
+;|*** */
+;|*** }
+; Line 414
+					$I311:
+	*** 0004c7	5e 			pop	si
+	*** 0004c8	8b e5 			mov	sp,bp
+	*** 0004ca	5d 			pop	bp
+	*** 0004cb	c3 			ret	
+
+_sectparm	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** multread()
+;|*** {
+; Line 419
+	PUBLIC	_multread
+_multread	PROC NEAR
+	*** 0004cc	33 c0 			xor	ax,ax
+	*** 0004ce	e8 00 00 		call	__aNchkstk
+;|*** 
+;|***         bseek( devfd, commasect << 9, 0 );
+; Line 421
+	*** 0004d1	2b c0 			sub	ax,ax
+	*** 0004d3	50 			push	ax
+	*** 0004d4	a1 18 00 		mov	ax,WORD PTR $S191_commasect
+	*** 0004d7	8b 16 1a 00 		mov	dx,WORD PTR $S191_commasect+2
+	*** 0004db	8a f2 			mov	dh,dl
+	*** 0004dd	8a d4 			mov	dl,ah
+	*** 0004df	8a e0 			mov	ah,al
+	*** 0004e1	2a c0 			sub	al,al
+	*** 0004e3	d1 e0 			shl	ax,1
+	*** 0004e5	d1 d2 			rcl	dx,1
+	*** 0004e7	52 			push	dx
+	*** 0004e8	50 			push	ax
+	*** 0004e9	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0004ed	e8 00 00 		call	_bseek
+	*** 0004f0	83 c4 08 		add	sp,8
+;|***         if ( bread( prtbuf, 512, devfd ) != 512 ) {
+; Line 422
+	*** 0004f3	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0004f7	b8 00 02 		mov	ax,512
+	*** 0004fa	50 			push	ax
+	*** 0004fb	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 0004ff	e8 00 00 		call	_bread
+	*** 000502	83 c4 06 		add	sp,6
+	*** 000505	3d 00 02 		cmp	ax,512
+	*** 000508	74 16 			je	$I314
+;|***                 errlog( ( bioerr() & 0xFF00 ) + 1, OREAD );
+; Line 423
+	*** 00050a	b8 01 00 		mov	ax,1
+	*** 00050d	50 			push	ax
+	*** 00050e	e8 00 00 		call	_bioerr
+	*** 000511	b1 01 			mov	cl,1
+					$L20015:
+	*** 000513	8a ec 			mov	ch,ah
+	*** 000515	51 			push	cx
+	*** 000516	e8 00 00 		call	errlog
+	*** 000519	83 c4 04 		add	sp,4
+;|***                 return( 0 );
+; Line 424
+	*** 00051c	2b c0 			sub	ax,ax
+	*** 00051e	c3 			ret	
+;|***         }
+; Line 425
+;|***         if ( *prtbuf != 0xFE )
+; Line 426
+	*** 00051f	90 			nop	
+					$I314:
+	*** 000520	8b 1e 22 00 		mov	bx,WORD PTR $S179_prtbuf
+	*** 000524	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000526	98 			cbw	
+	*** 000527	3d fe 00 		cmp	ax,254
+	*** 00052a	74 04 			je	$I317
+;|***                 return( -1 );
+; Line 427
+					$L20016:
+	*** 00052c	b8 ff ff 		mov	ax,-1
+	*** 00052f	c3 			ret	
+;|*** 
+;|***         *prtbuf = 0xFF;
+; Line 429
+					$I317:
+	*** 000530	c6 07 ff 		mov	BYTE PTR [bx],255
+;|***         bseek( devfd, commasect << 9, 0 );
+; Line 430
+	*** 000533	2b c0 			sub	ax,ax
+	*** 000535	50 			push	ax
+	*** 000536	a1 18 00 		mov	ax,WORD PTR $S191_commasect
+	*** 000539	8b 16 1a 00 		mov	dx,WORD PTR $S191_commasect+2
+	*** 00053d	8a f2 			mov	dh,dl
+	*** 00053f	8a d4 			mov	dl,ah
+	*** 000541	8a e0 			mov	ah,al
+	*** 000543	2a c0 			sub	al,al
+	*** 000545	d1 e0 			shl	ax,1
+	*** 000547	d1 d2 			rcl	dx,1
+	*** 000549	52 			push	dx
+	*** 00054a	50 			push	ax
+	*** 00054b	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 00054f	e8 00 00 		call	_bseek
+	*** 000552	83 c4 08 		add	sp,8
+;|***         if ( bwrite( prtbuf, 512, devfd ) != 512 ) {
+; Line 431
+	*** 000555	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 000559	b8 00 02 		mov	ax,512
+	*** 00055c	50 			push	ax
+	*** 00055d	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 000561	e8 00 00 		call	_bwrite
+	*** 000564	83 c4 06 		add	sp,6
+	*** 000567	3d 00 02 		cmp	ax,512
+	*** 00056a	74 0c 			je	$I319
+;|***                 errlog( ( bioerr() & 0xFF00 ) + 2, OREAD );
+; Line 432
+	*** 00056c	b8 01 00 		mov	ax,1
+	*** 00056f	50 			push	ax
+	*** 000570	e8 00 00 		call	_bioerr
+	*** 000573	b1 02 			mov	cl,2
+	*** 000575	eb 9c 			jmp	SHORT $L20015
+;|***                 return( 0 );
+;|***         }
+; Line 434
+;|*** 
+;|***         bseek( devfd, commasect << 9, 0 );
+; Line 436
+	*** 000577	90 			nop	
+					$I319:
+	*** 000578	2b c0 			sub	ax,ax
+	*** 00057a	50 			push	ax
+	*** 00057b	a1 18 00 		mov	ax,WORD PTR $S191_commasect
+	*** 00057e	8b 16 1a 00 		mov	dx,WORD PTR $S191_commasect+2
+	*** 000582	8a f2 			mov	dh,dl
+	*** 000584	8a d4 			mov	dl,ah
+	*** 000586	8a e0 			mov	ah,al
+	*** 000588	2a c0 			sub	al,al
+	*** 00058a	d1 e0 			shl	ax,1
+	*** 00058c	d1 d2 			rcl	dx,1
+	*** 00058e	52 			push	dx
+	*** 00058f	50 			push	ax
+	*** 000590	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 000594	e8 00 00 		call	_bseek
+	*** 000597	83 c4 08 		add	sp,8
+;|***         if ( bread( prtbuf, 512, devfd ) != 512 ) {
+; Line 437
+	*** 00059a	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 00059e	b8 00 02 		mov	ax,512
+	*** 0005a1	50 			push	ax
+	*** 0005a2	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 0005a6	e8 00 00 		call	_bread
+	*** 0005a9	83 c4 06 		add	sp,6
+	*** 0005ac	3d 00 02 		cmp	ax,512
+	*** 0005af	74 0d 			je	$I320
+;|***                 errlog( ( bioerr() & 0xFF00 ) + 3, OREAD );
+; Line 438
+	*** 0005b1	b8 01 00 		mov	ax,1
+	*** 0005b4	50 			push	ax
+	*** 0005b5	e8 00 00 		call	_bioerr
+	*** 0005b8	b1 03 			mov	cl,3
+	*** 0005ba	e9 56 ff 		jmp	$L20015
+;|***                 return( 0 );
+;|***         }
+; Line 440
+;|***         if ( *prtbuf != 0xFF )
+; Line 441
+	*** 0005bd	90 			nop	
+					$I320:
+	*** 0005be	8b 1e 22 00 		mov	bx,WORD PTR $S179_prtbuf
+	*** 0005c2	8a 07 			mov	al,BYTE PTR [bx]
+	*** 0005c4	98 			cbw	
+	*** 0005c5	3d ff 00 		cmp	ax,255
+	*** 0005c8	74 03 			je	$JCC1480
+	*** 0005ca	e9 5f ff 		jmp	$L20016
+					$JCC1480:
+;|***                 return( -1 );
+;|*** 
+;|***         swlocked = TRUE;
+; Line 444
+	*** 0005cd	c7 06 28 00 01 00 	mov	WORD PTR $S197_swlocked,1
+;|*** 
+;|***         bseek( devfd, multasect << 9, 0 );
+; Line 446
+	*** 0005d3	2b c0 			sub	ax,ax
+	*** 0005d5	50 			push	ax
+	*** 0005d6	a1 1c 00 		mov	ax,WORD PTR $S190_multasect
+	*** 0005d9	8b 16 1e 00 		mov	dx,WORD PTR $S190_multasect+2
+	*** 0005dd	8a f2 			mov	dh,dl
+	*** 0005df	8a d4 			mov	dl,ah
+	*** 0005e1	8a e0 			mov	ah,al
+	*** 0005e3	2a c0 			sub	al,al
+	*** 0005e5	d1 e0 			shl	ax,1
+	*** 0005e7	d1 d2 			rcl	dx,1
+	*** 0005e9	52 			push	dx
+	*** 0005ea	50 			push	ax
+	*** 0005eb	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0005ef	e8 00 00 		call	_bseek
+	*** 0005f2	83 c4 08 		add	sp,8
+;|***         if ( bread( multbuff, 512, devfd ) != 512 ) {
+; Line 447
+	*** 0005f5	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0005f9	b8 00 02 		mov	ax,512
+	*** 0005fc	50 			push	ax
+	*** 0005fd	ff 36 00 00 		push	WORD PTR _multbuff
+	*** 000601	e8 00 00 		call	_bread
+	*** 000604	83 c4 06 		add	sp,6
+	*** 000607	3d 00 02 		cmp	ax,512
+	*** 00060a	74 0c 			je	$I322
+;|***                 errlog( ( bioerr() & 0xFF00 ) + 4, OREAD );
+; Line 448
+	*** 00060c	b8 01 00 		mov	ax,1
+	*** 00060f	50 			push	ax
+	*** 000610	e8 00 00 		call	_bioerr
+	*** 000613	b1 04 			mov	cl,4
+	*** 000615	e9 fb fe 		jmp	$L20015
+;|***                 return( 0 );
+;|***         }
+; Line 450
+;|***         _fromintel();
+; Line 451
+					$I322:
+	*** 000618	e8 13 fa 		call	__fromintel
+;|***         return( 1 );
+; Line 452
+	*** 00061b	b8 01 00 		mov	ax,1
+;|*** }
+; Line 453
+	*** 00061e	c3 			ret	
+	*** 00061f	90 			nop	
+
+_multread	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** multwrite()
+;|*** {
+; Line 460
+	PUBLIC	_multwrite
+_multwrite	PROC NEAR
+	*** 000620	33 c0 			xor	ax,ax
+	*** 000622	e8 00 00 		call	__aNchkstk
+	*** 000625	57 			push	di
+	*** 000626	56 			push	si
+;	register si = dkerr
+;	register di = buff
+;|*** register int     dkerr;
+;|*** register char    *buff;
+;|*** 
+;|***         FOREVER  {
+; Line 464
+					$FC328:
+;|***                 bseek( devfd, multasect << 9, 0 );
+; Line 465
+	*** 000627	2b c0 			sub	ax,ax
+	*** 000629	50 			push	ax
+	*** 00062a	a1 1c 00 		mov	ax,WORD PTR $S190_multasect
+	*** 00062d	8b 16 1e 00 		mov	dx,WORD PTR $S190_multasect+2
+	*** 000631	8a f2 			mov	dh,dl
+	*** 000633	8a d4 			mov	dl,ah
+	*** 000635	8a e0 			mov	ah,al
+	*** 000637	2a c0 			sub	al,al
+	*** 000639	d1 e0 			shl	ax,1
+	*** 00063b	d1 d2 			rcl	dx,1
+	*** 00063d	52 			push	dx
+	*** 00063e	50 			push	ax
+	*** 00063f	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 000643	e8 00 00 		call	_bseek
+	*** 000646	83 c4 08 		add	sp,8
+;|***                 buff = _tointel();
+; Line 466
+	*** 000649	e8 e8 f9 		call	__tointel
+	*** 00064c	8b f8 			mov	di,ax
+;|***                 if ( bwrite( buff, 512, devfd ) == 512 )
+; Line 467
+	*** 00064e	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 000652	b8 00 02 		mov	ax,512
+	*** 000655	50 			push	ax
+	*** 000656	57 			push	di
+	*** 000657	e8 00 00 		call	_bwrite
+	*** 00065a	83 c4 06 		add	sp,6
+	*** 00065d	3d 00 02 		cmp	ax,512
+	*** 000660	75 06 			jne	$I330
+;|***                         return( 1 );
+; Line 468
+	*** 000662	b8 01 00 		mov	ax,1
+	*** 000665	5e 			pop	si
+	*** 000666	5f 			pop	di
+	*** 000667	c3 			ret	
+;|***                 dkerr = 0xFF00 & bioerr();
+; Line 469
+					$I330:
+;|***                 errlog( dkerr, OWRITE );
+; Line 470
+	*** 000668	b8 02 00 		mov	ax,2
+	*** 00066b	50 			push	ax
+	*** 00066c	e8 00 00 		call	_bioerr
+	*** 00066f	2a c0 			sub	al,al
+	*** 000671	8b f0 			mov	si,ax
+	*** 000673	56 			push	si
+	*** 000674	e8 00 00 		call	errlog
+	*** 000677	83 c4 04 		add	sp,4
+;|***                 if ( dkerr != 0x0300 )
+; Line 471
+	*** 00067a	81 fe 00 03 		cmp	si,768
+	*** 00067e	74 a7 			je	$FC328
+;|***                         return( 0 );
+; Line 472
+	*** 000680	2b c0 			sub	ax,ax
+	*** 000682	5e 			pop	si
+	*** 000683	5f 			pop	di
+	*** 000684	c3 			ret	
+	*** 000685	90 			nop	
+
+_multwrite	ENDP
+;|***         }
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** multunlock()
+;|*** {
+; Line 480
+	PUBLIC	_multunlock
+_multunlock	PROC NEAR
+	*** 000686	33 c0 			xor	ax,ax
+	*** 000688	e8 00 00 		call	__aNchkstk
+;|***         if ( !swlocked )
+; Line 481
+	*** 00068b	83 3e 28 00 00 		cmp	WORD PTR $S197_swlocked,0
+	*** 000690	75 04 			jne	$I334
+;|***                 return( 1 );
+; Line 482
+					$L20017:
+	*** 000692	b8 01 00 		mov	ax,1
+	*** 000695	c3 			ret	
+;|*** 
+;|***         *prtbuf = 0xFE;
+; Line 484
+					$I334:
+	*** 000696	8b 1e 22 00 		mov	bx,WORD PTR $S179_prtbuf
+	*** 00069a	c6 07 fe 		mov	BYTE PTR [bx],254
+;|***         bseek( devfd, commasect << 9, 0 );
+; Line 485
+	*** 00069d	2b c0 			sub	ax,ax
+	*** 00069f	50 			push	ax
+	*** 0006a0	a1 18 00 		mov	ax,WORD PTR $S191_commasect
+	*** 0006a3	8b 16 1a 00 		mov	dx,WORD PTR $S191_commasect+2
+	*** 0006a7	8a f2 			mov	dh,dl
+	*** 0006a9	8a d4 			mov	dl,ah
+	*** 0006ab	8a e0 			mov	ah,al
+	*** 0006ad	2a c0 			sub	al,al
+	*** 0006af	d1 e0 			shl	ax,1
+	*** 0006b1	d1 d2 			rcl	dx,1
+	*** 0006b3	52 			push	dx
+	*** 0006b4	50 			push	ax
+	*** 0006b5	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0006b9	e8 00 00 		call	_bseek
+	*** 0006bc	83 c4 08 		add	sp,8
+;|***         if ( bwrite( prtbuf, 512, devfd ) != 512 )
+; Line 486
+	*** 0006bf	ff 36 0c 00 		push	WORD PTR $S181_devfd
+	*** 0006c3	b8 00 02 		mov	ax,512
+	*** 0006c6	50 			push	ax
+	*** 0006c7	ff 36 22 00 		push	WORD PTR $S179_prtbuf
+	*** 0006cb	e8 00 00 		call	_bwrite
+	*** 0006ce	83 c4 06 		add	sp,6
+	*** 0006d1	3d 00 02 		cmp	ax,512
+	*** 0006d4	74 04 			je	$I335
+;|***                 return( 0 );
+; Line 487
+	*** 0006d6	2b c0 			sub	ax,ax
+	*** 0006d8	c3 			ret	
+;|*** 
+;|***         swlocked = FALSE;
+; Line 489
+	*** 0006d9	90 			nop	
+					$I335:
+	*** 0006da	c7 06 28 00 00 00 	mov	WORD PTR $S197_swlocked,0
+	*** 0006e0	eb b0 			jmp	SHORT $L20017
+;|*** 
+;|***         return( 1 );
+;|*** }
+; Line 492
+
+_multunlock	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** multwait()
+;|*** {
+; Line 498
+	PUBLIC	_multwait
+_multwait	PROC NEAR
+	*** 0006e2	55 			push	bp
+	*** 0006e3	8b ec 			mov	bp,sp
+	*** 0006e5	33 c0 			xor	ax,ax
+	*** 0006e7	e8 00 00 		call	__aNchkstk
+;|*** int     _multwait();
+;|*** 
+;|***         _dkproc( _multwait, multstack );
+; Line 501
+	*** 0006ea	ff 36 00 00 		push	WORD PTR _multstack
+	*** 0006ee	b8 00 00 		mov	ax,OFFSET _multwait
+	*** 0006f1	50 			push	ax
+	*** 0006f2	e8 00 00 		call	__dkproc
+	*** 0006f5	83 c4 04 		add	sp,4
+;|***         while ( _dkiosts() );
+; Line 502
+					$FC342:
+	*** 0006f8	e8 00 00 		call	__dkiosts
+	*** 0006fb	0b c0 			or	ax,ax
+	*** 0006fd	75 f9 			jne	$FC342
+;|***         if ( errorflg )
+; Line 503
+	*** 0006ff	39 06 24 00 		cmp	WORD PTR $S195_errorflg,ax
+	*** 000703	74 0e 			je	$I344
+;|***                 swend( errormsg, errflg1 );
+; Line 504
+	*** 000705	ff 36 84 00 		push	WORD PTR $S194_errflg1
+	*** 000709	ff 36 0e 00 		push	WORD PTR $S193_errormsg
+	*** 00070d	e8 00 00 		call	_swend
+	*** 000710	83 c4 04 		add	sp,4
+;|*** }
+; Line 505
+					$I344:
+	*** 000713	8b e5 			mov	sp,bp
+	*** 000715	5d 			pop	bp
+	*** 000716	c3 			ret	
+	*** 000717	90 			nop	
+
+_multwait	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** multget( ob )
+;|*** OBJECTS *ob;
+; Line 512
+	PUBLIC	_multget
+_multget	PROC NEAR
+	*** 000718	55 			push	bp
+	*** 000719	8b ec 			mov	bp,sp
+	*** 00071b	33 c0 			xor	ax,ax
+	*** 00071d	e8 00 00 		call	__aNchkstk
+	*** 000720	57 			push	di
+	*** 000721	56 			push	si
+;	register si = o
+;	ob = 4
+;|*** {
+;|*** register int     o;
+;|*** 
+;|***         if ( errorflg )
+; Line 516
+	*** 000722	83 3e 24 00 00 		cmp	WORD PTR $S195_errorflg,0
+	*** 000727	74 0e 			je	$I348
+;|***                  swend( errormsg, errflg1 );
+; Line 517
+	*** 000729	ff 36 84 00 		push	WORD PTR $S194_errflg1
+	*** 00072d	ff 36 0e 00 		push	WORD PTR $S193_errormsg
+	*** 000731	e8 00 00 		call	_swend
+	*** 000734	83 c4 04 		add	sp,4
+;|*** 
+;|***         while ( _dkiosts() );
+; Line 519
+					$I348:
+	*** 000737	e8 00 00 		call	__dkiosts
+	*** 00073a	0b c0 			or	ax,ax
+	*** 00073c	75 f9 			jne	$I348
+;|***         if ( errorflg )
+; Line 520
+	*** 00073e	39 06 24 00 		cmp	WORD PTR $S195_errorflg,ax
+	*** 000742	74 0e 			je	$I352
+;|***                 swend( errormsg, errflg1 );
+; Line 521
+	*** 000744	ff 36 84 00 		push	WORD PTR $S194_errflg1
+	*** 000748	ff 36 0e 00 		push	WORD PTR $S193_errormsg
+	*** 00074c	e8 00 00 		call	_swend
+	*** 00074f	83 c4 04 		add	sp,4
+;|*** 
+;|***         o = ob->ob_index;
+; Line 523
+					$I352:
+	*** 000752	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 000755	8b 77 38 		mov	si,WORD PTR [bx+56]
+;|***         if ( o != player )
+; Line 524
+	*** 000758	a1 00 00 		mov	ax,WORD PTR _player
+	*** 00075b	3b f0 			cmp	si,ax
+	*** 00075d	74 14 			je	$I353
+;|***                 updstate( ob, multbuff->mu_state[o] );
+; Line 525
+	*** 00075f	8b fe 			mov	di,si
+	*** 000761	d1 e7 			shl	di,1
+	*** 000763	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 000767	ff 71 0e 		push	WORD PTR [bx+14][di]
+	*** 00076a	ff 76 04 		push	WORD PTR [bp+4]	;ob
+	*** 00076d	e8 00 00 		call	updstate
+	*** 000770	83 c4 04 		add	sp,4
+;|***         return( histmult( o, multbuff->mu_key[o] ) );
+; Line 526
+					$I353:
+	*** 000773	8b fe 			mov	di,si
+	*** 000775	d1 e7 			shl	di,1
+	*** 000777	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 00077b	ff 71 06 		push	WORD PTR [bx+6][di]
+	*** 00077e	56 			push	si
+	*** 00077f	e8 00 00 		call	_histmult
+	*** 000782	83 c4 04 		add	sp,4
+;|*** }
+; Line 527
+	*** 000785	5e 			pop	si
+	*** 000786	5f 			pop	di
+	*** 000787	8b e5 			mov	sp,bp
+	*** 000789	5d 			pop	bp
+	*** 00078a	c3 			ret	
+	*** 00078b	90 			nop	
+
+_multget	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  updstate( obp, statep )
+;|*** OBJECTS *obp;
+; Line 532
+updstate	PROC NEAR
+	*** 00078c	55 			push	bp
+	*** 00078d	8b ec 			mov	bp,sp
+	*** 00078f	33 c0 			xor	ax,ax
+	*** 000791	e8 00 00 		call	__aNchkstk
+	*** 000794	57 			push	di
+	*** 000795	56 			push	si
+;	register si = ob
+;	register di = state
+;	statep = 6
+;	obp = 4
+;|*** int     statep;
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** register int     state;
+;|*** 
+;|***         if ( ( ( ob = obp )->ob_state != ( state = statep ) )
+;|***                 && ( ( state == FINISHED )
+;|***                 || ( state == WAITING )
+;|***                 || ( ob->ob_state == FINISHED )
+;|***                 || ( ob->ob_state == WAITING ) ) ) {
+; Line 542
+	*** 000796	8b 7e 06 		mov	di,WORD PTR [bp+6]	;statep
+	*** 000799	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 00079c	39 3c 			cmp	WORD PTR [si],di
+	*** 00079e	74 1f 			je	$I361
+	*** 0007a0	83 ff 5b 		cmp	di,91
+	*** 0007a3	74 0e 			je	$I362
+	*** 0007a5	0b ff 			or	di,di
+	*** 0007a7	74 0a 			je	$I362
+	*** 0007a9	83 3c 5b 		cmp	WORD PTR [si],91
+	*** 0007ac	74 05 			je	$I362
+	*** 0007ae	83 3c 00 		cmp	WORD PTR [si],0
+	*** 0007b1	75 0c 			jne	$I361
+					$I362:
+;|***                 ob->ob_state = state;
+; Line 543
+	*** 0007b3	89 3c 			mov	WORD PTR [si],di
+;|***                 setvdisp();
+; Line 544
+	*** 0007b5	e8 00 00 		call	_setvdisp
+;|***                 dispwobj( ob );
+; Line 545
+	*** 0007b8	56 			push	si
+	*** 0007b9	e8 00 00 		call	_dispwobj
+	*** 0007bc	83 c4 02 		add	sp,2
+;|***         }
+; Line 546
+;|*** }
+; Line 547
+					$I361:
+	*** 0007bf	5e 			pop	si
+	*** 0007c0	5f 			pop	di
+	*** 0007c1	8b e5 			mov	sp,bp
+	*** 0007c3	5d 			pop	bp
+	*** 0007c4	c3 			ret	
+	*** 0007c5	90 			nop	
+
+updstate	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** multput()
+;|*** {
+; Line 553
+	PUBLIC	_multput
+_multput	PROC NEAR
+	*** 0007c6	55 			push	bp
+	*** 0007c7	8b ec 			mov	bp,sp
+	*** 0007c9	33 c0 			xor	ax,ax
+	*** 0007cb	e8 00 00 		call	__aNchkstk
+;|*** int     _multput();
+;|*** 
+;|***         while ( _dkiosts() );
+; Line 556
+					$FC369:
+	*** 0007ce	e8 00 00 		call	__dkiosts
+	*** 0007d1	0b c0 			or	ax,ax
+	*** 0007d3	75 f9 			jne	$FC369
+;|***         if ( errorflg )
+; Line 557
+	*** 0007d5	39 06 24 00 		cmp	WORD PTR $S195_errorflg,ax
+	*** 0007d9	74 0e 			je	$I371
+;|***                  swend( errormsg, errflg1 );
+; Line 558
+	*** 0007db	ff 36 84 00 		push	WORD PTR $S194_errflg1
+	*** 0007df	ff 36 0e 00 		push	WORD PTR $S193_errormsg
+	*** 0007e3	e8 00 00 		call	_swend
+	*** 0007e6	83 c4 04 		add	sp,4
+;|***         _dkproc( _multput, multstack );
+; Line 559
+					$I371:
+	*** 0007e9	ff 36 00 00 		push	WORD PTR _multstack
+	*** 0007ed	b8 00 00 		mov	ax,OFFSET _multput
+	*** 0007f0	50 			push	ax
+	*** 0007f1	e8 00 00 		call	__dkproc
+	*** 0007f4	83 c4 04 		add	sp,4
+;|*** }
+; Line 560
+	*** 0007f7	8b e5 			mov	sp,bp
+	*** 0007f9	5d 			pop	bp
+	*** 0007fa	c3 			ret	
+	*** 0007fb	90 			nop	
+
+_multput	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** char    *multclos( update )
+;|*** BOOL    update;
+; Line 567
+	PUBLIC	_multclos
+_multclos	PROC NEAR
+	*** 0007fc	55 			push	bp
+	*** 0007fd	8b ec 			mov	bp,sp
+	*** 0007ff	b8 06 00 		mov	ax,6
+	*** 000802	e8 00 00 		call	__aNchkstk
+	*** 000805	57 			push	di
+	*** 000806	56 			push	si
+;	register si = rc
+;	register di = n
+;	closeret = -4
+;	alldone = -6
+;	tickwait = -2
+;	update = 4
+;|*** {
+;|*** register int     rc, n;
+;|*** char             *closeret  = NULL;
+; Line 570
+	*** 000807	c7 46 fc 00 00 		mov	WORD PTR [bp-4],0	;closeret
+;|*** BOOL             alldone;
+;|*** int              tickwait;
+;|*** 
+;|***         if ( repflag ) {
+; Line 574
+	*** 00080c	83 3e 00 00 00 		cmp	WORD PTR _repflag,0
+	*** 000811	74 09 			je	$I380
+;|***                 errrep();
+; Line 575
+	*** 000813	e8 00 00 		call	errrep
+;|***                 delayrep();
+; Line 576
+	*** 000816	e8 00 00 		call	_delayrep
+;|***                 statrep();
+; Line 577
+	*** 000819	e8 00 00 		call	_statrep
+;|***         }
+; Line 578
+;|*** 
+;|***         multterm = TRUE;
+; Line 580
+					$I380:
+	*** 00081c	c7 06 26 00 01 00 	mov	WORD PTR $S196_multterm,1
+;|***         while ( _dkiosts() );
+; Line 581
+					$FC385:
+	*** 000822	e8 00 00 		call	__dkiosts
+	*** 000825	0b c0 			or	ax,ax
+	*** 000827	75 f9 			jne	$FC385
+;|*** 
+;|***         if ( update ) {
+; Line 583
+	*** 000829	39 46 04 		cmp	WORD PTR [bp+4],ax	;update
+	*** 00082c	75 03 			jne	$JCC2092
+	*** 00082e	e9 d2 00 		jmp	$I415
+					$JCC2092:
+;|***                 for ( n = 0; n < 25; ++n ) {
+; Line 584
+	*** 000831	2b ff 			sub	di,di
+	*** 000833	eb 1c 			jmp	SHORT $F388
+;|***                         if ( ( rc = multread() ) >= 0 )
+;|***                                 break;
+;|***                         intsoff();
+; Line 587
+	*** 000835	90 			nop	
+					$I391:
+	*** 000836	e8 00 00 		call	_intsoff
+;|***                         tickwait = 18;
+; Line 588
+	*** 000839	c7 46 fe 12 00 		mov	WORD PTR [bp-2],18	;tickwait
+;|***                         counttick = 0;
+; Line 589
+	*** 00083e	c7 06 00 00 00 00 	mov	WORD PTR _counttick,0
+;|***                         intson();
+; Line 590
+	*** 000844	e8 00 00 		call	_intson
+;|***                         while ( counttick < tickwait );
+; Line 591
+					$FC395:
+	*** 000847	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;tickwait
+	*** 00084a	39 06 00 00 		cmp	WORD PTR _counttick,ax
+	*** 00084e	7c f7 			jl	$FC395
+;|***                 }
+; Line 592
+	*** 000850	47 			inc	di
+					$F388:
+	*** 000851	83 ff 19 		cmp	di,25
+	*** 000854	7d 09 			jge	$FB390
+;|***                         if ( ( rc = multread() ) >= 0 )
+; Line 585
+	*** 000856	e8 73 fc 		call	_multread
+	*** 000859	8b f0 			mov	si,ax
+	*** 00085b	0b f6 			or	si,si
+	*** 00085d	7c d7 			jl	$I391
+;|***                                 break;
+; Line 586
+					$FB390:
+;|***                         intsoff();
+;|***                         tickwait = 18;
+;|***                         counttick = 0;
+;|***                         intson();
+;|***                         while ( counttick < tickwait );
+;|***                 }
+;|***                 if ( !rc )
+; Line 593
+	*** 00085f	0b f6 			or	si,si
+	*** 000861	75 09 			jne	$I397
+;|***                         closeret =  "Read error on communications file during close";
+; Line 594
+	*** 000863	c7 46 fc 5c 00 		mov	WORD PTR [bp-4],OFFSET DGROUP:$SG398	;closeret
+;|***                 else
+; Line 595
+	*** 000868	e9 98 00 		jmp	$I415
+	*** 00086b	90 			nop	
+					$I397:
+;|***                         if ( rc < 0 )
+; Line 596
+	*** 00086c	0b f6 			or	si,si
+	*** 00086e	7d 08 			jge	$I400
+;|***                             closeret = "Communications file locked during close" ;
+; Line 597
+	*** 000870	c7 46 fc 8b 00 		mov	WORD PTR [bp-4],OFFSET DGROUP:$SG401	;closeret
+;|***                         else
+; Line 598
+	*** 000875	e9 8b 00 		jmp	$I415
+					$I400:
+;|***                             if ( editnum() )
+; Line 599
+	*** 000878	e8 00 00 		call	_editnum
+	*** 00087b	0b c0 			or	ax,ax
+	*** 00087d	74 09 			je	$I404
+;|***                                 closeret = "Bad player counter";
+; Line 600
+	*** 00087f	c7 46 fc b3 00 		mov	WORD PTR [bp-4],OFFSET DGROUP:$SG405	;closeret
+;|***                             else {
+; Line 601
+	*** 000884	eb 7d 			jmp	SHORT $I415
+	*** 000886	90 			nop	
+	*** 000887	90 			nop	
+					$I404:
+;|***                                 multbuff->mu_state[player] = FINISHED;
+; Line 602
+	*** 000888	8b 1e 00 00 		mov	bx,WORD PTR _player
+	*** 00088c	d1 e3 			shl	bx,1
+	*** 00088e	03 1e 00 00 		add	bx,WORD PTR _multbuff
+	*** 000892	c7 47 0e 5b 00 		mov	WORD PTR [bx+14],91
+;|***                                 multbuff->mu_key[player] = 0;
+; Line 603
+	*** 000897	8b 1e 00 00 		mov	bx,WORD PTR _player
+	*** 00089b	d1 e3 			shl	bx,1
+	*** 00089d	03 1e 00 00 		add	bx,WORD PTR _multbuff
+	*** 0008a1	c7 47 06 00 00 		mov	WORD PTR [bx+6],0
+;|***                                 alldone = TRUE;
+; Line 604
+	*** 0008a6	c7 46 fa 01 00 		mov	WORD PTR [bp-6],1	;alldone
+;|***                                 for ( n = 0; n < multbuff->mu_maxplyr; ++n )
+; Line 605
+	*** 0008ab	2b ff 			sub	di,di
+	*** 0008ad	eb 02 			jmp	SHORT $F407
+;|***                                         if ( multbuff->mu_state[n] != FINISHED ) {
+;|***                                                 alldone = FALSE;
+;|***                                                 break;
+;|***                                         }
+; Line 609
+;|***                                 if ( alldone ) {
+; Line 610
+	*** 0008af	90 			nop	
+					$FC408:
+	*** 0008b0	47 			inc	di
+					$F407:
+	*** 0008b1	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0008b5	39 3f 			cmp	WORD PTR [bx],di
+	*** 0008b7	76 11 			jbe	$FB409
+;|***                                         if ( multbuff->mu_state[n] != FINISHED ) {
+; Line 606
+	*** 0008b9	8b c7 			mov	ax,di
+	*** 0008bb	d1 e0 			shl	ax,1
+	*** 0008bd	03 d8 			add	bx,ax
+	*** 0008bf	83 7f 0e 5b 		cmp	WORD PTR [bx+14],91
+	*** 0008c3	74 eb 			je	$FC408
+;|***                                                 alldone = FALSE;
+; Line 607
+	*** 0008c5	c7 46 fa 00 00 		mov	WORD PTR [bp-6],0	;alldone
+;|***                                                 break;
+; Line 608
+					$FB409:
+	*** 0008ca	83 7e fa 00 		cmp	WORD PTR [bp-6],0	;alldone
+	*** 0008ce	74 27 			je	$I411
+;|***                                         }
+;|***                                 if ( alldone ) {
+;|***                                         multbuff->mu_numplyr = 0;
+; Line 611
+	*** 0008d0	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0008d4	c7 47 02 00 00 		mov	WORD PTR [bx+2],0
+;|***                                         multbuff->mu_lstplyr = 0;
+; Line 612
+	*** 0008d9	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0008dd	c7 47 04 00 00 		mov	WORD PTR [bx+4],0
+;|***                                         for ( n = 0; n < MAX_PLYR; ++n )
+; Line 613
+	*** 0008e2	2b ff 			sub	di,di
+					$FC413:
+;|***                                                 multbuff->mu_state[n] = WAITING;
+; Line 614
+	*** 0008e4	8b df 			mov	bx,di
+	*** 0008e6	d1 e3 			shl	bx,1
+	*** 0008e8	03 1e 00 00 		add	bx,WORD PTR _multbuff
+	*** 0008ec	c7 47 0e 00 00 		mov	WORD PTR [bx+14],0
+	*** 0008f1	47 			inc	di
+	*** 0008f2	83 ff 04 		cmp	di,4
+	*** 0008f5	7c ed 			jl	$FC413
+;|***                                 }
+; Line 615
+;|*** 
+;|***                                 if ( !multwrite() )
+; Line 617
+					$I411:
+	*** 0008f7	e8 26 fd 		call	_multwrite
+	*** 0008fa	0b c0 			or	ax,ax
+	*** 0008fc	75 05 			jne	$I415
+;|***                                         closeret
+;|***                                         = "Write error on communications file";
+; Line 619
+	*** 0008fe	c7 46 fc c6 00 		mov	WORD PTR [bp-4],OFFSET DGROUP:$SG416	;closeret
+;|***                             }
+; Line 620
+					$I415:
+;|***         }
+; Line 621
+;|*** 
+;|***         if ( swlocked )
+; Line 623
+	*** 000903	83 3e 28 00 00 		cmp	WORD PTR $S197_swlocked,0
+	*** 000908	74 0c 			je	$I418
+;|***                  if ( !multunlock() )
+; Line 624
+	*** 00090a	e8 79 fd 		call	_multunlock
+	*** 00090d	0b c0 			or	ax,ax
+	*** 00090f	75 05 			jne	$I418
+;|***                          closeret = "Unlock error on communications file";
+; Line 625
+	*** 000911	c7 46 fc e9 00 		mov	WORD PTR [bp-4],OFFSET DGROUP:$SG419	;closeret
+;|*** 
+;|***         return( closeret );
+; Line 627
+					$I418:
+	*** 000916	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;closeret
+;|*** }
+; Line 628
+	*** 000919	5e 			pop	si
+	*** 00091a	5f 			pop	di
+	*** 00091b	8b e5 			mov	sp,bp
+	*** 00091d	5d 			pop	bp
+	*** 00091e	c3 			ret	
+	*** 00091f	90 			nop	
+
+_multclos	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  _multwait()
+;|*** {
+; Line 635
+_multwait	PROC NEAR
+	*** 000920	55 			push	bp
+	*** 000921	8b ec 			mov	bp,sp
+	*** 000923	b8 04 00 		mov	ax,4
+	*** 000926	e8 00 00 		call	__aNchkstk
+	*** 000929	57 			push	di
+	*** 00092a	56 			push	si
+;	register si = mu
+;	register di = i
+;	count = -4
+;	dkerr = -2
+;|*** register MULTIO  *mu;
+;|*** register int     i;
+;|*** int              count, dkerr;
+;|*** 
+;|***         mu = multbuff;
+; Line 640
+	*** 00092b	8b 36 00 00 		mov	si,WORD PTR _multbuff
+;|***         FOREVER {
+; Line 641
+					$FC426:
+;|***                 _dktick( 18 );
+; Line 642
+	*** 00092f	b8 12 00 		mov	ax,18
+	*** 000932	50 			push	ax
+	*** 000933	e8 00 00 		call	__dktick
+	*** 000936	83 c4 02 		add	sp,2
+;|***                 for ( count = 0; count < 25; ++count ) {
+; Line 643
+	*** 000939	c7 46 fc 00 00 		mov	WORD PTR [bp-4],0	;count
+	*** 00093e	eb 57 			jmp	SHORT $F429
+;|***                         if ( ctlbreak() ) {
+;|***                                 error( NULL, YES );
+;|***                                 return;
+;|***                         }
+; Line 647
+;|***                         if ( !( dkerr = 0xFF00 & _dkio( 0x2, multdriv, multhead,
+; Line 648
+					$I433:
+;|***                                                         multtrk, multsect,
+;|***                                                         1, mu, dsseg() ) ) )
+; Line 650
+	*** 000940	e8 00 00 		call	_dsseg
+	*** 000943	50 			push	ax
+	*** 000944	56 			push	si
+	*** 000945	b8 01 00 		mov	ax,1
+	*** 000948	50 			push	ax
+	*** 000949	ff 36 10 00 		push	WORD PTR $S188_multsect
+	*** 00094d	ff 36 02 00 		push	WORD PTR $S186_multtrk
+	*** 000951	ff 36 06 00 		push	WORD PTR $S184_multhead
+	*** 000955	ff 36 12 00 		push	WORD PTR $S182_multdriv
+	*** 000959	b8 02 00 		mov	ax,2
+	*** 00095c	50 			push	ax
+	*** 00095d	e8 00 00 		call	__dkio
+	*** 000960	83 c4 10 		add	sp,16
+	*** 000963	2a c0 			sub	al,al
+	*** 000965	89 46 fe 		mov	WORD PTR [bp-2],ax	;dkerr
+	*** 000968	0b c0 			or	ax,ax
+	*** 00096a	75 12 			jne	$I436
+;|***                                 break;
+; Line 651
+					$FB431:
+;|***                         errlog( dkerr, OREADPLAY );
+;|***                         _dkio( 0x0 );
+;|***                 }
+;|***                 _fromintel();
+; Line 655
+	*** 00096c	e8 bf f6 		call	__fromintel
+;|***                 if ( count == 25 ) {
+; Line 656
+	*** 00096f	83 7e fc 19 		cmp	WORD PTR [bp-4],25	;count
+	*** 000973	75 43 			jne	$I437
+;|***                         error( "Read error during wait", YES );
+; Line 657
+	*** 000975	b8 01 00 		mov	ax,1
+	*** 000978	50 			push	ax
+	*** 000979	b8 0d 01 		mov	ax,OFFSET DGROUP:$SG438
+	*** 00097c	eb 2c 			jmp	SHORT $L20019
+;|***                         errlog( dkerr, OREADPLAY );
+; Line 652
+					$I436:
+	*** 00097e	b8 03 00 		mov	ax,3
+	*** 000981	50 			push	ax
+	*** 000982	ff 76 fe 		push	WORD PTR [bp-2]	;dkerr
+	*** 000985	e8 00 00 		call	errlog
+	*** 000988	83 c4 04 		add	sp,4
+;|***                         _dkio( 0x0 );
+; Line 653
+	*** 00098b	2b c0 			sub	ax,ax
+	*** 00098d	50 			push	ax
+	*** 00098e	e8 00 00 		call	__dkio
+	*** 000991	83 c4 02 		add	sp,2
+;|***                 }
+; Line 654
+	*** 000994	ff 46 fc 		inc	WORD PTR [bp-4]	;count
+					$F429:
+	*** 000997	83 7e fc 19 		cmp	WORD PTR [bp-4],25	;count
+	*** 00099b	7d cf 			jge	$FB431
+;|***                         if ( ctlbreak() ) {
+; Line 644
+	*** 00099d	e8 00 00 		call	_ctlbreak
+	*** 0009a0	0b c0 			or	ax,ax
+	*** 0009a2	74 9c 			je	$I433
+;|***                                 error( NULL, YES );
+; Line 645
+	*** 0009a4	b8 01 00 		mov	ax,1
+	*** 0009a7	50 			push	ax
+	*** 0009a8	2b c0 			sub	ax,ax
+					$L20019:
+	*** 0009aa	50 			push	ax
+	*** 0009ab	e8 00 00 		call	error
+	*** 0009ae	83 c4 04 		add	sp,4
+;|***                                 return;
+; Line 646
+	*** 0009b1	5e 			pop	si
+	*** 0009b2	5f 			pop	di
+	*** 0009b3	8b e5 			mov	sp,bp
+	*** 0009b5	5d 			pop	bp
+	*** 0009b6	c3 			ret	
+;|***                         }
+;|***                         if ( !( dkerr = 0xFF00 & _dkio( 0x2, multdriv, multhead,
+;|***                                                         multtrk, multsect,
+;|***                                                         1, mu, dsseg() ) ) )
+;|***                                 break;
+;|***                         errlog( dkerr, OREADPLAY );
+;|***                         _dkio( 0x0 );
+;|***                 }
+;|***                 _fromintel();
+;|***                 if ( count == 25 ) {
+;|***                         error( "Read error during wait", YES );
+;|***                         return;
+;|***                 }
+; Line 659
+;|***                 if ( editnum() ) {
+; Line 660
+	*** 0009b7	90 			nop	
+					$I437:
+	*** 0009b8	e8 00 00 		call	_editnum
+	*** 0009bb	0b c0 			or	ax,ax
+	*** 0009bd	74 09 			je	$I439
+;|***                         error( "Bad player count", YES );
+; Line 661
+	*** 0009bf	b8 01 00 		mov	ax,1
+	*** 0009c2	50 			push	ax
+	*** 0009c3	b8 24 01 		mov	ax,OFFSET DGROUP:$SG440
+	*** 0009c6	eb e2 			jmp	SHORT $L20019
+;|***                         return;
+;|***                 }
+; Line 663
+;|***                 for ( i = 0; i < mu->mu_maxplyr; ++i )
+; Line 664
+					$I439:
+	*** 0009c8	2b ff 			sub	di,di
+	*** 0009ca	eb 01 			jmp	SHORT $F441
+;|***                         if ( ( mu->mu_state[i] != FLYING )
+;|***                                 && ( mu->mu_state[i] != FINISHED ) )
+;|***                                 break;
+;|***                 if ( i == mu->mu_maxplyr )
+; Line 668
+					$FC442:
+	*** 0009cc	47 			inc	di
+					$F441:
+	*** 0009cd	39 3c 			cmp	WORD PTR [si],di
+	*** 0009cf	76 10 			jbe	$FB443
+;|***                                 && ( mu->mu_state[i] != FINISHED ) )
+; Line 666
+	*** 0009d1	8b df 			mov	bx,di
+	*** 0009d3	d1 e3 			shl	bx,1
+	*** 0009d5	83 78 0e 01 		cmp	WORD PTR [bx+14][si],1
+	*** 0009d9	74 f1 			je	$FC442
+	*** 0009db	83 78 0e 5b 		cmp	WORD PTR [bx+14][si],91
+	*** 0009df	74 eb 			je	$FC442
+;|***                                 break;
+; Line 667
+					$FB443:
+	*** 0009e1	39 3c 			cmp	WORD PTR [si],di
+	*** 0009e3	74 03 			je	$JCC2531
+	*** 0009e5	e9 47 ff 		jmp	$FC426
+					$JCC2531:
+;|***                 if ( i == mu->mu_maxplyr )
+;|***                         return;
+; Line 669
+	*** 0009e8	5e 			pop	si
+	*** 0009e9	5f 			pop	di
+	*** 0009ea	8b e5 			mov	sp,bp
+	*** 0009ec	5d 			pop	bp
+	*** 0009ed	c3 			ret	
+
+_multwait	ENDP
+;|***         }
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  unsigned curtry    = 0;
+;|*** 
+;|*** 
+;|*** 
+;|*** static  _multput()
+;|*** {
+; Line 681
+_multput	PROC NEAR
+	*** 0009ee	55 			push	bp
+	*** 0009ef	8b ec 			mov	bp,sp
+	*** 0009f1	b8 08 00 		mov	ax,8
+	*** 0009f4	e8 00 00 		call	__aNchkstk
+	*** 0009f7	57 			push	di
+	*** 0009f8	56 			push	si
+;	register si = mu
+;	register di = ob
+;	count = -8
+;	dkerr = -6
+;	tickwait = -2
+;	buff = -4
+;|*** register MULTIO  *mu;
+;|*** register OBJECTS *ob;
+;|*** int              count, dkerr;
+;|*** int              tickwait;
+;|*** static   BOOL    first = TRUE;
+;|*** char             *buff;
+;|*** 
+;|***         ob = &nobjects[player];
+; Line 689
+	*** 0009f9	b8 76 00 		mov	ax,118
+	*** 0009fc	f7 2e 00 00 		imul	WORD PTR _player
+	*** 000a00	8b f8 			mov	di,ax
+	*** 000a02	03 3e 00 00 		add	di,WORD PTR _nobjects
+;|***         mu = multbuff;
+; Line 690
+	*** 000a06	8b 36 00 00 		mov	si,WORD PTR _multbuff
+;|*** 
+;|***         delaymov();
+; Line 692
+	*** 000a0a	e8 00 00 		call	_delaymov
+;|***         updated( 0, player );
+; Line 693
+	*** 000a0d	ff 36 00 00 		push	WORD PTR _player
+	*** 000a11	2b c0 			sub	ax,ax
+	*** 000a13	50 			push	ax
+	*** 000a14	e8 00 00 		call	updated
+	*** 000a17	83 c4 04 		add	sp,4
+;|*** 
+;|***         if ( multterm )
+; Line 695
+	*** 000a1a	83 3e 26 00 00 		cmp	WORD PTR $S196_multterm,0
+	*** 000a1f	74 03 			je	$JCC2591
+	*** 000a21	e9 0a 01 		jmp	$EX447
+					$JCC2591:
+;|***                 return;
+;|***         if ( ctlbreak() ) {
+; Line 697
+	*** 000a24	e8 00 00 		call	_ctlbreak
+	*** 000a27	0b c0 			or	ax,ax
+	*** 000a29	74 13 			je	$I458
+;|***                 error( NULL, YES );
+; Line 698
+					$L20021:
+	*** 000a2b	b8 01 00 		mov	ax,1
+	*** 000a2e	50 			push	ax
+	*** 000a2f	2b c0 			sub	ax,ax
+					$L20020:
+	*** 000a31	50 			push	ax
+	*** 000a32	e8 00 00 		call	error
+	*** 000a35	83 c4 04 		add	sp,4
+;|***                 return;
+; Line 699
+	*** 000a38	5e 			pop	si
+	*** 000a39	5f 			pop	di
+	*** 000a3a	8b e5 			mov	sp,bp
+	*** 000a3c	5d 			pop	bp
+	*** 000a3d	c3 			ret	
+;|***         }
+; Line 700
+;|*** 
+;|***         if  ( first )
+; Line 702
+					$I458:
+	*** 000a3e	83 3e 60 01 00 		cmp	WORD PTR $S453_first,0
+	*** 000a43	74 09 			je	$I459
+;|***                 first = FALSE;
+; Line 703
+	*** 000a45	c7 06 60 01 00 00 	mov	WORD PTR $S453_first,0
+;|***         else
+; Line 704
+	*** 000a4b	eb 0d 			jmp	SHORT $I460
+	*** 000a4d	90 			nop	
+					$I459:
+;|***                 mu->mu_key[player] = swgetc();
+; Line 705
+	*** 000a4e	e8 00 00 		call	_swgetc
+	*** 000a51	8b 1e 00 00 		mov	bx,WORD PTR _player
+	*** 000a55	d1 e3 			shl	bx,1
+	*** 000a57	89 40 06 		mov	WORD PTR [bx+6][si],ax
+					$I460:
+;|*** 
+;|***         mu->mu_state[player] = ob->ob_state;
+; Line 707
+	*** 000a5a	8b 05 			mov	ax,WORD PTR [di]
+	*** 000a5c	8b 1e 00 00 		mov	bx,WORD PTR _player
+	*** 000a60	d1 e3 			shl	bx,1
+	*** 000a62	89 40 0e 		mov	WORD PTR [bx+14][si],ax
+;|***         mu->mu_lstplyr = player;
+; Line 708
+	*** 000a65	a1 00 00 		mov	ax,WORD PTR _player
+	*** 000a68	89 44 04 		mov	WORD PTR [si+4],ax
+;|***         swflush();
+; Line 709
+	*** 000a6b	e8 00 00 		call	_swflush
+;|*** 
+;|***         intsoff();
+; Line 711
+	*** 000a6e	e8 00 00 		call	_intsoff
+;|***         tickwait = 180;
+; Line 712
+	*** 000a71	c7 46 fe b4 00 		mov	WORD PTR [bp-2],180	;tickwait
+;|***         counttick = 0;
+; Line 713
+	*** 000a76	c7 06 00 00 00 00 	mov	WORD PTR _counttick,0
+;|***         intson();
+; Line 714
+	*** 000a7c	e8 00 00 		call	_intson
+;|***         count = 0;
+; Line 715
+	*** 000a7f	c7 46 f8 00 00 		mov	WORD PTR [bp-8],0	;count
+;|***         buff = _tointel();
+; Line 716
+	*** 000a84	e8 ad f5 		call	__tointel
+	*** 000a87	89 46 fc 		mov	WORD PTR [bp-4],ax	;buff
+;|***         while ( count < 25 ) {
+; Line 717
+					$FC464:
+	*** 000a8a	83 7e f8 19 		cmp	WORD PTR [bp-8],25	;count
+	*** 000a8e	7d 2e 			jge	$FB465
+;|***                 if ( !(dkerr = 0xFF00 & _dkio( 0x3, multdriv, multhead, multtrk,
+;|***                                                multsect, 1, buff, dsseg() ) ) )
+; Line 719
+	*** 000a90	e8 00 00 		call	_dsseg
+	*** 000a93	50 			push	ax
+	*** 000a94	ff 76 fc 		push	WORD PTR [bp-4]	;buff
+	*** 000a97	b8 01 00 		mov	ax,1
+	*** 000a9a	50 			push	ax
+	*** 000a9b	ff 36 10 00 		push	WORD PTR $S188_multsect
+	*** 000a9f	ff 36 02 00 		push	WORD PTR $S186_multtrk
+	*** 000aa3	ff 36 06 00 		push	WORD PTR $S184_multhead
+	*** 000aa7	ff 36 12 00 		push	WORD PTR $S182_multdriv
+	*** 000aab	b8 03 00 		mov	ax,3
+	*** 000aae	50 			push	ax
+	*** 000aaf	e8 00 00 		call	__dkio
+	*** 000ab2	83 c4 10 		add	sp,16
+	*** 000ab5	2a c0 			sub	al,al
+	*** 000ab7	89 46 fa 		mov	WORD PTR [bp-6],ax	;dkerr
+	*** 000aba	0b c0 			or	ax,ax
+	*** 000abc	75 10 			jne	$I466
+;|***                        break;
+; Line 720
+					$FB465:
+;|***                 _dkio( 0x0 );
+;|*** 
+;|***                 if ( ( counttick > tickwait ) && ctlbreak() ) {
+;|***                         error( NULL, YES );
+;|***                         return;
+;|***                 }
+;|*** 
+;|***                 delay();
+;|***                 errlog( dkerr, OWRITEPLAY );
+;|***                 if ( dkerr != 0x0300 )
+;|***                         ++count;
+;|***         }
+;|***         if ( count == 25 ) {
+; Line 733
+	*** 000abe	83 7e f8 19 		cmp	WORD PTR [bp-8],25	;count
+	*** 000ac2	75 42 			jne	$I470
+;|***                 error( "Write error during play", YES );
+; Line 734
+	*** 000ac4	b8 01 00 		mov	ax,1
+	*** 000ac7	50 			push	ax
+	*** 000ac8	b8 35 01 		mov	ax,OFFSET DGROUP:$SG471
+	*** 000acb	e9 63 ff 		jmp	$L20020
+;|***                 _dkio( 0x0 );
+; Line 721
+					$I466:
+	*** 000ace	2b c0 			sub	ax,ax
+	*** 000ad0	50 			push	ax
+	*** 000ad1	e8 00 00 		call	__dkio
+	*** 000ad4	83 c4 02 		add	sp,2
+;|*** 
+;|***                 if ( ( counttick > tickwait ) && ctlbreak() ) {
+; Line 723
+	*** 000ad7	a1 00 00 		mov	ax,WORD PTR _counttick
+	*** 000ada	39 46 fe 		cmp	WORD PTR [bp-2],ax	;tickwait
+	*** 000add	7d 0a 			jge	$I467
+	*** 000adf	e8 00 00 		call	_ctlbreak
+	*** 000ae2	0b c0 			or	ax,ax
+	*** 000ae4	74 03 			je	$JCC2788
+	*** 000ae6	e9 42 ff 		jmp	$L20021
+					$JCC2788:
+;|***                         error( NULL, YES );
+;|***                         return;
+;|***                 }
+; Line 726
+;|*** 
+;|***                 delay();
+; Line 728
+					$I467:
+	*** 000ae9	e8 00 00 		call	delay
+;|***                 errlog( dkerr, OWRITEPLAY );
+; Line 729
+	*** 000aec	b8 04 00 		mov	ax,4
+	*** 000aef	50 			push	ax
+	*** 000af0	ff 76 fa 		push	WORD PTR [bp-6]	;dkerr
+	*** 000af3	e8 00 00 		call	errlog
+	*** 000af6	83 c4 04 		add	sp,4
+;|***                 if ( dkerr != 0x0300 )
+; Line 730
+	*** 000af9	81 7e fa 00 03 		cmp	WORD PTR [bp-6],768	;dkerr
+	*** 000afe	74 8a 			je	$FC464
+;|***                         ++count;
+; Line 731
+	*** 000b00	ff 46 f8 		inc	WORD PTR [bp-8]	;count
+;|***         }
+; Line 732
+	*** 000b03	eb 85 			jmp	SHORT $FC464
+;|***         if ( count == 25 ) {
+;|***                 error( "Write error during play", YES );
+;|***                 return;
+;|***         }
+; Line 736
+;|*** 
+;|***         delay();
+; Line 738
+	*** 000b05	90 			nop	
+					$I470:
+	*** 000b06	e8 00 00 		call	delay
+;|*** 
+;|***         if ( editnum() )
+; Line 740
+	*** 000b09	e8 00 00 		call	_editnum
+	*** 000b0c	0b c0 			or	ax,ax
+	*** 000b0e	74 0e 			je	$I472
+;|***                 error( "Bad Player count", YES );
+; Line 741
+	*** 000b10	b8 01 00 		mov	ax,1
+	*** 000b13	50 			push	ax
+	*** 000b14	b8 4d 01 		mov	ax,OFFSET DGROUP:$SG473
+	*** 000b17	50 			push	ax
+	*** 000b18	e8 00 00 		call	error
+	*** 000b1b	83 c4 04 		add	sp,4
+;|*** 
+;|***         updated( player + 1, mu->mu_maxplyr );
+; Line 743
+					$I472:
+	*** 000b1e	ff 34 			push	WORD PTR [si]
+	*** 000b20	a1 00 00 		mov	ax,WORD PTR _player
+	*** 000b23	40 			inc	ax
+	*** 000b24	50 			push	ax
+	*** 000b25	e8 00 00 		call	updated
+	*** 000b28	83 c4 04 		add	sp,4
+;|***         changedelay();
+; Line 744
+	*** 000b2b	e8 00 00 		call	_changedelay
+;|*** }
+; Line 745
+					$EX447:
+	*** 000b2e	5e 			pop	si
+	*** 000b2f	5f 			pop	di
+	*** 000b30	8b e5 			mov	sp,bp
+	*** 000b32	5d 			pop	bp
+	*** 000b33	c3 			ret	
+
+_multput	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  updated( n1, n2 )
+;|*** int     n1, n2;
+; Line 750
+updated	PROC NEAR
+	*** 000b34	55 			push	bp
+	*** 000b35	8b ec 			mov	bp,sp
+	*** 000b37	b8 10 00 		mov	ax,16
+	*** 000b3a	e8 00 00 		call	__aNchkstk
+	*** 000b3d	56 			push	si
+;	n = -14
+;	count = -12
+;	register si = mu
+;	ob = -16
+;	done = -8
+;	dkerr = -10
+;	last = -6
+;	tickwait = -2
+;	readdone = -4
+;	n2 = 6
+;	n1 = 4
+;|*** {
+;|*** int              n, count;
+;|*** register MULTIO  *mu;
+;|*** register OBJECTS *ob;
+;|*** BOOL             done;
+;|*** int              dkerr, last;
+;|*** int              tickwait;
+;|*** BOOL             readdone = FALSE;
+;|*** 
+;|***         mu = multbuff;
+; Line 760
+	*** 000b3e	8b 36 00 00 		mov	si,WORD PTR _multbuff
+;|***         intsoff();
+; Line 761
+	*** 000b42	e8 00 00 		call	_intsoff
+;|***         tickwait = 180;
+; Line 762
+	*** 000b45	c7 46 fe b4 00 		mov	WORD PTR [bp-2],180	;tickwait
+;|***         counttick = 0;
+; Line 763
+	*** 000b4a	2b c0 			sub	ax,ax
+	*** 000b4c	89 46 fc 		mov	WORD PTR [bp-4],ax	;readdone
+	*** 000b4f	a3 00 00 		mov	WORD PTR _counttick,ax
+;|***         intson();
+; Line 764
+	*** 000b52	e8 00 00 		call	_intson
+;|***         FOREVER {
+; Line 765
+					$FC488:
+;|***                 last = mu->mu_lstplyr;
+; Line 766
+	*** 000b55	8b 44 04 		mov	ax,WORD PTR [si+4]
+	*** 000b58	89 46 fa 		mov	WORD PTR [bp-6],ax	;last
+;|***                 done = TRUE;
+; Line 767
+	*** 000b5b	c7 46 f8 01 00 		mov	WORD PTR [bp-8],1	;done
+;|***                 for ( n = n1; n < n2; ++n )
+; Line 768
+	*** 000b60	8b 46 04 		mov	ax,WORD PTR [bp+4]	;n1
+	*** 000b63	89 46 f2 		mov	WORD PTR [bp-14],ax	;n
+	*** 000b66	eb 03 			jmp	SHORT $F490
+;|***                         if ( mu->mu_state[n] != FINISHED )
+;|***                                 break;
+;|***                 if ( n < n2 )
+; Line 771
+					$FC491:
+	*** 000b68	ff 46 f2 		inc	WORD PTR [bp-14]	;n
+					$F490:
+	*** 000b6b	8b 46 06 		mov	ax,WORD PTR [bp+6]	;n2
+	*** 000b6e	39 46 f2 		cmp	WORD PTR [bp-14],ax	;n
+	*** 000b71	7d 0b 			jge	$FB492
+;|***                         if ( mu->mu_state[n] != FINISHED )
+; Line 769
+	*** 000b73	8b 5e f2 		mov	bx,WORD PTR [bp-14]	;n
+	*** 000b76	d1 e3 			shl	bx,1
+	*** 000b78	83 78 0e 5b 		cmp	WORD PTR [bx+14][si],91
+	*** 000b7c	74 ea 			je	$FC491
+;|***                                 break;
+; Line 770
+					$FB492:
+	*** 000b7e	39 46 f2 		cmp	WORD PTR [bp-14],ax	;n
+	*** 000b81	7d 0d 			jge	$FB500
+;|***                 if ( n < n2 )
+;|***                         if ( player == last )
+; Line 772
+	*** 000b83	a1 00 00 		mov	ax,WORD PTR _player
+	*** 000b86	39 46 fa 		cmp	WORD PTR [bp-6],ax	;last
+	*** 000b89	75 1f 			jne	$I495
+;|***                                 done = FALSE;
+; Line 773
+	*** 000b8b	c7 46 f8 00 00 		mov	WORD PTR [bp-8],0	;done
+;|***                         else
+; Line 774
+					$FB500:
+	*** 000b90	83 7e f8 00 		cmp	WORD PTR [bp-8],0	;done
+	*** 000b94	74 03 			je	$JCC2964
+	*** 000b96	e9 e5 00 		jmp	$EX477
+					$JCC2964:
+;|***                                 if ( last >= n )
+;|***                                         for ( ; n < n2; ++n )
+;|***                                                 if ( mu->mu_state[n]!=FINISHED )
+;|***                                                         done = ( n == last );
+;|***                 if ( done )
+;|***                         return;
+;|*** 
+;|***                 if ( readdone )
+; Line 782
+	*** 000b99	83 7e fc 00 		cmp	WORD PTR [bp-4],0	;readdone
+	*** 000b9d	74 03 			je	$I503
+;|***                         delay();
+; Line 783
+	*** 000b9f	e8 00 00 		call	delay
+;|*** 
+;|***                 for ( count = 0; count < 25; ++count ) {
+; Line 785
+					$I503:
+	*** 000ba2	c7 46 f4 00 00 		mov	WORD PTR [bp-12],0	;count
+	*** 000ba7	eb 6e 			jmp	SHORT $F504
+	*** 000ba9	90 			nop	
+					$I495:
+;|***                                 if ( last >= n )
+; Line 775
+	*** 000baa	8b 46 f2 		mov	ax,WORD PTR [bp-14]	;n
+	*** 000bad	39 46 fa 		cmp	WORD PTR [bp-6],ax	;last
+	*** 000bb0	7c de 			jl	$FB500
+;|***                                         for ( ; n < n2; ++n )
+; Line 776
+	*** 000bb2	eb 08 			jmp	SHORT $F498
+					$L20003:
+	*** 000bb4	2b c0 			sub	ax,ax
+					$L20004:
+	*** 000bb6	89 46 f8 		mov	WORD PTR [bp-8],ax	;done
+;|***                                                 if ( mu->mu_state[n]!=FINISHED )
+;|***                                                         done = ( n == last );
+;|***                 if ( done )
+; Line 779
+					$FC499:
+	*** 000bb9	ff 46 f2 		inc	WORD PTR [bp-14]	;n
+					$F498:
+	*** 000bbc	8b 46 06 		mov	ax,WORD PTR [bp+6]	;n2
+	*** 000bbf	39 46 f2 		cmp	WORD PTR [bp-14],ax	;n
+	*** 000bc2	7d cc 			jge	$FB500
+;|***                                                 if ( mu->mu_state[n]!=FINISHED )
+; Line 777
+	*** 000bc4	8b 5e f2 		mov	bx,WORD PTR [bp-14]	;n
+	*** 000bc7	d1 e3 			shl	bx,1
+	*** 000bc9	83 78 0e 5b 		cmp	WORD PTR [bx+14][si],91
+	*** 000bcd	74 ea 			je	$FC499
+;|***                                                         done = ( n == last );
+; Line 778
+	*** 000bcf	8b 46 f2 		mov	ax,WORD PTR [bp-14]	;n
+	*** 000bd2	39 46 fa 		cmp	WORD PTR [bp-6],ax	;last
+	*** 000bd5	75 dd 			jne	$L20003
+	*** 000bd7	b8 01 00 		mov	ax,1
+	*** 000bda	eb da 			jmp	SHORT $L20004
+;|***                 if ( done )
+;|***                         return;
+;|*** 
+;|***                 if ( readdone )
+;|***                         delay();
+;|*** 
+;|***                 for ( count = 0; count < 25; ++count ) {
+;|***                         if ( !( dkerr = 0xFF00 & _dkio( 0x2, multdriv, multhead,
+;|***                                                         multtrk, multsect,
+;|***                                                         1, mu, dsseg() ) ) )
+;|***                                 break;
+;|***                         errlog( dkerr, OREADPLAY );
+; Line 790
+					$I507:
+	*** 000bdc	b8 03 00 		mov	ax,3
+	*** 000bdf	50 			push	ax
+	*** 000be0	ff 76 f6 		push	WORD PTR [bp-10]	;dkerr
+	*** 000be3	e8 00 00 		call	errlog
+	*** 000be6	83 c4 04 		add	sp,4
+;|***                         _dkio( 0x0 );
+; Line 791
+	*** 000be9	2b c0 			sub	ax,ax
+	*** 000beb	50 			push	ax
+	*** 000bec	e8 00 00 		call	__dkio
+	*** 000bef	83 c4 02 		add	sp,2
+;|*** 
+;|***                         if ( ( counttick > tickwait ) && ctlbreak() ) {
+; Line 793
+	*** 000bf2	a1 00 00 		mov	ax,WORD PTR _counttick
+	*** 000bf5	39 46 fe 		cmp	WORD PTR [bp-2],ax	;tickwait
+	*** 000bf8	7d 1a 			jge	$FC505
+	*** 000bfa	e8 00 00 		call	_ctlbreak
+	*** 000bfd	0b c0 			or	ax,ax
+	*** 000bff	74 13 			je	$FC505
+;|***                                 error( NULL, YES );
+; Line 794
+	*** 000c01	b8 01 00 		mov	ax,1
+	*** 000c04	50 			push	ax
+	*** 000c05	2b c0 			sub	ax,ax
+					$L20022:
+	*** 000c07	50 			push	ax
+	*** 000c08	e8 00 00 		call	error
+	*** 000c0b	83 c4 04 		add	sp,4
+;|***                                 return;
+; Line 795
+	*** 000c0e	5e 			pop	si
+	*** 000c0f	8b e5 			mov	sp,bp
+	*** 000c11	5d 			pop	bp
+	*** 000c12	c3 			ret	
+;|***                         }
+; Line 796
+;|***                 }
+; Line 797
+	*** 000c13	90 			nop	
+					$FC505:
+	*** 000c14	ff 46 f4 		inc	WORD PTR [bp-12]	;count
+					$F504:
+	*** 000c17	83 7e f4 19 		cmp	WORD PTR [bp-12],25	;count
+	*** 000c1b	7d 2c 			jge	$FB506
+;|***                                                         1, mu, dsseg() ) ) )
+; Line 788
+	*** 000c1d	e8 00 00 		call	_dsseg
+	*** 000c20	50 			push	ax
+	*** 000c21	56 			push	si
+	*** 000c22	b8 01 00 		mov	ax,1
+	*** 000c25	50 			push	ax
+	*** 000c26	ff 36 10 00 		push	WORD PTR $S188_multsect
+	*** 000c2a	ff 36 02 00 		push	WORD PTR $S186_multtrk
+	*** 000c2e	ff 36 06 00 		push	WORD PTR $S184_multhead
+	*** 000c32	ff 36 12 00 		push	WORD PTR $S182_multdriv
+	*** 000c36	b8 02 00 		mov	ax,2
+	*** 000c39	50 			push	ax
+	*** 000c3a	e8 00 00 		call	__dkio
+	*** 000c3d	83 c4 10 		add	sp,16
+	*** 000c40	2a c0 			sub	al,al
+	*** 000c42	89 46 f6 		mov	WORD PTR [bp-10],ax	;dkerr
+	*** 000c45	0b c0 			or	ax,ax
+	*** 000c47	75 93 			jne	$I507
+;|***                                 break;
+; Line 789
+					$FB506:
+;|***                         errlog( dkerr, OREADPLAY );
+;|***                         _dkio( 0x0 );
+;|*** 
+;|***                         if ( ( counttick > tickwait ) && ctlbreak() ) {
+;|***                                 error( NULL, YES );
+;|***                                 return;
+;|***                         }
+;|***                 }
+;|***                 _fromintel();
+; Line 798
+	*** 000c49	e8 e2 f3 		call	__fromintel
+;|***                 if ( count == 25 ) {
+; Line 799
+	*** 000c4c	83 7e f4 19 		cmp	WORD PTR [bp-12],25	;count
+	*** 000c50	75 0a 			jne	$I509
+;|***                         error( "Read error during play", YES );
+; Line 800
+	*** 000c52	b8 01 00 		mov	ax,1
+	*** 000c55	50 			push	ax
+	*** 000c56	b8 62 01 		mov	ax,OFFSET DGROUP:$SG510
+	*** 000c59	eb ac 			jmp	SHORT $L20022
+;|***                         return;
+;|***                 }
+; Line 802
+;|***                 if ( editnum() )
+; Line 803
+	*** 000c5b	90 			nop	
+					$I509:
+	*** 000c5c	e8 00 00 		call	_editnum
+	*** 000c5f	0b c0 			or	ax,ax
+	*** 000c61	74 0e 			je	$I511
+;|***                         error( "Bad player count", YES );
+; Line 804
+	*** 000c63	b8 01 00 		mov	ax,1
+	*** 000c66	50 			push	ax
+	*** 000c67	b8 79 01 		mov	ax,OFFSET DGROUP:$SG512
+	*** 000c6a	50 			push	ax
+	*** 000c6b	e8 00 00 		call	error
+	*** 000c6e	83 c4 04 		add	sp,4
+;|*** 
+;|***                 readdone = TRUE;
+; Line 806
+					$I511:
+	*** 000c71	c7 46 fc 01 00 		mov	WORD PTR [bp-4],1	;readdone
+;|***                 ++curtry;
+; Line 807
+	*** 000c76	ff 06 5e 01 		inc	WORD PTR $S446_curtry
+;|***         }
+; Line 808
+	*** 000c7a	e9 d8 fe 		jmp	$FC488
+;|*** }
+; Line 809
+	*** 000c7d	90 			nop	
+					$EX477:
+	*** 000c7e	5e 			pop	si
+	*** 000c7f	8b e5 			mov	sp,bp
+	*** 000c81	5d 			pop	bp
+	*** 000c82	c3 			ret	
+	*** 000c83	90 			nop	
+
+updated	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static error( msg, flag1 )
+;|*** char    *msg;
+; Line 815
+error	PROC NEAR
+	*** 000c84	55 			push	bp
+	*** 000c85	8b ec 			mov	bp,sp
+	*** 000c87	33 c0 			xor	ax,ax
+	*** 000c89	e8 00 00 		call	__aNchkstk
+;	flag1 = 6
+;	msg = 4
+;|*** BOOL    flag1;
+;|*** {
+;|*** 
+;|***         errorflg = TRUE;
+; Line 819
+	*** 000c8c	c7 06 24 00 01 00 	mov	WORD PTR $S195_errorflg,1
+;|***         errflg1 = flag1;
+; Line 820
+	*** 000c92	8b 46 06 		mov	ax,WORD PTR [bp+6]	;flag1
+	*** 000c95	a3 84 00 		mov	WORD PTR $S194_errflg1,ax
+;|***         errormsg = msg;
+; Line 821
+	*** 000c98	8b 46 04 		mov	ax,WORD PTR [bp+4]	;msg
+	*** 000c9b	a3 0e 00 		mov	WORD PTR $S193_errormsg,ax
+;|*** }
+; Line 822
+	*** 000c9e	8b e5 			mov	sp,bp
+	*** 000ca0	5d 			pop	bp
+	*** 000ca1	c3 			ret	
+
+error	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  errlog( err, where )
+;|*** unsigned err, where;
+; Line 828
+errlog	PROC NEAR
+	*** 000ca2	55 			push	bp
+	*** 000ca3	8b ec 			mov	bp,sp
+	*** 000ca5	33 c0 			xor	ax,ax
+	*** 000ca7	e8 00 00 		call	__aNchkstk
+;	register si = i
+;	where = 6
+;	err = 4
+;|*** {
+;|*** register int     i;
+;|*** 
+;|***         errtab[i = ++errptr % 50] = err;
+; Line 832
+	*** 000caa	ff 06 2a 00 		inc	WORD PTR $S200_errptr
+	*** 000cae	a1 2a 00 		mov	ax,WORD PTR $S200_errptr
+	*** 000cb1	b9 32 00 		mov	cx,50
+	*** 000cb4	99 			cwd	
+	*** 000cb5	f7 f9 			idiv	cx
+	*** 000cb7	8b 46 04 		mov	ax,WORD PTR [bp+4]	;err
+	*** 000cba	8b da 			mov	bx,dx
+	*** 000cbc	d1 e3 			shl	bx,1
+	*** 000cbe	89 87 20 00 		mov	WORD PTR $S198_errtab[bx],ax
+;|***         errwhr[i] = where;
+; Line 833
+	*** 000cc2	8b 46 06 		mov	ax,WORD PTR [bp+6]	;where
+	*** 000cc5	89 87 86 00 		mov	WORD PTR $S199_errwhr[bx],ax
+;|*** }
+; Line 834
+	*** 000cc9	8b e5 			mov	sp,bp
+	*** 000ccb	5d 			pop	bp
+	*** 000ccc	c3 			ret	
+	*** 000ccd	90 			nop	
+
+errlog	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  errrep()
+;|*** {
+; Line 840
+errrep	PROC NEAR
+	*** 000cce	33 c0 			xor	ax,ax
+	*** 000cd0	e8 00 00 		call	__aNchkstk
+	*** 000cd3	56 			push	si
+;	register si = i
+;|*** register int     i;
+;|*** 
+;|***         puts( "\r\n\r\n" );
+; Line 843
+	*** 000cd4	b8 8a 01 		mov	ax,OFFSET DGROUP:$SG523
+	*** 000cd7	50 			push	ax
+	*** 000cd8	e8 00 00 		call	_puts
+	*** 000cdb	83 c4 02 		add	sp,2
+;|***         dispd( errptr + 1, 5 );
+; Line 844
+	*** 000cde	b8 05 00 		mov	ax,5
+	*** 000ce1	50 			push	ax
+	*** 000ce2	a1 2a 00 		mov	ax,WORD PTR $S200_errptr
+	*** 000ce5	40 			inc	ax
+	*** 000ce6	50 			push	ax
+	*** 000ce7	e8 00 00 		call	_dispd
+	*** 000cea	83 c4 04 		add	sp,4
+;|***         puts( " i/o errors recorded\r\n\r\n" );
+; Line 845
+	*** 000ced	b8 8f 01 		mov	ax,OFFSET DGROUP:$SG525
+	*** 000cf0	50 			push	ax
+	*** 000cf1	e8 00 00 		call	_puts
+	*** 000cf4	83 c4 02 		add	sp,2
+;|***         if ( errptr >= 50 ) {
+; Line 846
+	*** 000cf7	83 3e 2a 00 32 		cmp	WORD PTR $S200_errptr,50
+	*** 000cfc	7c 42 			jl	$I526
+;|***                 puts( "last 50:\r\n\r\n" );
+; Line 847
+	*** 000cfe	b8 a8 01 		mov	ax,OFFSET DGROUP:$SG527
+	*** 000d01	50 			push	ax
+	*** 000d02	e8 00 00 		call	_puts
+	*** 000d05	83 c4 02 		add	sp,2
+;|***                 for ( i = errptr % 50 + 1; i < 50; ++i )
+; Line 848
+	*** 000d08	a1 2a 00 		mov	ax,WORD PTR $S200_errptr
+	*** 000d0b	b9 32 00 		mov	cx,50
+	*** 000d0e	99 			cwd	
+	*** 000d0f	f7 f9 			idiv	cx
+	*** 000d11	8b f2 			mov	si,dx
+	*** 000d13	eb 08 			jmp	SHORT $L20024
+	*** 000d15	90 			nop	
+					$FC529:
+;|***                         errrepl( i );
+; Line 849
+	*** 000d16	56 			push	si
+	*** 000d17	e8 00 00 		call	errrepl
+	*** 000d1a	83 c4 02 		add	sp,2
+					$L20024:
+	*** 000d1d	46 			inc	si
+	*** 000d1e	83 fe 32 		cmp	si,50
+	*** 000d21	7c f3 			jl	$FC529
+;|***                 for ( i = 0; i <= ( errptr % 50 ); ++i )
+; Line 850
+	*** 000d23	2b f6 			sub	si,si
+	*** 000d25	eb 02 			jmp	SHORT $F532
+	*** 000d27	90 			nop	
+					$FC533:
+	*** 000d28	46 			inc	si
+					$F532:
+	*** 000d29	a1 2a 00 		mov	ax,WORD PTR $S200_errptr
+	*** 000d2c	b9 32 00 		mov	cx,50
+	*** 000d2f	99 			cwd	
+	*** 000d30	f7 f9 			idiv	cx
+	*** 000d32	3b d6 			cmp	dx,si
+	*** 000d34	7c 1c 			jl	$I535
+;|***                         errrepl( i );
+; Line 851
+	*** 000d36	56 			push	si
+	*** 000d37	e8 00 00 		call	errrepl
+	*** 000d3a	83 c4 02 		add	sp,2
+	*** 000d3d	eb e9 			jmp	SHORT $FC533
+	*** 000d3f	90 			nop	
+					$I526:
+;|***         } else
+;|***                 for ( i = 0; i <= errptr; ++i )
+; Line 853
+	*** 000d40	2b f6 			sub	si,si
+	*** 000d42	eb 08 			jmp	SHORT $F536
+					$FC537:
+;|***                         errrepl( i );
+; Line 854
+	*** 000d44	56 			push	si
+	*** 000d45	e8 00 00 		call	errrepl
+	*** 000d48	83 c4 02 		add	sp,2
+	*** 000d4b	46 			inc	si
+					$F536:
+	*** 000d4c	39 36 2a 00 		cmp	WORD PTR $S200_errptr,si
+	*** 000d50	7d f2 			jge	$FC537
+					$I535:
+;|*** }
+; Line 855
+	*** 000d52	5e 			pop	si
+	*** 000d53	c3 			ret	
+
+errrep	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  errrepl( i )
+;|*** int     i;
+; Line 860
+errrepl	PROC NEAR
+	*** 000d54	55 			push	bp
+	*** 000d55	8b ec 			mov	bp,sp
+	*** 000d57	33 c0 			xor	ax,ax
+	*** 000d59	e8 00 00 		call	__aNchkstk
+;	i = 4
+;|*** {
+;|*** 
+;|***         switch ( errwhr[i] ) {
+; Line 863
+	*** 000d5c	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;i
+	*** 000d5f	d1 e3 			shl	bx,1
+	*** 000d61	8b 87 86 00 		mov	ax,WORD PTR $S199_errwhr[bx]
+	*** 000d65	48 			dec	ax
+	*** 000d66	74 0c 			je	$SC545
+	*** 000d68	48 			dec	ax
+	*** 000d69	74 49 			je	$SC547
+	*** 000d6b	48 			dec	ax
+	*** 000d6c	74 4c 			je	$SC549
+	*** 000d6e	48 			dec	ax
+	*** 000d6f	74 4f 			je	$SC551
+	*** 000d71	eb 0a 			jmp	SHORT $SB542
+;|***                 case OREAD:     puts( "READ      " );
+; Line 864
+	*** 000d73	90 			nop	
+					$SC545:
+	*** 000d74	b8 b5 01 		mov	ax,OFFSET DGROUP:$SG546
+					$L20025:
+	*** 000d77	50 			push	ax
+	*** 000d78	e8 00 00 		call	_puts
+	*** 000d7b	8b e5 			mov	sp,bp
+;|***                                 break;
+; Line 865
+					$SB542:
+;|***                 case OWRITE:    puts( "WRITE     " );
+;|***                                 break;
+;|***                 case OREADPLAY: puts( "READPLAY  " );
+;|***                                 break;
+;|***                 case OWRITEPLAY:puts( "WRITEPLAY " );
+;|***                                 break;
+;|***         }
+;|***         switch ( errtab[i] ) {
+; Line 873
+	*** 000d7d	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;i
+	*** 000d80	d1 e3 			shl	bx,1
+	*** 000d82	8b 87 20 00 		mov	ax,WORD PTR $S198_errtab[bx]
+	*** 000d86	3d 00 08 		cmp	ax,2048
+	*** 000d89	74 5f 			je	$SC567
+	*** 000d8b	77 7b 			ja	$L20005
+	*** 000d8d	2d 00 01 		sub	ax,256
+	*** 000d90	74 70 			je	$SC575
+	*** 000d92	2d 00 01 		sub	ax,256
+	*** 000d95	74 65 			je	$SC573
+	*** 000d97	2d 00 01 		sub	ax,256
+	*** 000d9a	74 5a 			je	$SC571
+	*** 000d9c	2d 00 01 		sub	ax,256
+	*** 000d9f	74 4f 			je	$SC569
+					$SD577:
+	*** 000da1	b8 06 00 		mov	ax,6
+	*** 000da4	50 			push	ax
+	*** 000da5	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;i
+	*** 000da8	d1 e3 			shl	bx,1
+	*** 000daa	ff b7 20 00 		push	WORD PTR $S198_errtab[bx]
+	*** 000dae	e8 00 00 		call	_dispd
+	*** 000db1	eb 1a 			jmp	SHORT $L20027
+;|***                 case OWRITE:    puts( "WRITE     " );
+; Line 866
+	*** 000db3	90 			nop	
+					$SC547:
+	*** 000db4	b8 c0 01 		mov	ax,OFFSET DGROUP:$SG548
+	*** 000db7	eb be 			jmp	SHORT $L20025
+;|***                                 break;
+;|***                 case OREADPLAY: puts( "READPLAY  " );
+; Line 868
+	*** 000db9	90 			nop	
+					$SC549:
+	*** 000dba	b8 cb 01 		mov	ax,OFFSET DGROUP:$SG550
+	*** 000dbd	eb b8 			jmp	SHORT $L20025
+;|***                                 break;
+;|***                 case OWRITEPLAY:puts( "WRITEPLAY " );
+; Line 870
+	*** 000dbf	90 			nop	
+					$SC551:
+	*** 000dc0	b8 d6 01 		mov	ax,OFFSET DGROUP:$SG552
+	*** 000dc3	eb b2 			jmp	SHORT $L20025
+;|***                                 break;
+;|***         }
+;|***         switch ( errtab[i] ) {
+;|*** #ifdef IBMPC
+;|***                 case 0x8000:    puts( "TIME OUT" );
+; Line 875
+	*** 000dc5	90 			nop	
+					$SC557:
+	*** 000dc6	b8 e1 01 		mov	ax,OFFSET DGROUP:$SG558
+					$L20026:
+	*** 000dc9	50 			push	ax
+	*** 000dca	e8 00 00 		call	_puts
+					$L20027:
+	*** 000dcd	8b e5 			mov	sp,bp
+;|***                                 break;
+; Line 876
+	*** 000dcf	eb 53 			jmp	SHORT $SB554
+;|***                 case 0x4000:    puts( "BAD SEEK" );
+; Line 877
+	*** 000dd1	90 			nop	
+					$SC559:
+	*** 000dd2	b8 ea 01 		mov	ax,OFFSET DGROUP:$SG560
+	*** 000dd5	eb f2 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x2000:    puts( "BAD NEC" );
+; Line 879
+	*** 000dd7	90 			nop	
+					$SC561:
+	*** 000dd8	b8 f3 01 		mov	ax,OFFSET DGROUP:$SG562
+	*** 000ddb	eb ec 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x1000:    puts( "BAD CRC" );
+; Line 881
+	*** 000ddd	90 			nop	
+					$SC563:
+	*** 000dde	b8 fb 01 		mov	ax,OFFSET DGROUP:$SG564
+	*** 000de1	eb e6 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0900:    puts( "DMA BOUNDARY " );
+; Line 883
+	*** 000de3	90 			nop	
+					$SC565:
+	*** 000de4	b8 03 02 		mov	ax,OFFSET DGROUP:$SG566
+	*** 000de7	eb e0 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0800:    puts( "BAD DMA" );
+; Line 885
+	*** 000de9	90 			nop	
+					$SC567:
+	*** 000dea	b8 11 02 		mov	ax,OFFSET DGROUP:$SG568
+	*** 000ded	eb da 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0400:    puts( "RECORD NOT FOUND" );
+; Line 887
+	*** 000def	90 			nop	
+					$SC569:
+	*** 000df0	b8 19 02 		mov	ax,OFFSET DGROUP:$SG570
+	*** 000df3	eb d4 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0300:    puts( "WRITE PROTECT" );
+; Line 889
+	*** 000df5	90 			nop	
+					$SC571:
+	*** 000df6	b8 2a 02 		mov	ax,OFFSET DGROUP:$SG572
+	*** 000df9	eb ce 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0200:    puts( "BAD ADDR MARK " );
+; Line 891
+	*** 000dfb	90 			nop	
+					$SC573:
+	*** 000dfc	b8 38 02 		mov	ax,OFFSET DGROUP:$SG574
+	*** 000dff	eb c8 			jmp	SHORT $L20026
+;|***                                 break;
+;|***                 case 0x0100:    puts( "BAD COMMAND" );
+; Line 893
+	*** 000e01	90 			nop	
+					$SC575:
+	*** 000e02	b8 47 02 		mov	ax,OFFSET DGROUP:$SG576
+	*** 000e05	eb c2 			jmp	SHORT $L20026
+;|***                                 break;
+;|*** #endif
+;|***                 default:        dispd( errtab[i], 6 );
+; Line 896
+	*** 000e07	90 			nop	
+					$L20005:
+	*** 000e08	2d 00 09 		sub	ax,2304
+	*** 000e0b	74 d7 			je	$SC565
+	*** 000e0d	2d 00 07 		sub	ax,1792
+	*** 000e10	74 cc 			je	$SC563
+	*** 000e12	2d 00 10 		sub	ax,4096
+	*** 000e15	74 c1 			je	$SC561
+	*** 000e17	2d 00 20 		sub	ax,8192
+	*** 000e1a	74 b6 			je	$SC559
+	*** 000e1c	2d 00 40 		sub	ax,16384
+	*** 000e1f	74 a5 			je	$SC557
+	*** 000e21	e9 7d ff 		jmp	$SD577
+					$SB554:
+;|***                                 break;
+;|***         }
+;|***         puts( "\r\n" );
+; Line 899
+	*** 000e24	b8 53 02 		mov	ax,OFFSET DGROUP:$SG578
+	*** 000e27	50 			push	ax
+	*** 000e28	e8 00 00 		call	_puts
+;|*** }
+; Line 900
+	*** 000e2b	8b e5 			mov	sp,bp
+	*** 000e2d	5d 			pop	bp
+	*** 000e2e	c3 			ret	
+	*** 000e2f	90 			nop	
+
+errrepl	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  unsigned nextdelay = 2;
+;|*** static  unsigned maxtry    = 0;
+;|*** static  unsigned mintry    = 10000;
+;|*** static  unsigned numtry    = 0;
+;|*** static  unsigned nummov    = 0;
+;|*** static  unsigned numdel    = 0;
+;|*** static  unsigned numadjup  = 0;
+;|*** static  unsigned numadjdn  = 0;
+;|*** 
+;|*** static delay()
+;|*** {
+; Line 915
+delay	PROC NEAR
+	*** 000e30	33 c0 			xor	ax,ax
+	*** 000e32	e8 00 00 		call	__aNchkstk
+	*** 000e35	56 			push	si
+;	register si = t
+;|*** register int     t;
+;|*** 
+;|***         if ( multtick == -1 )
+; Line 918
+	*** 000e36	83 3e 00 00 ff 		cmp	WORD PTR _multtick,-1
+	*** 000e3b	74 1c 			je	$EX587
+;|***                 return;
+;|*** 
+;|***         if ( multtick )
+; Line 921
+	*** 000e3d	83 3e 00 00 00 		cmp	WORD PTR _multtick,0
+	*** 000e42	74 06 			je	$I590
+;|***                 t = multtick;
+; Line 922
+	*** 000e44	8b 36 00 00 		mov	si,WORD PTR _multtick
+;|***         else
+; Line 923
+	*** 000e48	eb 04 			jmp	SHORT $I591
+					$I590:
+;|***                 t = nextdelay;
+; Line 924
+	*** 000e4a	8b 36 56 02 		mov	si,WORD PTR $S579_nextdelay
+					$I591:
+;|*** 
+;|***         numdel += t;
+; Line 926
+	*** 000e4e	01 36 60 02 		add	WORD PTR $S584_numdel,si
+;|***         _dktick( t );
+; Line 927
+	*** 000e52	56 			push	si
+	*** 000e53	e8 00 00 		call	__dktick
+	*** 000e56	83 c4 02 		add	sp,2
+;|*** }
+; Line 928
+					$EX587:
+	*** 000e59	5e 			pop	si
+	*** 000e5a	c3 			ret	
+	*** 000e5b	90 			nop	
+
+delay	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** delaymov()
+;|*** {
+; Line 934
+	PUBLIC	_delaymov
+_delaymov	PROC NEAR
+	*** 000e5c	33 c0 			xor	ax,ax
+	*** 000e5e	e8 00 00 		call	__aNchkstk
+;|***         ++nummov;
+; Line 935
+	*** 000e61	ff 06 5e 02 		inc	WORD PTR $S583_nummov
+;|***         curtry = 0;
+; Line 936
+	*** 000e65	c7 06 5e 01 00 00 	mov	WORD PTR $S446_curtry,0
+;|*** }
+; Line 937
+	*** 000e6b	c3 			ret	
+
+_delaymov	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** changedelay()
+;|*** {
+; Line 942
+	PUBLIC	_changedelay
+_changedelay	PROC NEAR
+	*** 000e6c	33 c0 			xor	ax,ax
+	*** 000e6e	e8 00 00 		call	__aNchkstk
+;|*** static  unsigned upcnt, dncnt;
+;|*** 
+;|***         numtry += curtry;
+; Line 945
+	*** 000e71	a1 5e 01 		mov	ax,WORD PTR $S446_curtry
+	*** 000e74	01 06 5c 02 		add	WORD PTR $S582_numtry,ax
+;|***         if ( curtry > maxtry )
+; Line 946
+	*** 000e78	3b 06 58 02 		cmp	ax,WORD PTR $S580_maxtry
+	*** 000e7c	76 03 			jbe	$I596
+;|***                 maxtry = curtry;
+; Line 947
+	*** 000e7e	a3 58 02 		mov	WORD PTR $S580_maxtry,ax
+;|***         if ( curtry && ( curtry < mintry ) )
+; Line 948
+					$I596:
+	*** 000e81	0b c0 			or	ax,ax
+	*** 000e83	74 0f 			je	$I597
+	*** 000e85	a1 5a 02 		mov	ax,WORD PTR $S581_mintry
+	*** 000e88	39 06 5e 01 		cmp	WORD PTR $S446_curtry,ax
+	*** 000e8c	73 06 			jae	$I597
+;|***                 mintry = curtry;
+; Line 949
+	*** 000e8e	a1 5e 01 		mov	ax,WORD PTR $S446_curtry
+	*** 000e91	a3 5a 02 		mov	WORD PTR $S581_mintry,ax
+;|*** 
+;|***         if ( curtry <= 1 ) {
+; Line 951
+					$I597:
+	*** 000e94	83 3e 5e 01 01 		cmp	WORD PTR $S446_curtry,1
+	*** 000e99	77 27 			ja	$I598
+;|***                 if ( ++dncnt == 3 ) {
+; Line 952
+	*** 000e9b	ff 06 ea 00 		inc	WORD PTR $S595_dncnt
+	*** 000e9f	83 3e ea 00 03 		cmp	WORD PTR $S595_dncnt,3
+	*** 000ea4	75 15 			jne	$I599
+;|***                         if ( nextdelay > 0 ) {
+; Line 953
+	*** 000ea6	83 3e 56 02 00 		cmp	WORD PTR $S579_nextdelay,0
+	*** 000eab	74 08 			je	$I600
+;|***                                 --nextdelay;
+; Line 954
+	*** 000ead	ff 0e 56 02 		dec	WORD PTR $S579_nextdelay
+;|***                                 ++numadjdn;
+; Line 955
+	*** 000eb1	ff 06 64 02 		inc	WORD PTR $S586_numadjdn
+;|***                         }
+; Line 956
+;|***                         dncnt = 0;
+; Line 957
+					$I600:
+	*** 000eb5	c7 06 ea 00 00 00 	mov	WORD PTR $S595_dncnt,0
+;|***                 }
+; Line 958
+;|***                 upcnt = 0;
+; Line 959
+					$I599:
+	*** 000ebb	c7 06 ec 00 00 00 	mov	WORD PTR $S594_upcnt,0
+;|***         } else {
+; Line 960
+	*** 000ec1	c3 			ret	
+					$I598:
+;|***                 if ( ++upcnt == 3 ) {
+; Line 961
+	*** 000ec2	ff 06 ec 00 		inc	WORD PTR $S594_upcnt
+	*** 000ec6	83 3e ec 00 03 		cmp	WORD PTR $S594_upcnt,3
+	*** 000ecb	75 15 			jne	$I602
+;|***                         if ( nextdelay < 5 ) {
+; Line 962
+	*** 000ecd	83 3e 56 02 05 		cmp	WORD PTR $S579_nextdelay,5
+	*** 000ed2	73 08 			jae	$I603
+;|***                                 ++nextdelay;
+; Line 963
+	*** 000ed4	ff 06 56 02 		inc	WORD PTR $S579_nextdelay
+;|***                                 ++numadjup;
+; Line 964
+	*** 000ed8	ff 06 62 02 		inc	WORD PTR $S585_numadjup
+;|***                         }
+; Line 965
+;|***                         upcnt = 0;
+; Line 966
+					$I603:
+	*** 000edc	c7 06 ec 00 00 00 	mov	WORD PTR $S594_upcnt,0
+;|***                 }
+; Line 967
+;|***                 dncnt = 0;
+; Line 968
+					$I602:
+	*** 000ee2	c7 06 ea 00 00 00 	mov	WORD PTR $S595_dncnt,0
+;|***         }
+; Line 969
+;|*** }
+; Line 970
+	*** 000ee8	c3 			ret	
+	*** 000ee9	90 			nop	
+
+_changedelay	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** delayrep()
+;|*** {
+; Line 976
+	PUBLIC	_delayrep
+_delayrep	PROC NEAR
+	*** 000eea	33 c0 			xor	ax,ax
+	*** 000eec	e8 00 00 		call	__aNchkstk
+;|***         puts( "\r\nNumber of moves:        " );   dispd( nummov, 6 );
+; Line 977
+	*** 000eef	b8 66 02 		mov	ax,OFFSET DGROUP:$SG605
+	*** 000ef2	50 			push	ax
+	*** 000ef3	e8 00 00 		call	_puts
+	*** 000ef6	83 c4 02 		add	sp,2
+	*** 000ef9	b8 06 00 		mov	ax,6
+	*** 000efc	50 			push	ax
+	*** 000efd	ff 36 5e 02 		push	WORD PTR $S583_nummov
+	*** 000f01	e8 00 00 		call	_dispd
+	*** 000f04	83 c4 04 		add	sp,4
+;|***         puts( "\r\nNumber of read tries:   " );   dispd( numtry, 6 );
+; Line 978
+	*** 000f07	b8 81 02 		mov	ax,OFFSET DGROUP:$SG606
+	*** 000f0a	50 			push	ax
+	*** 000f0b	e8 00 00 		call	_puts
+	*** 000f0e	83 c4 02 		add	sp,2
+	*** 000f11	b8 06 00 		mov	ax,6
+	*** 000f14	50 			push	ax
+	*** 000f15	ff 36 5c 02 		push	WORD PTR $S582_numtry
+	*** 000f19	e8 00 00 		call	_dispd
+	*** 000f1c	83 c4 04 		add	sp,4
+;|***         puts( "\r\nMinimum tries/move:     " );   if ( mintry == 10000 )
+; Line 979
+	*** 000f1f	b8 9c 02 		mov	ax,OFFSET DGROUP:$SG607
+	*** 000f22	50 			push	ax
+	*** 000f23	e8 00 00 		call	_puts
+	*** 000f26	83 c4 02 		add	sp,2
+	*** 000f29	81 3e 5a 02 10 27 	cmp	WORD PTR $S581_mintry,10000
+	*** 000f2f	75 09 			jne	$I608
+;|***                                                         dispd( 0, 6 );
+; Line 980
+	*** 000f31	b8 06 00 		mov	ax,6
+	*** 000f34	50 			push	ax
+	*** 000f35	2b c0 			sub	ax,ax
+	*** 000f37	50 			push	ax
+	*** 000f38	eb 08 			jmp	SHORT $L20028
+					$I608:
+;|***                                                 else
+;|***                                                         dispd( mintry, 6 );
+; Line 982
+	*** 000f3a	b8 06 00 		mov	ax,6
+	*** 000f3d	50 			push	ax
+	*** 000f3e	ff 36 5a 02 		push	WORD PTR $S581_mintry
+					$L20028:
+	*** 000f42	e8 00 00 		call	_dispd
+	*** 000f45	83 c4 04 		add	sp,4
+;|***         puts( "\r\nMaximum tries/move:     " );   dispd( maxtry, 6 );
+; Line 983
+	*** 000f48	b8 b7 02 		mov	ax,OFFSET DGROUP:$SG610
+	*** 000f4b	50 			push	ax
+	*** 000f4c	e8 00 00 		call	_puts
+	*** 000f4f	83 c4 02 		add	sp,2
+	*** 000f52	b8 06 00 		mov	ax,6
+	*** 000f55	50 			push	ax
+	*** 000f56	ff 36 58 02 		push	WORD PTR $S580_maxtry
+	*** 000f5a	e8 00 00 		call	_dispd
+	*** 000f5d	83 c4 04 		add	sp,4
+;|***         puts( "\r\nNumber of tick delays:  " );   dispd( numdel, 6 );
+; Line 984
+	*** 000f60	b8 d2 02 		mov	ax,OFFSET DGROUP:$SG611
+	*** 000f63	50 			push	ax
+	*** 000f64	e8 00 00 		call	_puts
+	*** 000f67	83 c4 02 		add	sp,2
+	*** 000f6a	b8 06 00 		mov	ax,6
+	*** 000f6d	50 			push	ax
+	*** 000f6e	ff 36 60 02 		push	WORD PTR $S584_numdel
+	*** 000f72	e8 00 00 		call	_dispd
+	*** 000f75	83 c4 04 		add	sp,4
+;|***         puts( "\r\n# of tick adjusts up:   " );   dispd( numadjup, 6 );
+; Line 985
+	*** 000f78	b8 ed 02 		mov	ax,OFFSET DGROUP:$SG612
+	*** 000f7b	50 			push	ax
+	*** 000f7c	e8 00 00 		call	_puts
+	*** 000f7f	83 c4 02 		add	sp,2
+	*** 000f82	b8 06 00 		mov	ax,6
+	*** 000f85	50 			push	ax
+	*** 000f86	ff 36 62 02 		push	WORD PTR $S585_numadjup
+	*** 000f8a	e8 00 00 		call	_dispd
+	*** 000f8d	83 c4 04 		add	sp,4
+;|***         puts( "\r\n# of tick adjusts down: " );   dispd( numadjdn, 6 );
+; Line 986
+	*** 000f90	b8 08 03 		mov	ax,OFFSET DGROUP:$SG613
+	*** 000f93	50 			push	ax
+	*** 000f94	e8 00 00 		call	_puts
+	*** 000f97	83 c4 02 		add	sp,2
+	*** 000f9a	b8 06 00 		mov	ax,6
+	*** 000f9d	50 			push	ax
+	*** 000f9e	ff 36 64 02 		push	WORD PTR $S586_numadjdn
+	*** 000fa2	e8 00 00 		call	_dispd
+	*** 000fa5	83 c4 04 		add	sp,4
+;|*** }
+; Line 987
+	*** 000fa8	c3 			ret	
+	*** 000fa9	90 			nop	
+
+_delayrep	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** statrep()
+;|*** {
+; Line 993
+	PUBLIC	_statrep
+_statrep	PROC NEAR
+	*** 000faa	33 c0 			xor	ax,ax
+	*** 000fac	e8 00 00 		call	__aNchkstk
+	*** 000faf	57 			push	di
+	*** 000fb0	56 			push	si
+;	register si = ob
+;	register di = i
+;|*** register OBJECTS *ob;
+;|*** register int     i;
+;|*** 
+;|***         puts( "\n\r\n\r" );
+; Line 997
+	*** 000fb1	b8 23 03 		mov	ax,OFFSET DGROUP:$SG617
+	*** 000fb4	50 			push	ax
+	*** 000fb5	e8 00 00 		call	_puts
+	*** 000fb8	83 c4 02 		add	sp,2
+;|***         if ( editnum() ) {
+; Line 998
+	*** 000fbb	e8 00 00 		call	_editnum
+	*** 000fbe	0b c0 			or	ax,ax
+	*** 000fc0	74 0e 			je	$I618
+;|***                 puts( "Bad player count" );
+; Line 999
+	*** 000fc2	b8 28 03 		mov	ax,OFFSET DGROUP:$SG619
+	*** 000fc5	50 			push	ax
+	*** 000fc6	e8 00 00 		call	_puts
+	*** 000fc9	83 c4 02 		add	sp,2
+;|***                 return;
+; Line 1000
+	*** 000fcc	5e 			pop	si
+	*** 000fcd	5f 			pop	di
+	*** 000fce	c3 			ret	
+;|***         }
+; Line 1001
+;|*** 
+;|***         for ( i = 0; i < multbuff->mu_maxplyr; ++i ) {
+; Line 1003
+	*** 000fcf	90 			nop	
+					$I618:
+	*** 000fd0	2b ff 			sub	di,di
+	*** 000fd2	eb 57 			jmp	SHORT $F620
+					$FC621:
+;|***                 ob = &nobjects[i];
+; Line 1004
+	*** 000fd4	8b c7 			mov	ax,di
+	*** 000fd6	b9 76 00 		mov	cx,118
+	*** 000fd9	f7 e9 			imul	cx
+	*** 000fdb	8b f0 			mov	si,ax
+	*** 000fdd	03 36 00 00 		add	si,WORD PTR _nobjects
+;|***                 puts( "\r\nPlayer: " );
+; Line 1005
+	*** 000fe1	b8 39 03 		mov	ax,OFFSET DGROUP:$SG623
+	*** 000fe4	50 			push	ax
+	*** 000fe5	e8 00 00 		call	_puts
+	*** 000fe8	83 c4 02 		add	sp,2
+;|***                 dispd( i, 2 );
+; Line 1006
+	*** 000feb	b8 02 00 		mov	ax,2
+	*** 000fee	50 			push	ax
+	*** 000fef	57 			push	di
+	*** 000ff0	e8 00 00 		call	_dispd
+	*** 000ff3	83 c4 04 		add	sp,4
+;|***                 dispd( ob->ob_state, 3 );
+; Line 1007
+	*** 000ff6	b8 03 00 		mov	ax,3
+	*** 000ff9	50 			push	ax
+	*** 000ffa	ff 34 			push	WORD PTR [si]
+	*** 000ffc	e8 00 00 		call	_dispd
+	*** 000fff	83 c4 04 		add	sp,4
+;|***                 dispd( multbuff->mu_state[i], 3 );
+; Line 1008
+	*** 001002	b8 03 00 		mov	ax,3
+	*** 001005	50 			push	ax
+	*** 001006	8b df 			mov	bx,di
+	*** 001008	d1 e3 			shl	bx,1
+	*** 00100a	03 1e 00 00 		add	bx,WORD PTR _multbuff
+	*** 00100e	ff 77 0e 		push	WORD PTR [bx+14]
+	*** 001011	e8 00 00 		call	_dispd
+	*** 001014	83 c4 04 		add	sp,4
+;|***                 if ( i == multbuff->mu_lstplyr )
+; Line 1009
+	*** 001017	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 00101b	39 7f 04 		cmp	WORD PTR [bx+4],di
+	*** 00101e	75 0a 			jne	$L20029
+;|***                         puts( "  <- last update " );
+; Line 1010
+	*** 001020	b8 44 03 		mov	ax,OFFSET DGROUP:$SG625
+	*** 001023	50 			push	ax
+	*** 001024	e8 00 00 		call	_puts
+	*** 001027	83 c4 02 		add	sp,2
+;|***         }
+; Line 1011
+					$L20029:
+	*** 00102a	47 			inc	di
+					$F620:
+	*** 00102b	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 00102f	39 3f 			cmp	WORD PTR [bx],di
+	*** 001031	77 a1 			ja	$FC621
+;|*** }
+; Line 1012
+	*** 001033	5e 			pop	si
+	*** 001034	5f 			pop	di
+	*** 001035	c3 			ret	
+
+_statrep	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** editnum()
+;|*** {
+; Line 1019
+	PUBLIC	_editnum
+_editnum	PROC NEAR
+	*** 001036	55 			push	bp
+	*** 001037	8b ec 			mov	bp,sp
+	*** 001039	b8 06 00 		mov	ax,6
+	*** 00103c	e8 00 00 		call	__aNchkstk
+;	max = -2
+;	num = -4
+;	lst = -6
+;|*** register char    max, num, lst;
+;|*** 
+;|***         return( ( ( max = multbuff->mu_maxplyr ) < 0 )
+;|***                 || ( max > MAX_PLYR )
+;|***                 || ( ( num = multbuff->mu_numplyr ) < 0 )
+;|***                 || ( num > max )
+;|***                 || ( ( lst = multbuff->mu_lstplyr ) < 0 )
+;|***                 || ( lst >= max ) );
+; Line 1027
+	*** 00103f	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 001043	8a 07 			mov	al,BYTE PTR [bx]
+	*** 001045	0a c0 			or	al,al
+	*** 001047	7c 1a 			jl	$L20008
+	*** 001049	3c 04 			cmp	al,4
+	*** 00104b	7f 16 			jg	$L20008
+	*** 00104d	8a 4f 02 		mov	cl,BYTE PTR [bx+2]
+	*** 001050	0a c9 			or	cl,cl
+	*** 001052	7c 0f 			jl	$L20008
+	*** 001054	3a c8 			cmp	cl,al
+	*** 001056	7f 0b 			jg	$L20008
+	*** 001058	8a 4f 04 		mov	cl,BYTE PTR [bx+4]
+	*** 00105b	0a c9 			or	cl,cl
+	*** 00105d	7c 04 			jl	$L20008
+	*** 00105f	3a c8 			cmp	cl,al
+	*** 001061	7c 07 			jl	$L20006
+					$L20008:
+	*** 001063	b8 01 00 		mov	ax,1
+	*** 001066	8b e5 			mov	sp,bp
+	*** 001068	5d 			pop	bp
+	*** 001069	c3 			ret	
+					$L20006:
+	*** 00106a	2b c0 			sub	ax,ax
+;|*** }
+; Line 1028
+	*** 00106c	8b e5 			mov	sp,bp
+	*** 00106e	5d 			pop	bp
+	*** 00106f	c3 			ret	
+
+_editnum	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** init1mul( reset, device )
+;|*** BOOL    reset;
+; Line 1034
+	PUBLIC	_init1mul
+_init1mul	PROC NEAR
+	*** 001070	55 			push	bp
+	*** 001071	8b ec 			mov	bp,sp
+	*** 001073	b8 04 00 		mov	ax,4
+	*** 001076	e8 00 00 		call	__aNchkstk
+	*** 001079	57 			push	di
+	*** 00107a	56 			push	si
+;	register si = mu
+;	register di = n
+;	tickwait = -2
+;	rc = -4
+;	device = 6
+;	reset = 4
+;|*** char    *device;
+;|*** {
+;|*** register MULTIO *mu;
+;|*** register int    n;
+;|*** int      tickwait, rc;
+;|*** 
+;|*** 
+;|***         if ( *device )
+; Line 1042
+	*** 00107b	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;device
+	*** 00107e	80 3f 00 		cmp	BYTE PTR [bx],0
+	*** 001081	74 14 			je	$I638
+;|***                 *cmndfile = *multfile = *device;
+; Line 1043
+	*** 001083	8a 07 			mov	al,BYTE PTR [bx]
+	*** 001085	8b 1e 1e 00 		mov	bx,WORD PTR _multfile
+	*** 001089	88 07 			mov	BYTE PTR [bx],al
+	*** 00108b	8b 1e 1e 00 		mov	bx,WORD PTR _multfile
+	*** 00108f	8a 07 			mov	al,BYTE PTR [bx]
+	*** 001091	8b 1e 20 00 		mov	bx,WORD PTR _cmndfile
+	*** 001095	88 07 			mov	BYTE PTR [bx],al
+;|*** 
+;|***         multfile[9] = '0' + getgame();
+; Line 1045
+					$I638:
+	*** 001097	e8 00 00 		call	_getgame
+	*** 00109a	04 30 			add	al,48
+	*** 00109c	8b 1e 1e 00 		mov	bx,WORD PTR _multfile
+	*** 0010a0	88 47 09 		mov	BYTE PTR [bx+9],al
+;|*** 
+;|***         multopen( cmndfile, multfile );
+; Line 1047
+	*** 0010a3	ff 36 1e 00 		push	WORD PTR _multfile
+	*** 0010a7	ff 36 20 00 		push	WORD PTR _cmndfile
+	*** 0010ab	e8 14 f0 		call	_multopen
+	*** 0010ae	83 c4 04 		add	sp,4
+;|***         _dkioset( multaddr );
+; Line 1048
+	*** 0010b1	ff 36 00 00 		push	WORD PTR _multaddr
+	*** 0010b5	e8 00 00 		call	__dkioset
+	*** 0010b8	83 c4 02 		add	sp,2
+;|*** 
+;|***         multstack = (int *)( multstck + 398 );
+; Line 1050
+	*** 0010bb	c7 06 00 00 8e 01 	mov	WORD PTR _multstack,OFFSET DGROUP:_multstck+398
+;|*** 
+;|***         for ( n = 0; n < 25; ++n ) {
+; Line 1052
+	*** 0010c1	2b ff 			sub	di,di
+	*** 0010c3	eb 1c 			jmp	SHORT $F641
+;|***                 if ( ( rc = multread() ) >= 0 )
+;|***                         break;
+;|***                 intsoff();
+; Line 1055
+	*** 0010c5	90 			nop	
+					$I644:
+	*** 0010c6	e8 00 00 		call	_intsoff
+;|***                 tickwait = 18;
+; Line 1056
+	*** 0010c9	c7 46 fe 12 00 		mov	WORD PTR [bp-2],18	;tickwait
+;|***                 counttick = 0;
+; Line 1057
+	*** 0010ce	c7 06 00 00 00 00 	mov	WORD PTR _counttick,0
+;|***                 intson();
+; Line 1058
+	*** 0010d4	e8 00 00 		call	_intson
+;|***                 while ( counttick < tickwait );
+; Line 1059
+					$FC646:
+	*** 0010d7	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;tickwait
+	*** 0010da	39 06 00 00 		cmp	WORD PTR _counttick,ax
+	*** 0010de	7c f7 			jl	$FC646
+;|***         }
+; Line 1060
+	*** 0010e0	47 			inc	di
+					$F641:
+	*** 0010e1	83 ff 19 		cmp	di,25
+	*** 0010e4	7d 0a 			jge	$FB643
+;|***                 if ( ( rc = multread() ) >= 0 )
+; Line 1053
+	*** 0010e6	e8 e3 f3 		call	_multread
+	*** 0010e9	89 46 fc 		mov	WORD PTR [bp-4],ax	;rc
+	*** 0010ec	0b c0 			or	ax,ax
+	*** 0010ee	7c d6 			jl	$I644
+;|***                         break;
+; Line 1054
+					$FB643:
+;|***                 intsoff();
+;|***                 tickwait = 18;
+;|***                 counttick = 0;
+;|***                 intson();
+;|***                 while ( counttick < tickwait );
+;|***         }
+;|***         if ( !rc )
+; Line 1061
+	*** 0010f0	83 7e fc 00 		cmp	WORD PTR [bp-4],0	;rc
+	*** 0010f4	75 0d 			jne	$I648
+;|***                 swend( "Read error on communications file ", NO );
+; Line 1062
+	*** 0010f6	2b c0 			sub	ax,ax
+	*** 0010f8	50 			push	ax
+	*** 0010f9	b8 56 03 		mov	ax,OFFSET DGROUP:$SG649
+	*** 0010fc	50 			push	ax
+	*** 0010fd	e8 00 00 		call	_swend
+	*** 001100	83 c4 04 		add	sp,4
+;|***         if ( rc < 0 )
+; Line 1063
+					$I648:
+	*** 001103	83 7e fc 00 		cmp	WORD PTR [bp-4],0	;rc
+	*** 001107	7d 0d 			jge	$I650
+;|***                 swend( "Communications file locked ", NO );
+; Line 1064
+	*** 001109	2b c0 			sub	ax,ax
+	*** 00110b	50 			push	ax
+	*** 00110c	b8 79 03 		mov	ax,OFFSET DGROUP:$SG651
+	*** 00110f	50 			push	ax
+	*** 001110	e8 00 00 		call	_swend
+	*** 001113	83 c4 04 		add	sp,4
+;|*** 
+;|***         if ( reset )
+; Line 1066
+					$I650:
+	*** 001116	83 7e 04 00 		cmp	WORD PTR [bp+4],0	;reset
+	*** 00111a	74 03 			je	$I652
+;|***                 mulreset();
+; Line 1067
+	*** 00111c	e8 00 00 		call	mulreset
+;|*** 
+;|***         mu = multbuff;
+; Line 1069
+					$I652:
+;|***         if ( first = !mu->mu_numplyr ) {
+; Line 1070
+	*** 00111f	8b 36 00 00 		mov	si,WORD PTR _multbuff
+	*** 001123	83 7c 02 01 		cmp	WORD PTR [si+2],1
+	*** 001127	1b c0 			sbb	ax,ax
+	*** 001129	f7 d8 			neg	ax
+	*** 00112b	a3 16 00 		mov	WORD PTR $S192_first,ax
+	*** 00112e	0b c0 			or	ax,ax
+	*** 001130	74 12 			je	$I654
+;|***                 mu->mu_maxplyr = getmaxplyr();
+; Line 1071
+	*** 001132	e8 00 00 		call	getmaxplyr
+	*** 001135	89 04 			mov	WORD PTR [si],ax
+;|***                 mu->mu_numplyr = 0;
+; Line 1072
+	*** 001137	c7 44 02 00 00 		mov	WORD PTR [si+2],0
+;|***                 mu->mu_explseed = explseed;
+; Line 1073
+	*** 00113c	a1 00 00 		mov	ax,WORD PTR _explseed
+	*** 00113f	89 44 16 		mov	WORD PTR [si+22],ax
+;|***         } else
+; Line 1074
+	*** 001142	eb 06 			jmp	SHORT $I656
+					$I654:
+;|***                 explseed = mu->mu_explseed;
+; Line 1075
+	*** 001144	8b 44 16 		mov	ax,WORD PTR [si+22]
+	*** 001147	a3 00 00 		mov	WORD PTR _explseed,ax
+					$I656:
+;|*** 
+;|***         clrprmpt();
+; Line 1077
+	*** 00114a	e8 00 00 		call	_clrprmpt
+;|***         currgame = &swgames[0];
+; Line 1078
+	*** 00114d	c7 06 00 00 00 00 	mov	WORD PTR _currgame,OFFSET _swgames
+;|***         if ( mu->mu_numplyr >= mu->mu_maxplyr )
+; Line 1079
+	*** 001153	8b 04 			mov	ax,WORD PTR [si]
+	*** 001155	39 44 02 		cmp	WORD PTR [si+2],ax
+	*** 001158	72 0d 			jb	$I658
+;|***                 swend( "Mamimum number of players already playing", NO );
+; Line 1080
+	*** 00115a	2b c0 			sub	ax,ax
+	*** 00115c	50 			push	ax
+	*** 00115d	b8 95 03 		mov	ax,OFFSET DGROUP:$SG659
+	*** 001160	50 			push	ax
+	*** 001161	e8 00 00 		call	_swend
+	*** 001164	83 c4 04 		add	sp,4
+;|***         ++mu->mu_numplyr;
+; Line 1081
+					$I658:
+	*** 001167	ff 44 02 		inc	WORD PTR [si+2]
+;|*** }
+; Line 1082
+	*** 00116a	5e 			pop	si
+	*** 00116b	5f 			pop	di
+	*** 00116c	8b e5 			mov	sp,bp
+	*** 00116e	5d 			pop	bp
+	*** 00116f	c3 			ret	
+
+_init1mul	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** init2mul()
+;|*** {
+; Line 1087
+	PUBLIC	_init2mul
+_init2mul	PROC NEAR
+	*** 001170	55 			push	bp
+	*** 001171	8b ec 			mov	bp,sp
+	*** 001173	b8 06 00 		mov	ax,6
+	*** 001176	e8 00 00 		call	__aNchkstk
+	*** 001179	57 			push	di
+	*** 00117a	56 			push	si
+;	register si = ob
+;	n = -4
+;	register di = mu
+;	playinit = -2
+;|*** register OBJECTS *ob;
+;|*** int              n;
+;|*** register MULTIO  *mu;
+;|*** BOOL             playinit = FALSE;
+;|*** 
+;|***         mu = multbuff;
+; Line 1093
+	*** 00117b	8b 3e 00 00 		mov	di,WORD PTR _multbuff
+;|***         for ( n = 0; n < mu->mu_maxplyr; ++n ) {
+; Line 1094
+	*** 00117f	2b c0 			sub	ax,ax
+	*** 001181	89 46 fe 		mov	WORD PTR [bp-2],ax	;playinit
+	*** 001184	89 46 fc 		mov	WORD PTR [bp-4],ax	;n
+	*** 001187	eb 45 			jmp	SHORT $F666
+	*** 001189	90 			nop	
+					$I669:
+;|***                 if ( ( !playinit ) && ( mu->mu_state[n] == WAITING ) ) {
+;|***                         player = n;
+;|***                         initplyr( NULL );
+;|***                         mu->mu_key[n] = 0;
+;|***                         mu->mu_state[n] = FLYING;
+;|***                         mu->mu_lstplyr = n;
+;|***                         playinit = TRUE;
+;|***                 } else {
+;|***                         ob = initpln( NULL );
+;|***                         ob->ob_drawf = dispmult;
+; Line 1104
+	*** 00118a	2b c0 			sub	ax,ax
+	*** 00118c	50 			push	ax
+	*** 00118d	e8 00 00 		call	_initpln
+	*** 001190	83 c4 02 		add	sp,2
+	*** 001193	8b f0 			mov	si,ax
+	*** 001195	c7 44 44 00 00 		mov	WORD PTR [si+68],OFFSET _dispmult
+;|***                         ob->ob_movef = movemult;
+; Line 1105
+	*** 00119a	c7 44 46 00 00 		mov	WORD PTR [si+70],OFFSET _movemult
+;|***                         ob->ob_clr = ob->ob_index % 2 + 1;
+; Line 1106
+	*** 00119f	8b 44 38 		mov	ax,WORD PTR [si+56]
+	*** 0011a2	b9 02 00 		mov	cx,2
+	*** 0011a5	99 			cwd	
+	*** 0011a6	f7 f9 			idiv	cx
+	*** 0011a8	42 			inc	dx
+	*** 0011a9	89 54 2a 		mov	WORD PTR [si+42],dx
+;|***                         ob->ob_owner = ob;
+; Line 1107
+	*** 0011ac	89 74 20 		mov	WORD PTR [si+32],si
+;|***                         ob->ob_state = mu->mu_state[n];
+; Line 1108
+	*** 0011af	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;n
+	*** 0011b2	d1 e3 			shl	bx,1
+	*** 0011b4	8b 41 0e 		mov	ax,WORD PTR [bx+14][di]
+	*** 0011b7	89 04 			mov	WORD PTR [si],ax
+;|***                         movmem( ob, &oobjects[ob->ob_index], sizeof( OBJECTS ) );
+; Line 1109
+	*** 0011b9	b8 76 00 		mov	ax,118
+	*** 0011bc	50 			push	ax
+	*** 0011bd	f7 6c 38 		imul	WORD PTR [si+56]
+	*** 0011c0	05 00 00 		add	ax,OFFSET _oobjects
+	*** 0011c3	50 			push	ax
+	*** 0011c4	56 			push	si
+	*** 0011c5	e8 00 00 		call	_movmem
+	*** 0011c8	83 c4 06 		add	sp,6
+;|***                 }
+; Line 1110
+;|***         }
+; Line 1111
+					$FC667:
+	*** 0011cb	ff 46 fc 		inc	WORD PTR [bp-4]	;n
+					$F666:
+	*** 0011ce	8b 05 			mov	ax,WORD PTR [di]
+	*** 0011d0	39 46 fc 		cmp	WORD PTR [bp-4],ax	;n
+	*** 0011d3	73 3f 			jae	$FB668
+;|***                 if ( ( !playinit ) && ( mu->mu_state[n] == WAITING ) ) {
+; Line 1095
+	*** 0011d5	83 7e fe 00 		cmp	WORD PTR [bp-2],0	;playinit
+	*** 0011d9	75 af 			jne	$I669
+	*** 0011db	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;n
+	*** 0011de	d1 e3 			shl	bx,1
+	*** 0011e0	03 df 			add	bx,di
+	*** 0011e2	83 7f 0e 00 		cmp	WORD PTR [bx+14],0
+	*** 0011e6	75 a2 			jne	$I669
+;|***                         player = n;
+; Line 1096
+	*** 0011e8	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;n
+	*** 0011eb	a3 00 00 		mov	WORD PTR _player,ax
+;|***                         initplyr( NULL );
+; Line 1097
+	*** 0011ee	2b c0 			sub	ax,ax
+	*** 0011f0	50 			push	ax
+	*** 0011f1	89 5e fa 		mov	WORD PTR [bp-6],bx
+	*** 0011f4	e8 00 00 		call	_initplyr
+	*** 0011f7	83 c4 02 		add	sp,2
+;|***                         mu->mu_key[n] = 0;
+; Line 1098
+	*** 0011fa	8b 5e fa 		mov	bx,WORD PTR [bp-6]
+	*** 0011fd	c7 47 06 00 00 		mov	WORD PTR [bx+6],0
+;|***                         mu->mu_state[n] = FLYING;
+; Line 1099
+	*** 001202	c7 47 0e 01 00 		mov	WORD PTR [bx+14],1
+;|***                         mu->mu_lstplyr = n;
+; Line 1100
+	*** 001207	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;n
+	*** 00120a	89 45 04 		mov	WORD PTR [di+4],ax
+;|***                         playinit = TRUE;
+; Line 1101
+	*** 00120d	c7 46 fe 01 00 		mov	WORD PTR [bp-2],1	;playinit
+;|***                 } else {
+; Line 1102
+	*** 001212	eb b7 			jmp	SHORT $FC667
+					$FB668:
+;|***                         ob = initpln( NULL );
+;|***                         ob->ob_drawf = dispmult;
+;|***                         ob->ob_movef = movemult;
+;|***                         ob->ob_clr = ob->ob_index % 2 + 1;
+;|***                         ob->ob_owner = ob;
+;|***                         ob->ob_state = mu->mu_state[n];
+;|***                         movmem( ob, &oobjects[ob->ob_index], sizeof( OBJECTS ) );
+;|***                 }
+;|***         }
+;|***         if ( mu->mu_maxplyr % 2 )
+; Line 1112
+	*** 001214	f6 05 01 		test	BYTE PTR [di],1
+	*** 001217	74 09 			je	$I672
+;|***                 initcomp( NULL );
+; Line 1113
+	*** 001219	2b c0 			sub	ax,ax
+	*** 00121b	50 			push	ax
+	*** 00121c	e8 00 00 		call	_initcomp
+	*** 00121f	83 c4 02 		add	sp,2
+;|*** 
+;|***         if ( !multwrite() )
+; Line 1115
+					$I672:
+	*** 001222	e8 fb f3 		call	_multwrite
+	*** 001225	0b c0 			or	ax,ax
+	*** 001227	75 0b 			jne	$I674
+;|***                 swend( "Write error on communications file", NO );
+; Line 1116
+	*** 001229	50 			push	ax
+	*** 00122a	b8 bf 03 		mov	ax,OFFSET DGROUP:$SG675
+	*** 00122d	50 			push	ax
+	*** 00122e	e8 00 00 		call	_swend
+	*** 001231	83 c4 04 		add	sp,4
+;|***         if ( !multunlock() )
+; Line 1117
+					$I674:
+	*** 001234	e8 4f f4 		call	_multunlock
+	*** 001237	0b c0 			or	ax,ax
+	*** 001239	75 0e 			jne	$I676
+;|***                 swend( "Unlock error on communications file", YES );
+; Line 1118
+	*** 00123b	b8 01 00 		mov	ax,1
+	*** 00123e	50 			push	ax
+	*** 00123f	b8 e2 03 		mov	ax,OFFSET DGROUP:$SG677
+	*** 001242	50 			push	ax
+	*** 001243	e8 00 00 		call	_swend
+	*** 001246	83 c4 04 		add	sp,4
+;|*** 
+;|***         clrprmpt();
+; Line 1120
+					$I676:
+	*** 001249	e8 00 00 		call	_clrprmpt
+;|***         puts( "      Waiting for other player(s)" );
+; Line 1121
+	*** 00124c	b8 06 04 		mov	ax,OFFSET DGROUP:$SG678
+	*** 00124f	50 			push	ax
+	*** 001250	e8 00 00 		call	_puts
+	*** 001253	83 c4 02 		add	sp,2
+;|***         multwait();
+; Line 1122
+	*** 001256	e8 89 f4 		call	_multwait
+;|*** }
+; Line 1123
+	*** 001259	5e 			pop	si
+	*** 00125a	5f 			pop	di
+	*** 00125b	8b e5 			mov	sp,bp
+	*** 00125d	5d 			pop	bp
+	*** 00125e	c3 			ret	
+	*** 00125f	90 			nop	
+
+_init2mul	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static getmaxplyr()
+;|*** {
+; Line 1129
+getmaxplyr	PROC NEAR
+	*** 001260	55 			push	bp
+	*** 001261	8b ec 			mov	bp,sp
+	*** 001263	33 c0 			xor	ax,ax
+	*** 001265	e8 00 00 		call	__aNchkstk
+	*** 001268	56 			push	si
+;	register si = max
+;|*** register int     max;
+;|*** 
+;|***         clrprmpt();
+; Line 1132
+	*** 001269	e8 00 00 		call	_clrprmpt
+;|***         puts( " Key maximum number of players allowed" );
+; Line 1133
+	*** 00126c	b8 28 04 		mov	ax,OFFSET DGROUP:$SG681
+	*** 00126f	50 			push	ax
+	*** 001270	e8 00 00 		call	_puts
+	*** 001273	83 c4 02 		add	sp,2
+;|***         FOREVER {
+; Line 1134
+					$FC683:
+;|***                 if ( ctlbreak() )
+; Line 1135
+	*** 001276	e8 00 00 		call	_ctlbreak
+	*** 001279	0b c0 			or	ax,ax
+	*** 00127b	74 0a 			je	$I685
+;|***                         swend( NULL, NO );
+; Line 1136
+	*** 00127d	2b c0 			sub	ax,ax
+	*** 00127f	50 			push	ax
+	*** 001280	50 			push	ax
+	*** 001281	e8 00 00 		call	_swend
+	*** 001284	83 c4 04 		add	sp,4
+;|***                 if ( ( ( max = ( swgetc() & 0x00FF ) - '0' ) >= 1 )
+; Line 1137
+					$I685:
+;|***                     && ( max <=  MAX_PLYR  ) )
+; Line 1138
+	*** 001287	e8 00 00 		call	_swgetc
+	*** 00128a	8b f0 			mov	si,ax
+	*** 00128c	81 e6 ff 00 		and	si,255
+	*** 001290	83 ee 30 		sub	si,48
+	*** 001293	83 fe 01 		cmp	si,1
+	*** 001296	7c de 			jl	$FC683
+	*** 001298	83 fe 04 		cmp	si,4
+	*** 00129b	7f d9 			jg	$FC683
+;|***                         return( max );
+; Line 1139
+	*** 00129d	8b c6 			mov	ax,si
+	*** 00129f	5e 			pop	si
+	*** 0012a0	8b e5 			mov	sp,bp
+	*** 0012a2	5d 			pop	bp
+	*** 0012a3	c3 			ret	
+
+getmaxplyr	ENDP
+;|***         }
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** static mulreset()
+;|*** {
+; Line 1146
+mulreset	PROC NEAR
+	*** 0012a4	33 c0 			xor	ax,ax
+	*** 0012a6	e8 00 00 		call	__aNchkstk
+	*** 0012a9	57 			push	di
+	*** 0012aa	56 			push	si
+;	register si = i
+;|*** register int     i;
+;|*** 
+;|***         multbuff->mu_maxplyr = 0;
+; Line 1149
+	*** 0012ab	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012af	c7 07 00 00 		mov	WORD PTR [bx],0
+;|***         multbuff->mu_numplyr = 0;
+; Line 1150
+	*** 0012b3	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012b7	c7 47 02 00 00 		mov	WORD PTR [bx+2],0
+;|***         multbuff->mu_lstplyr = 0;
+; Line 1151
+	*** 0012bc	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012c0	c7 47 04 00 00 		mov	WORD PTR [bx+4],0
+;|***         multbuff->mu_explseed = 0;
+; Line 1152
+	*** 0012c5	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012c9	c7 47 16 00 00 		mov	WORD PTR [bx+22],0
+;|*** 
+;|***         for ( i = 0; i < MAX_PLYR; ++i ) {
+; Line 1154
+	*** 0012ce	2b f6 			sub	si,si
+					$FC690:
+;|***                 multbuff->mu_key[i] = 0;
+; Line 1155
+	*** 0012d0	8b fe 			mov	di,si
+	*** 0012d2	d1 e7 			shl	di,1
+	*** 0012d4	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012d8	c7 41 06 00 00 		mov	WORD PTR [bx+6][di],0
+;|***                 multbuff->mu_state[i] = WAITING;
+; Line 1156
+	*** 0012dd	8b 1e 00 00 		mov	bx,WORD PTR _multbuff
+	*** 0012e1	c7 41 0e 00 00 		mov	WORD PTR [bx+14][di],0
+;|***         }
+; Line 1157
+	*** 0012e6	46 			inc	si
+	*** 0012e7	83 fe 04 		cmp	si,4
+	*** 0012ea	7c e4 			jl	$FC690
+;|*** }
+; Line 1158
+	*** 0012ec	5e 			pop	si
+	*** 0012ed	5f 			pop	di
+	*** 0012ee	c3 			ret	
+	*** 0012ef	90 			nop	
+
+mulreset	ENDP
+_TEXT	ENDS
+END

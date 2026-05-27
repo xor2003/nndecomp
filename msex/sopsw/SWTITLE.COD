@@ -1,0 +1,351 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWTITLE.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_soundadj:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_get_type:NEAR
+EXTRN	_set_type:NEAR
+EXTRN	_sound:NEAR
+EXTRN	_swsound:NEAR
+EXTRN	_swcolour:NEAR
+EXTRN	_swposcur:NEAR
+EXTRN	_puts:NEAR
+EXTRN	_setvdisp:NEAR
+EXTRN	_swground:NEAR
+EXTRN	_swputsym:NEAR
+EXTRN	_savemode:WORD
+EXTRN	_hires:WORD
+EXTRN	_titleflg:WORD
+EXTRN	_tickmode:WORD
+EXTRN	_counttick:WORD
+EXTRN	_movetick:WORD
+EXTRN	_displx:WORD
+EXTRN	_dispinit:WORD
+EXTRN	_ground:BYTE
+EXTRN	_swplnsym:BYTE
+EXTRN	_swtrgsym:BYTE
+EXTRN	_swoxsym:BYTE
+EXTRN	_swhitsym:BYTE
+EXTRN	_swwinsym:BYTE
+_DATA      SEGMENT
+$SG175	DB	'S O P W I T H',  00H
+$SG176	DB	'(Distribution Version)',  00H
+$SG177	DB	'(c) Copyright 1984, 1985, 1987',  00H
+$SG178	DB	'BMB ',  00H
+$SG179	DB	'Compuscience Canada Ltd.',  00H
+$SG180	DB	'(c) Copyright 1984-2000 David L. Clark',  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 22
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 39
+	PUBLIC	_swtitln
+_swtitln	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,118
+	call	__aNchkstk
+	push	di
+	push	si
+;	ob = -118
+;	register si = i
+;	register di = h
+; Line 48
+	call	_get_type
+	mov	WORD PTR _savemode,ax
+; Line 49
+	cmp	WORD PTR _hires,1
+	sbb	ax,ax
+	and	al,254
+	add	ax,6
+	push	ax
+	call	_set_type
+	add	sp,2
+; Line 51
+	cmp	WORD PTR _titleflg,0
+	je	$JCC41
+	jmp	$EX158
+$JCC41:
+; Line 54
+	mov	WORD PTR _tickmode,1
+; Line 56
+	sub	ax,ax
+	push	ax
+	push	ax
+	mov	ax,5
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 57
+	call	_swsound
+; Line 83
+	mov	ax,3
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 84
+	mov	ax,4
+	push	ax
+	mov	cx,13
+	push	cx
+	call	_swposcur
+	add	sp,4
+; Line 85
+	mov	ax,OFFSET DGROUP:$SG175
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 87
+	mov	ax,1
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 88
+	mov	ax,6
+	push	ax
+	mov	cx,9
+	push	cx
+	call	_swposcur
+	add	sp,4
+; Line 89
+	mov	ax,OFFSET DGROUP:$SG176
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 91
+	mov	ax,3
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 92
+	mov	ax,9
+	push	ax
+	mov	cx,5
+	push	cx
+	call	_swposcur
+	add	sp,4
+; Line 93
+	mov	ax,OFFSET DGROUP:$SG177
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 95
+	mov	ax,1
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 96
+	mov	ax,10
+	push	ax
+	mov	ax,6
+	push	ax
+	call	_swposcur
+	add	sp,4
+; Line 97
+	mov	ax,OFFSET DGROUP:$SG178
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 98
+	mov	ax,3
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 99
+	mov	ax,OFFSET DGROUP:$SG179
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 101
+	mov	ax,3
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 102
+	mov	ax,12
+	push	ax
+	mov	ax,1
+	push	ax
+	call	_swposcur
+	add	sp,4
+; Line 103
+	mov	ax,OFFSET DGROUP:$SG180
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 107
+	call	_setvdisp
+; Line 109
+	mov	WORD PTR _displx,700
+; Line 110
+	mov	WORD PTR _dispinit,1
+; Line 111
+	call	_swground
+; Line 114
+	mov	ax,16
+	mov	WORD PTR [bp-82],ax
+	mov	WORD PTR [bp-84],ax
+; Line 115
+	mov	ax,1
+	mov	WORD PTR [bp-22],ax
+	mov	WORD PTR [bp-76],ax
+; Line 116
+	mov	WORD PTR [bp-40],OFFSET _swplnsym
+; Line 117
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	cx,180
+	push	cx
+	mov	dx,260
+	push	dx
+	call	_swputsym
+	add	sp,6
+; Line 119
+	mov	WORD PTR [bp-40],OFFSET _swwinsym+192
+; Line 120
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	cx,180
+	push	cx
+	mov	cx,50
+	push	cx
+	call	_swputsym
+	add	sp,6
+; Line 122
+	mov	WORD PTR [bp-22],9
+; Line 123
+	mov	WORD PTR [bp-40],OFFSET _swoxsym
+; Line 124
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	cl,BYTE PTR _ground+800
+	sub	ch,ch
+	add	cx,16
+	push	cx
+	mov	cx,100
+	push	cx
+	call	_swputsym
+	add	sp,6
+; Line 126
+	mov	WORD PTR [bp-22],4
+; Line 127
+	mov	WORD PTR [bp-76],2
+; Line 128
+	mov	WORD PTR [bp-40],OFFSET _swtrgsym+192
+; Line 129
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	cl,BYTE PTR _ground+934
+	sub	ch,ch
+	add	cx,16
+	push	cx
+	mov	cx,234
+	push	cx
+	call	_swputsym
+	add	sp,6
+; Line 131
+	mov	WORD PTR [bp-22],1
+; Line 132
+	mov	WORD PTR [bp-40],OFFSET _swhitsym
+; Line 133
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	ax,160
+	push	ax
+	mov	ax,20
+	push	ax
+	call	_swputsym
+	add	sp,6
+; Line 135
+	mov	WORD PTR [bp-22],6
+; Line 136
+	mov	ax,1
+	mov	WORD PTR [bp-82],ax
+	mov	WORD PTR [bp-84],ax
+; Line 137
+	mov	WORD PTR [bp-40],130
+; Line 138
+	mov	di,150
+; Line 139
+	mov	si,9
+$FC185:
+; Line 140
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	add	di,5
+	push	di
+	mov	ax,30
+	push	ax
+	call	_swputsym
+	add	sp,6
+	dec	si
+	jne	$FC185
+; Line 141
+$EX158:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_swtitln	ENDP
+; Line 147
+	PUBLIC	_swtitlf
+_swtitlf	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 149
+	cmp	WORD PTR _titleflg,0
+	jne	$EX188
+; Line 152
+	sub	ax,ax
+	push	ax
+	push	ax
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 153
+	call	_swsound
+; Line 154
+	mov	WORD PTR _tickmode,0
+; Line 155
+$EX188:
+	ret	
+	nop	
+
+_swtitlf	ENDP
+; Line 160
+	PUBLIC	_swtickc
+_swtickc	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 162
+	inc	WORD PTR _counttick
+; Line 166
+	add	WORD PTR _movetick,10
+; Line 168
+	jmp	_soundadj
+; Line 170
+	nop	
+
+_swtickc	ENDP
+_TEXT	ENDS
+END

@@ -1,0 +1,175 @@
+	ifndef	??version
+?debug	macro
+	endm
+$comm	macro	name,dist,size,count
+	comm	dist name:BYTE:count*size
+	endm
+	else
+$comm	macro	name,dist,size,count
+	comm	dist name[size]:BYTE:count
+	endm
+	endif
+	?debug	S "c:\src.cpp"
+	?debug	C E9117DBB840A633A5C7372632E637070
+	?debug	C E95337528112443A5C494E434C5544455C737464696F2E68
+	?debug	C E95337528112443A5C494E434C5544455C636F6E696F2E68
+	?debug	C E95337528115443A5C494E434C5544455C696F73747265616D2E68
+	?debug	C E95337528110443A5C494E434C5544455C6D656D2E68
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+DGROUP	group	_DATA,_BSS
+	assume	cs:_TEXT,ds:DGROUP
+_DATA	segment word public 'DATA'
+d@	label	byte
+d@w	label	word
+_DATA	ends
+_BSS	segment word public 'BSS'
+b@	label	byte
+b@w	label	word
+_BSS	ends
+_TEXT	segment byte public 'CODE'
+   ;	
+   ;	main()
+   ;	
+	assume	cs:_TEXT
+_main	proc	near
+	push	bp
+	mov	bp,sp
+	sub	sp,4
+	push	si
+	push	di
+   ;	
+   ;	{
+   ;	int A=10, B, j, jumlah;
+   ;	
+	mov	word ptr [bp-2],10
+   ;	
+   ;	for(B=2;B<=A;B+=2)
+   ;	
+	mov	word ptr [bp-4],2
+	jmp	short @1@242
+@1@50:
+   ;	
+   ;	{
+   ;	jumlah=0;
+   ;	
+	xor	di,di
+   ;	
+   ;	for(j=2;j<=B;j+=2)
+   ;	
+	mov	si,2
+	jmp	short @1@170
+@1@74:
+   ;	
+   ;	{
+   ;	if(j!=2)
+   ;	
+	cmp	si,2
+	je	short @1@122
+   ;	
+   ;	cout<<"+";
+   ;	
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+@1@122:
+   ;	
+   ;	cout<<j;
+   ;	
+	mov	ax,si
+	cwd	
+	push	dx
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+   ;	
+   ;	jumlah+=j;
+   ;	
+	add	di,si
+	inc	si
+	inc	si
+@1@170:
+	cmp	si,word ptr [bp-4]
+	jle	short @1@74
+   ;	
+   ;	}
+   ;	cout<<"="<<jumlah<<endl;
+   ;	
+	mov	ax,di
+	cwd	
+	push	dx
+	push	ax
+	xor	ax,ax
+	push	ax
+	mov	ax,offset DGROUP:s@+2
+	push	ax
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@outstr$qpxzct1
+	add	sp,6
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @ostream@$blsh$ql
+	add	sp,6
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+	add	word ptr [bp-4],2
+@1@242:
+	mov	ax,word ptr [bp-4]
+	cmp	ax,word ptr [bp-2]
+	jle	short @1@50
+   ;	
+   ;	}
+   ;	cout<<endl;
+   ;	
+	mov	ax,offset DGROUP:_cout
+	push	ax
+	call	near ptr @endl$qr7ostream
+	pop	cx
+   ;	
+   ;	getch();
+   ;	
+	call	near ptr _getch
+   ;	
+   ;	}
+   ;	
+	pop	di
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+_main	endp
+	?debug	C E9
+_TEXT	ends
+_DATA	segment word public 'DATA'
+s@	label	byte
+	db	'+'
+	db	0
+	db	'='
+	db	0
+_DATA	ends
+_TEXT	segment byte public 'CODE'
+_TEXT	ends
+_s@	equ	s@
+	$comm	@ios@basefield,near,4,1
+	$comm	@ios@adjustfield,near,4,1
+	$comm	@ios@floatfield,near,4,1
+	$comm	@ios@stdioflush,near,2,1
+	$comm	@ios@nextbit,near,4,1
+	$comm	@ios@usercount,near,2,1
+	public	_main
+	extrn	@ostream@outstr$qpxzct1:near
+	extrn	_cout:word
+	extrn	@ostream@$blsh$ql:near
+	extrn	@endl$qr7ostream:near
+	extrn	_getch:near
+	end
+

@@ -1,0 +1,186 @@
+# coding: Cp866 -> koi-8r -> Cp1251
+/*  *****************************************************
+    *        Программа рассчета кривой разгона         *
+    *---------------------------------------------------*
+    *          Разработал Тарасов Сергей                *
+    *****************************************************/
+
+#include <stdio.h>
+#include <math.h>
+#include <conio.h>
+
+// todo Сделать больше комментариев
+
+// Класс объекта регулирования и его функции
+class aa{
+    // Данные по объекту регулирования в виде структуры
+    struct Sys{
+		long double   // Объект‚
+			b = 1.,     // передаточный коэффициент‚
+			T[3],     // постоянные времени T0...T2, сек.
+			tau = 60.,  // время запаздывания, сек.
+			x_min = 0., // ограничения, град.
+			x_max = 99.;// ----||------, град.
+    } *psys;
+
+    unsigned int i,   // номер точки на графике
+         mi,  // счётчик
+         nt,  // число выводимых точек графика
+         is;  // число точек для расчёта от нуля
+
+    long double k[5],         // коэффициенты конечно-разностного уравнения
+                a[5],         // коэффициенты дифференциального уравнения
+                r,            // управляющее воздействие
+                tp,           // время процесса
+                dt;           // квант по времени
+		
+    // Конструктор класса
+    aa::aa(void){
+        // Число предыдущих точек в конечно-разностном уравнении
+        is = 3;
+        // Остальных точек без нуля на графике
+        nt = 579;
+        r = 0.;
+    }
+
+    // Коэффициенты дифференциального уравнения
+    public: 
+    void coeff_a(void){
+        a[4] = psys->T[0] * psys->T[1] * psys->T[2];
+        a[3] = psys->T[0] * psys->T[1] + psys->T[0] * psys->T[2] + psys->T[1] * psys->T[2];
+        a[2] = psys->T[0] + psys->T[1] + psys->T[2];
+        a[1] = 1.;
+        a[0] = 0.;
+        return;
+    }
+
+    // Коэффициенты конечно-разностного уравнения
+    private:
+    void coeff_k(void){
+        long double c = a[1] + a[2] / dt + a[3] / dt / dt + a[4] / dt / dt / dt;
+        k[0] = -a[0] / c;
+        k[1] = b / c;
+        k[2] = a[2] / dt;
+        k[2] += 2. * a[3] / dt / dt;
+        k[2] += 3. * a[4] / dt / dt / dt;
+        k[2] /= c;
+        k[3] = -a[3] / dt / dt;
+        k[3] -= 3. * a[4] / dt / dt / dt;
+        k[3] /= c;
+        k[4] = a[4] / dt / dt / dt / c;
+        return;
+    }
+
+    // Текущая точка
+    public:
+    long double cicle(void){
+        long double S_graph = 0., // Площадь под кривой
+                    t_r = 0.;     // Время
+        // Шаг по времени
+        dt = tp / (long double)(nt * is);
+
+        // Число тактов запаздывания
+        unsigned int d = (unsigned int) ceil(psys->tau / dt);
+        
+        // Выделяем в оперативке массив и обнуляем его
+        long double* x = new long double[d+4];
+        for(mi = 0; mi <= d + 3; mi++)
+            x[mi] = 0.;
+
+        coeff_k();
+        do{
+            x[d+3] = k[1] * r;
+            x[d+3] += k[2] * x[d+2];
+            x[d+3] += k[3] * x[d+1];
+            x[d+3] += k[4] * x[d];
+            // Считаем площадь под кривой
+            for(mi = 1; mi <= d + 3; mi++)
+                x[mi-1] = x[mi];
+            S_graph += fabs(dt * (x[0] + x[1]) / 2.);
+            t_r += dt;
+        }while(t_r <= tp);
+        delete [] x;
+        return S_graph;
+    }
+
+    // Кривая разгона
+    public:
+    void rasgon(void){
+        long double S_graph_0, // Площадь под 1-ой кривой
+                    S_graph_1, // Площадь под 2-ой кривой
+                    ras;       // Разность в расчётах
+        
+        // Начинаем снова с 3-х
+        is = 3;
+        
+        // Даём ступеньку на входе объекта
+        r = 1. / b;
+        
+        // Рисуем первую линию
+        S_graph_0 = cicle();
+        do{
+            // Удваиваем число точек расчёта
+            is *= 2;
+            // Рисуем вторую линию
+            S_graph_1 = cicle();
+            // Считаем интегральную разницу
+            ras = S_graph_1 - S_graph_0;
+            // Сдвигаем новый график в старый
+            S_graph_0 = S_graph_1;
+            // Бибикаем
+            sound(2000);
+            delay(200);
+            sound(3000);
+            delay(500);
+            nosound();
+        }while(1);
+        return;
+    }
+
+    // Чтение данных из файла
+    public:
+    void read_dat(void){
+        // Данные в файле "zsr_asu.dat"
+        FILE* io = fopen(file_name, "rb");
+        if(io == NULL)
+            opros();
+        io = fopen(file_name, "wb");
+            fwrite(psys, sizeof(Sys), 1, io);
+        else{
+            fread(psys, sizeof(Sys), 1, io);
+        }
+        fclose(io);
+        return;
+    }
+
+    // Сохранение данных в файл
+    public:
+    void record_dat(void){
+        FILE* io = fopen(file_name, "wb");
+        fwrite(psys, sizeof(Sys), 1, io);
+        fclose(io);
+    }
+
+    // Ввод исходных данных
+    public:
+    void opros(void){
+// todo вставить сюда ввод исходных данных и начального приближения
+    }
+} *paa;  // указатель на класс объекта
+
+void  main(void){
+    char pp = 'b';
+    char* file_name = "zsr_asu.dat";
+    paa->read_dat();
+    do{
+    	paa->coeff_a();
+    	switch(pp){
+    		case 'a':
+    			paa->opros();
+    			break;
+    	    case 'c':
+    	    	paa->rasgon();
+    	}
+    }while(pp != 'x');
+    paa->record_dat();
+}

@@ -1,0 +1,1299 @@
+;	Static Name Aliases
+;
+;	$S148_soundtype	EQU	soundtype
+;	$S149_soundparm	EQU	soundparm
+;	$S150_soundobj	EQU	soundobj
+;	$S151_lastfreq	EQU	lastfreq
+;	$S152_lastobj	EQU	lastobj
+;	$S153_toneadj	EQU	toneadj
+;	$S154_tonetab	EQU	tonetab
+;	$S155_frsttone	EQU	frsttone
+;	$S156_freetone	EQU	freetone
+;	$S157_soundticks	EQU	soundticks
+;	$S158_numexpls	EQU	numexpls
+;	$S159_explplace	EQU	explplace
+;	$S160_explline	EQU	explline
+;	$S161_expltone	EQU	expltone
+;	$S162_explticks	EQU	explticks
+;	$S163_exploctv	EQU	exploctv
+;	$S164_expltune	EQU	expltune
+;	$S172_titleflg	EQU	titleflg
+;	$S173_titlplace	EQU	titlplace
+;	$S174_titlline	EQU	titlline
+;	$S175_titltone	EQU	titltone
+;	$S176_titlticks	EQU	titlticks
+;	$S177_titloctv	EQU	titloctv
+;	$S178_tune	EQU	tune
+;	$S179_line	EQU	line
+;	$S180_place	EQU	place
+;	$S181_tunefreq	EQU	tunefreq
+;	$S182_tunedura	EQU	tunedura
+;	$S183_octavefactor	EQU	octavefactor
+;	$S240_savefreq	EQU	savefreq
+;	$S299_i	EQU	i
+;	$S296_seed	EQU	seed
+;	$S302_noteindex	EQU	noteindex
+;	$S303_notefreq	EQU	notefreq
+;	$S304_durplace	EQU	durplace
+;	$S305_test	EQU	test
+;	$S306_freq	EQU	freq
+;	$S307_duration	EQU	duration
+;	$S308_index	EQU	index
+;	$S309_indexadj	EQU	indexadj
+;	$S310_durstring	EQU	durstring
+;	$S311_charatplace	EQU	charatplace
+;	$S312_noteletter	EQU	noteletter
+;	$S313_noteoctavefactor	EQU	noteoctavefactor
+;	$S314_dottednote	EQU	dottednote
+	TITLE   C:\SWSOUND.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_toupper:NEAR
+EXTRN	_isalpha:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_isdigit:NEAR
+EXTRN	_atoi:NEAR
+EXTRN	_soundmul:NEAR
+EXTRN	_sounddiv:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_inportb:NEAR
+EXTRN	_outportb:NEAR
+EXTRN	_soundflg:WORD
+EXTRN	_dispdbg:WORD
+_DATA      SEGMENT
+$SG165	DB	'b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./',  00H
+$SG166	DB	'e4/g8/g2/r16/>a8/<g8/e8/d2./',  00H
+$SG167	DB	'b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./',  00H
+$SG168	DB	'e4/>a8/a2/r16/<g8/f+8/e8/d2./',  00H
+$SG169	DB	'd8/g2/r16/g8/g+2/r16/g+8/>a2/r16/a8/c2/r16/',  00H
+$SG170	DB	'b8/a8/<g8/>b4/<g8/>b4/<g8/>a4./<g1/',  00H
+$SG171	DB	00H
+$S148_soundtype	DW	07fffH
+$S149_soundparm	DW	07fffH
+$S150_soundobj	DW	00H
+$S151_lastfreq	DW	00H
+$S152_lastobj	DW	00H
+$S153_toneadj	DW	00H
+$S164_expltune	DW	DGROUP:$SG165
+	DW	DGROUP:$SG166
+	DW	DGROUP:$SG167
+	DW	DGROUP:$SG168
+	DW	DGROUP:$SG169
+	DW	DGROUP:$SG170
+	DW	DGROUP:$SG171
+$S296_seed	DW	090b9H
+	DW	0bcfbH
+	DW	06564H
+	DW	03313H
+	DW	03190H
+	DW	0a980H
+	DW	0bcf0H
+	DW	06f97H
+	DW	037f4H
+	DW	064bH
+	DW	09fd8H
+	DW	0595bH
+	DW	01eeeH
+	DW	0820cH
+	DW	04201H
+	DW	0651eH
+	DW	0848eH
+	DW	015d5H
+	DW	01de7H
+	DW	01585H
+	DW	0a850H
+	DW	0213bH
+	DW	03953H
+	DW	01eb0H
+	DW	097a7H
+	DW	035ddH
+	DW	0af2fH
+	DW	01629H
+	DW	0be9bH
+	DW	0243fH
+	DW	0847dH
+	DW	0313aH
+	DW	03295H
+	DW	0bc11H
+	DW	06e6dH
+	DW	03398H
+	DW	0ad43H
+	DW	051ceH
+	DW	08f95H
+	DW	0507eH
+	DW	0499eH
+	DW	03bc1H
+	DW	05243H
+	DW	02017H
+	DW	09510H
+	DW	09865H
+	DW	065f6H
+	DW	06b56H
+	DW	036b9H
+	DW	05026H
+$S299_i	DW	00H
+$S302_noteindex	DW	00H
+	DW	02H
+	DW	03H
+	DW	05H
+	DW	07H
+	DW	08H
+	DW	0aH
+$S303_notefreq	DW	01b8H
+	DW	01d2H
+	DW	01eeH
+	DW	020bH
+	DW	022aH
+	DW	024bH
+	DW	026eH
+	DW	0293H
+	DW	02baH
+	DW	02e4H
+	DW	0310H
+	DW	033fH
+_DATA      ENDS
+_BSS      SEGMENT
+	ORG	$+2
+$S154_tonetab	DW 0190H DUP (?)
+	ORG	$+24
+$S155_frsttone	DW 01H DUP (?)
+	ORG	$-22
+$S156_freetone	DW 01H DUP (?)
+	ORG	$-808
+$S157_soundticks	DW 01H DUP (?)
+	ORG	$+828
+$S158_numexpls	DW 01H DUP (?)
+	ORG	$+2
+$S159_explplace	DW 01H DUP (?)
+	ORG	$-26
+$S160_explline	DW 01H DUP (?)
+	ORG	$+8
+$S161_expltone	DW 01H DUP (?)
+	ORG	$+16
+$S162_explticks	DW 01H DUP (?)
+	ORG	$-16
+$S163_exploctv	DW 01H DUP (?)
+	ORG	$-18
+$S172_titleflg	DW 01H DUP (?)
+	ORG	$+26
+$S173_titlplace	DW 01H DUP (?)
+	ORG	$-24
+$S174_titlline	DW 01H DUP (?)
+	ORG	$+6
+$S175_titltone	DW 01H DUP (?)
+	ORG	$+22
+$S304_durplace	DW 01H DUP (?)
+	ORG	$-6
+$S240_savefreq	DW 01H DUP (?)
+	ORG	$-4
+$S176_titlticks	DW 01H DUP (?)
+	ORG	$+2
+$S305_test	DW 01H DUP (?)
+	ORG	$-18
+$S177_titloctv	DW 01H DUP (?)
+	ORG	$+36
+$S306_freq	DW 01H DUP (?)
+	ORG	$-64
+$S178_tune	DW 01H DUP (?)
+	ORG	$+48
+$S307_duration	DW 01H DUP (?)
+	ORG	$-54
+$S179_line	DW 01H DUP (?)
+	ORG	$+58
+$S308_index	DW 01H DUP (?)
+	ORG	$-52
+$S180_place	DW 01H DUP (?)
+	ORG	$+44
+$S309_indexadj	DW 01H DUP (?)
+	ORG	$-42
+$S181_tunefreq	DW 01H DUP (?)
+	ORG	$+28
+$S310_durstring	DB 05H DUP (?)
+	ORG	$-37
+$S182_tunedura	DW 01H DUP (?)
+	ORG	$+42
+$S311_charatplace	DB 01H DUP (?)
+	ORG	$-29
+$S183_octavefactor	DW 01H DUP (?)
+	ORG	$+19
+$S312_noteletter	DB 01H DUP (?)
+	ORG	$+2
+$S313_noteoctavefactor	DW 01H DUP (?)
+	ORG	$+6
+$S314_dottednote	DW 01H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 17
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 78
+	PUBLIC	_initsndt
+_initsndt	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = tt
+;	register di = i
+; Line 82
+	sub	di,di
+	mov	si,OFFSET DGROUP:$S154_tonetab
+	jmp	SHORT $F188
+$FC189:
+; Line 83
+	lea	ax,WORD PTR [si+8]
+	mov	WORD PTR [si+4],ax
+	inc	di
+	add	si,8
+$F188:
+	cmp	di,99
+	jl	$FC189
+; Line 85
+	sub	ax,ax
+	mov	WORD PTR [si+4],ax
+	mov	WORD PTR $S155_frsttone,ax
+; Line 86
+	mov	WORD PTR $S156_freetone,OFFSET DGROUP:$S154_tonetab
+; Line 87
+	pop	si
+	pop	di
+	ret	
+
+_initsndt	ENDP
+; Line 92
+	PUBLIC	_sound
+_sound	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 8
+;	parm = 6
+;	type = 4
+; Line 96
+	mov	ax,WORD PTR [bp+4]	;type
+	cmp	WORD PTR $S148_soundtype,ax
+	jle	$I196
+; Line 97
+	mov	WORD PTR $S148_soundtype,ax
+; Line 98
+	mov	ax,WORD PTR [bp+6]	;parm
+	jmp	SHORT $L20005
+	nop	
+$I196:
+; Line 101
+	cmp	WORD PTR $S148_soundtype,ax
+	jne	$I198
+	mov	ax,WORD PTR [bp+6]	;parm
+	cmp	WORD PTR $S149_soundparm,ax
+	jle	$I198
+; Line 102
+$L20005:
+	mov	WORD PTR $S149_soundparm,ax
+; Line 103
+	mov	ax,WORD PTR [bp+8]	;ob
+	mov	WORD PTR $S150_soundobj,ax
+; Line 104
+; Line 105
+$I198:
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_sound	ENDP
+; Line 111
+	PUBLIC	_swsound
+_swsound	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = tt
+; Line 116
+	call	_intsoff
+; Line 117
+	mov	si,WORD PTR $S155_frsttone
+; Line 118
+	jmp	SHORT $L20006
+	nop	
+$FC207:
+; Line 119
+	mov	ax,WORD PTR [si+2]
+	mul	WORD PTR $S157_soundticks
+	add	WORD PTR [si],ax
+; Line 120
+	mov	si,WORD PTR [si+4]
+; Line 121
+$L20006:
+	or	si,si
+	jne	$FC207
+; Line 123
+	mov	WORD PTR $S157_soundticks,si
+; Line 124
+	mov	WORD PTR $S172_titleflg,si
+; Line 126
+	mov	ax,WORD PTR $S148_soundtype
+	cmp	ax,60
+	je	$SC215
+	jbe	$JCC148
+	jmp	$SC213
+$JCC148:
+	cmp	al,20
+	je	$SC219
+	jle	$JCC157
+	jmp	$L20003
+$JCC157:
+	sub	al,5
+	jne	$JCC164
+	jmp	$SC226
+$JCC164:
+	sub	al,5
+	je	$SC224
+	jmp	$SC213
+; Line 136
+$SC215:
+; Line 137
+	cmp	WORD PTR $S149_soundparm,si
+	jne	$I216
+; Line 138
+	mov	ax,-4096
+$L20008:
+	push	ax
+	call	tone
+	add	sp,2
+; Line 139
+	jmp	$L20007
+	nop	
+$I216:
+; Line 140
+	mov	cl,4
+	mov	ah,BYTE PTR $S149_soundparm
+	sub	ah,3
+	sub	al,al
+	shl	ax,cl
+	jmp	SHORT $L20008
+; Line 145
+	nop	
+$SC219:
+; Line 146
+	mov	ax,WORD PTR $S152_lastobj
+	cmp	WORD PTR $S150_soundobj,ax
+	jne	$JCC219
+	jmp	$SB210
+$JCC219:
+; Line 149
+$L20009:
+	mov	ax,WORD PTR $S150_soundobj
+	mov	WORD PTR $S152_lastobj,ax
+; Line 150
+	mov	ax,OFFSET adjcont
+	mov	WORD PTR $S153_toneadj,ax
+	call	ax
+; Line 151
+	jmp	$SB210
+; Line 153
+	nop	
+$SC221:
+; Line 154
+	mov	ax,WORD PTR $S152_lastobj
+	cmp	WORD PTR $S150_soundobj,ax
+	jne	$L20009
+; Line 155
+	jmp	SHORT $SB210
+	nop	
+$SC223:
+; Line 162
+	mov	ax,2
+	push	ax
+	call	rand
+	add	sp,2
+	cmp	ax,1
+	sbb	ax,ax
+	and	ax,24576
+	add	ah,144
+	jmp	SHORT $L20008
+; Line 167
+	nop	
+$SC224:
+; Line 168
+	push	WORD PTR $S161_expltone
+	call	tone
+	add	sp,2
+; Line 170
+	sub	ax,ax
+	mov	WORD PTR $S153_toneadj,ax
+	mov	WORD PTR $S152_lastobj,ax
+; Line 171
+	jmp	SHORT $SB210
+; Line 173
+$SC225:
+; Line 174
+	mov	ax,4096
+	push	ax
+	call	tone
+	add	sp,2
+; Line 175
+	mov	WORD PTR $S153_toneadj,OFFSET adjshot
+; Line 176
+	mov	WORD PTR $S152_lastobj,0
+; Line 177
+	jmp	SHORT $SB210
+; Line 179
+$SC226:
+; Line 181
+	sub	ax,ax
+	mov	WORD PTR $S174_titlline,ax
+	mov	WORD PTR $S173_titlplace,ax
+; Line 182
+	call	titlnote
+; Line 184
+	sub	ax,ax
+	mov	WORD PTR $S153_toneadj,ax
+	mov	WORD PTR $S152_lastobj,ax
+; Line 185
+	mov	WORD PTR $S172_titleflg,1
+; Line 186
+	jmp	SHORT $SB210
+	nop	
+$L20003:
+	sub	al,30
+	je	$SC225
+	sub	al,10
+	je	$SC221
+	sub	al,10
+	je	$SC223
+$SC213:
+; Line 131
+	call	_soundoff
+; Line 133
+$L20007:
+	sub	ax,ax
+	mov	WORD PTR $S152_lastobj,ax
+	mov	WORD PTR $S153_toneadj,ax
+; Line 134
+$SB210:
+; Line 190
+	call	_intson
+; Line 191
+	mov	ax,32767
+	mov	WORD PTR $S149_soundparm,ax
+	mov	WORD PTR $S148_soundtype,ax
+; Line 192
+	pop	si
+	ret	
+	nop	
+
+_swsound	ENDP
+; Line 199
+	PUBLIC	_soundadj
+_soundadj	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 201
+	inc	WORD PTR $S157_soundticks
+; Line 203
+	cmp	WORD PTR $S151_lastfreq,0
+	je	$I231
+	cmp	WORD PTR $S153_toneadj,0
+	je	$I231
+; Line 204
+	call	WORD PTR $S153_toneadj
+; Line 206
+$I231:
+	cmp	WORD PTR $S158_numexpls,0
+	je	$I232
+; Line 207
+	call	adjexpl
+; Line 209
+$I232:
+	cmp	WORD PTR $S172_titleflg,0
+	je	$I234
+; Line 210
+	call	adjtitl
+; Line 211
+$I234:
+	ret	
+
+_soundadj	ENDP
+; Line 217
+adjcont	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = tt
+; Line 220
+	mov	bx,WORD PTR $S152_lastobj
+	mov	si,WORD PTR [bx+102]
+	or	si,si
+	je	$I238
+; Line 221
+	mov	bx,WORD PTR [bx+102]
+	mov	ax,WORD PTR [bx+2]
+	mul	WORD PTR $S157_soundticks
+	add	ax,WORD PTR [bx]
+	push	ax
+	call	tone
+	add	sp,2
+; Line 222
+$I238:
+	pop	si
+	ret	
+
+adjcont	ENDP
+; Line 228
+adjshot	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 231
+	cmp	WORD PTR $S151_lastfreq,-4096
+	jne	$I241
+; Line 232
+	push	WORD PTR $S240_savefreq
+	jmp	SHORT $L20010
+	nop	
+$I241:
+; Line 234
+	mov	ax,WORD PTR $S151_lastfreq
+	mov	WORD PTR $S240_savefreq,ax
+; Line 235
+	mov	ax,-4096
+	push	ax
+$L20010:
+	call	tone
+	add	sp,2
+; Line 236
+; Line 237
+	ret	
+	nop	
+
+adjshot	ENDP
+; Line 243
+adjexpl	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 244
+	dec	WORD PTR $S162_explticks
+	jns	$EX243
+; Line 247
+	call	explnote
+; Line 248
+$EX243:
+	ret	
+	nop	
+
+adjexpl	ENDP
+; Line 254
+explnote	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 255
+	mov	ax,WORD PTR $S160_explline
+	mov	WORD PTR $S179_line,ax
+; Line 256
+	mov	ax,WORD PTR $S159_explplace
+	mov	WORD PTR $S180_place,ax
+; Line 257
+	mov	WORD PTR $S178_tune,OFFSET DGROUP:$S164_expltune
+; Line 258
+	mov	ax,WORD PTR $S163_exploctv
+	mov	WORD PTR $S183_octavefactor,ax
+; Line 259
+	call	_playnote
+; Line 260
+	mov	ax,WORD PTR $S179_line
+	mov	WORD PTR $S160_explline,ax
+; Line 261
+	mov	ax,WORD PTR $S180_place
+	mov	WORD PTR $S159_explplace,ax
+; Line 262
+	mov	ax,WORD PTR $S181_tunefreq
+	mov	WORD PTR $S161_expltone,ax
+; Line 263
+	call	_intsoff
+; Line 264
+	mov	ax,WORD PTR $S182_tunedura
+	add	WORD PTR $S162_explticks,ax
+; Line 265
+	call	_intson
+; Line 266
+	mov	ax,WORD PTR $S183_octavefactor
+	mov	WORD PTR $S163_exploctv,ax
+; Line 267
+	ret	
+
+explnote	ENDP
+; Line 273
+adjtitl	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 274
+	dec	WORD PTR $S176_titlticks
+	jns	$EX248
+; Line 276
+	call	titlnote
+; Line 277
+$EX248:
+	ret	
+	nop	
+
+adjtitl	ENDP
+; Line 283
+titlnote	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 285
+	mov	ax,WORD PTR $S174_titlline
+	mov	WORD PTR $S179_line,ax
+; Line 286
+	mov	ax,WORD PTR $S173_titlplace
+	mov	WORD PTR $S180_place,ax
+; Line 287
+	mov	WORD PTR $S178_tune,OFFSET DGROUP:$S164_expltune
+; Line 288
+	mov	ax,WORD PTR $S177_titloctv
+	mov	WORD PTR $S183_octavefactor,ax
+; Line 289
+	call	_playnote
+; Line 290
+	mov	ax,WORD PTR $S179_line
+	mov	WORD PTR $S174_titlline,ax
+; Line 291
+	mov	ax,WORD PTR $S180_place
+	mov	WORD PTR $S173_titlplace,ax
+; Line 292
+	mov	ax,WORD PTR $S181_tunefreq
+	mov	WORD PTR $S175_titltone,ax
+; Line 293
+	call	_intsoff
+; Line 294
+	mov	ax,WORD PTR $S182_tunedura
+	add	WORD PTR $S176_titlticks,ax
+; Line 295
+	call	_intson
+; Line 296
+	mov	ax,WORD PTR $S183_octavefactor
+	mov	WORD PTR $S177_titloctv,ax
+; Line 297
+	call	_soundoff
+; Line 298
+	push	WORD PTR $S175_titltone
+	call	tone
+	add	sp,2
+; Line 299
+	ret	
+	nop	
+
+titlnote	ENDP
+; Line 306
+	PUBLIC	_initsound
+_initsound	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register di = tt
+;	register si = ob
+;	type = 6
+;	obp = 4
+; Line 313
+	mov	si,WORD PTR [bp+4]	;obp
+	cmp	WORD PTR [si+102],0
+	jne	$I261
+; Line 316
+	cmp	WORD PTR [si+96],5
+	jne	$I259
+; Line 317
+	call	_intsoff
+; Line 318
+	inc	WORD PTR $S158_numexpls
+	cmp	WORD PTR $S158_numexpls,1
+	jne	$I260
+; Line 320
+	sub	ax,ax
+	mov	WORD PTR $S160_explline,ax
+	mov	WORD PTR $S159_explplace,ax
+; Line 321
+	call	explnote
+; Line 322
+; Line 323
+$I260:
+	mov	WORD PTR [si+102],1
+; Line 324
+$L20011:
+	call	_intson
+; Line 325
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 326
+; Line 328
+$I259:
+	call	allocton
+	mov	di,ax
+	or	di,di
+	je	$I261
+; Line 329
+	call	_intsoff
+; Line 330
+	mov	ax,WORD PTR [bp+6]	;type
+	sub	ax,20
+	je	$SC266
+	sub	ax,20
+	je	$SC267
+; Line 340
+	jmp	SHORT $SB263
+; Line 331
+	nop	
+$SC266:
+; Line 332
+	mov	WORD PTR [di],768
+; Line 333
+	mov	WORD PTR [di+2],8
+; Line 334
+$SB263:
+; Line 342
+	mov	WORD PTR [si+102],di
+	jmp	SHORT $L20011
+; Line 335
+$SC267:
+; Line 336
+	mov	WORD PTR [di],4608
+; Line 337
+	mov	WORD PTR [di+2],-8
+; Line 338
+	jmp	SHORT $SB263
+; Line 339
+	nop	
+$I261:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_initsound	ENDP
+; Line 352
+allocton	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = tt
+; Line 355
+	cmp	WORD PTR $S156_freetone,0
+	jne	$I271
+; Line 356
+	sub	ax,ax
+	pop	si
+	ret	
+; Line 358
+	nop	
+$I271:
+; Line 359
+	mov	si,WORD PTR $S156_freetone
+	mov	ax,WORD PTR [si+4]
+	mov	WORD PTR $S156_freetone,ax
+; Line 361
+	mov	ax,WORD PTR $S155_frsttone
+	mov	WORD PTR [si+4],ax
+; Line 362
+	mov	WORD PTR [si+6],0
+; Line 364
+	cmp	WORD PTR $S155_frsttone,0
+	je	$I272
+; Line 365
+	mov	bx,WORD PTR $S155_frsttone
+	mov	WORD PTR [bx+6],si
+; Line 367
+$I272:
+	mov	WORD PTR $S155_frsttone,si
+	mov	ax,si
+; Line 368
+	pop	si
+	ret	
+	nop	
+
+allocton	ENDP
+; Line 373
+deallton	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = ttb
+;	register di = tt
+;	ttp = 4
+; Line 378
+	mov	di,WORD PTR [bp+4]	;ttp
+	mov	si,WORD PTR [di+6]
+	or	si,si
+	je	$I278
+; Line 379
+	mov	ax,WORD PTR [di+4]
+	mov	WORD PTR [si+4],ax
+; Line 380
+	jmp	SHORT $I279
+$I278:
+; Line 381
+	mov	ax,WORD PTR [di+4]
+	mov	WORD PTR $S155_frsttone,ax
+$I279:
+; Line 383
+	mov	si,WORD PTR [di+4]
+	or	si,si
+	je	$I280
+; Line 384
+	mov	ax,WORD PTR [di+6]
+	mov	WORD PTR [si+6],ax
+; Line 386
+$I280:
+	mov	ax,WORD PTR $S156_freetone
+	mov	WORD PTR [di+4],ax
+; Line 387
+	mov	WORD PTR $S156_freetone,di
+; Line 388
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+deallton	ENDP
+; Line 398
+	PUBLIC	_stopsound
+_stopsound	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	tt = -2
+;	ob = 4
+; Line 402
+	mov	bx,WORD PTR [bp+4]	;ob
+	mov	ax,WORD PTR [bx+102]
+	mov	WORD PTR [bp-2],ax	;tt
+	or	ax,ax
+	je	$EX283
+; Line 405
+	call	_intsoff
+; Line 406
+	mov	bx,WORD PTR [bp+4]	;ob
+	cmp	WORD PTR [bx+96],5
+	jne	$I286
+; Line 407
+	dec	WORD PTR $S158_numexpls
+; Line 408
+	jmp	SHORT $I287
+$I286:
+; Line 409
+	push	WORD PTR [bp-2]	;tt
+	call	deallton
+	add	sp,2
+$I287:
+; Line 410
+	mov	bx,WORD PTR [bp+4]	;ob
+	mov	WORD PTR [bx+102],0
+; Line 411
+	call	_intson
+; Line 412
+$EX283:
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_stopsound	ENDP
+; Line 420
+tone	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	freq = 4
+; Line 423
+	cmp	WORD PTR _soundflg,0
+	je	$EX289
+; Line 426
+	mov	ax,WORD PTR [bp+4]	;freq
+	cmp	WORD PTR $S151_lastfreq,ax
+	je	$EX289
+; Line 430
+	cmp	WORD PTR $S151_lastfreq,0
+	jne	$I292
+; Line 431
+	mov	ax,182
+	push	ax
+	mov	ax,67
+	push	ax
+	call	_outportb
+	mov	sp,bp
+; Line 432
+$I292:
+	mov	al,BYTE PTR [bp+4]	;freq
+	sub	ah,ah
+	push	ax
+	mov	ax,66
+	push	ax
+	call	_outportb
+	mov	sp,bp
+; Line 433
+	mov	al,BYTE PTR [bp+5]
+	sub	ah,ah
+	push	ax
+	mov	ax,66
+	push	ax
+	call	_outportb
+	mov	sp,bp
+; Line 434
+	cmp	WORD PTR $S151_lastfreq,0
+	jne	$I293
+; Line 435
+	mov	ax,97
+	push	ax
+	call	_inportb
+	mov	sp,bp
+	or	al,3
+	push	ax
+	mov	ax,97
+	push	ax
+	call	_outportb
+; Line 438
+$I293:
+; Line 439
+	mov	ax,WORD PTR [bp+4]	;freq
+	mov	WORD PTR $S151_lastfreq,ax
+	mov	WORD PTR _dispdbg,ax
+; Line 440
+$EX289:
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+tone	ENDP
+; Line 446
+	PUBLIC	_soundoff
+_soundoff	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 447
+	cmp	WORD PTR $S151_lastfreq,0
+	je	$I295
+; Line 449
+	mov	ax,97
+	push	ax
+	call	_inportb
+	add	sp,2
+	and	ax,252
+	push	ax
+	mov	ax,97
+	push	ax
+	call	_outportb
+	add	sp,4
+; Line 451
+	mov	WORD PTR $S151_lastfreq,0
+; Line 452
+	mov	WORD PTR _dispdbg,0
+; Line 453
+; Line 454
+$I295:
+	ret	
+	nop	
+
+_soundoff	ENDP
+; Line 473
+rand	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+;	modulo = 4
+; Line 477
+	cmp	WORD PTR $S299_i,50
+	jl	$I300
+; Line 478
+	mov	WORD PTR $S299_i,0
+; Line 479
+$I300:
+	mov	bx,WORD PTR $S299_i
+	inc	WORD PTR $S299_i
+	shl	bx,1
+	mov	ax,WORD PTR $S296_seed[bx]
+	sub	dx,dx
+	div	WORD PTR [bp+4]	;modulo
+	mov	ax,dx
+; Line 480
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+rand	ENDP
+; Line 501
+	PUBLIC	_playnote
+_playnote	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+	push	si
+;	firstplace = -2
+; Line 516
+	mov	WORD PTR [bp-2],1	;firstplace
+; Line 519
+	sub	ax,ax
+	mov	WORD PTR $S309_indexadj,ax
+	mov	WORD PTR $S304_durplace,ax
+; Line 520
+	mov	WORD PTR $S314_dottednote,2
+; Line 521
+	mov	WORD PTR $S313_noteoctavefactor,256
+; Line 523
+$FC317:
+; Line 524
+	cmp	WORD PTR $S179_line,0
+	jne	$I319
+	cmp	WORD PTR $S180_place,0
+	jne	$I319
+; Line 525
+	mov	WORD PTR $S183_octavefactor,256
+; Line 527
+$I319:
+	mov	ax,WORD PTR $S180_place
+	inc	WORD PTR $S180_place
+	mov	bx,WORD PTR $S179_line
+	shl	bx,1
+	mov	si,WORD PTR $S178_tune
+	mov	bx,WORD PTR [bx][si]
+	mov	si,ax
+	mov	al,BYTE PTR [bx][si]
+	cbw	
+	push	ax
+	call	_toupper
+	add	sp,2
+	mov	BYTE PTR $S311_charatplace,al
+	or	al,al
+	jne	$I321
+; Line 528
+	mov	WORD PTR $S180_place,0
+	inc	WORD PTR $S179_line
+	mov	bx,WORD PTR $S179_line
+	shl	bx,1
+	mov	si,WORD PTR $S178_tune
+	mov	bx,WORD PTR [bx][si]
+	mov	al,BYTE PTR [bx]
+	mov	BYTE PTR $S311_charatplace,al
+	or	al,al
+	jne	$I322
+; Line 529
+	mov	WORD PTR $S179_line,0
+; Line 530
+; Line 532
+$I322:
+	cmp	WORD PTR [bp-2],0	;firstplace
+	jne	$FC317
+; Line 534
+$FB318:
+; Line 558
+	mov	bx,WORD PTR $S304_durplace
+	mov	BYTE PTR $S310_durstring[bx],0
+; Line 559
+	mov	ax,OFFSET DGROUP:$S310_durstring
+	push	ax
+	call	_atoi
+	add	sp,2
+	mov	WORD PTR $S307_duration,ax
+; Line 560
+	or	ax,ax
+	jg	$I341
+	mov	WORD PTR $S307_duration,4
+; Line 561
+$I341:
+	mov	ax,60
+	imul	WORD PTR $S307_duration
+	mov	cx,ax
+	mov	ax,1440
+	imul	WORD PTR $S314_dottednote
+	cwd	
+	idiv	cx
+	sar	ax,1
+	mov	WORD PTR $S307_duration,ax
+; Line 563
+	cmp	BYTE PTR $S312_noteletter,82
+	je	$JCC1421
+	jmp	$I342
+$JCC1421:
+; Line 564
+	mov	WORD PTR $S306_freq,32000
+; Line 565
+	jmp	$I343
+; Line 535
+; Line 536
+	nop	
+$I321:
+	mov	WORD PTR [bp-2],0	;firstplace
+; Line 537
+	cmp	BYTE PTR $S311_charatplace,47
+	je	$FB318
+; Line 540
+	mov	al,BYTE PTR $S311_charatplace
+	cbw	
+	push	ax
+	call	_isalpha
+	add	sp,2
+	mov	WORD PTR $S305_test,ax
+	or	ax,ax
+	je	$I326
+; Line 541
+	mov	al,BYTE PTR $S311_charatplace
+	cbw	
+	mov	bx,ax
+	shl	bx,1
+	mov	ax,WORD PTR $S302_noteindex[bx-130]
+	mov	WORD PTR $S308_index,ax
+; Line 542
+	mov	al,BYTE PTR $S311_charatplace
+	mov	BYTE PTR $S312_noteletter,al
+; Line 543
+	jmp	$FC317
+$I326:
+; Line 544
+	mov	al,BYTE PTR $S311_charatplace
+	cbw	
+	cmp	ax,62
+	je	$SC332
+	ja	$SD337
+	sub	al,43
+	je	$SC334
+	sub	al,2
+	je	$SC335
+	dec	al
+	je	$SC336
+	sub	al,14
+	je	$SC333
+$SD337:
+; Line 551
+	mov	al,BYTE PTR $S311_charatplace
+	cbw	
+	push	ax
+	call	_isdigit
+	add	sp,2
+	mov	WORD PTR $S305_test,ax
+	or	ax,ax
+	jne	$JCC1533
+	jmp	$FC317
+$JCC1533:
+; Line 552
+	mov	al,BYTE PTR $S311_charatplace
+	mov	bx,WORD PTR $S304_durplace
+	mov	BYTE PTR $S310_durstring[bx],al
+	inc	WORD PTR $S304_durplace
+; Line 553
+	jmp	$FC317
+; Line 545
+$SC332:
+	shl	WORD PTR $S183_octavefactor,1
+; Line 556
+	jmp	$FC317
+; Line 546
+	nop	
+$SC333:
+	sar	WORD PTR $S183_octavefactor,1
+	jmp	$FC317
+; Line 547
+	nop	
+$SC334:
+	inc	WORD PTR $S309_indexadj
+	jmp	$FC317
+; Line 548
+	nop	
+$SC335:
+	dec	WORD PTR $S309_indexadj
+	jmp	$FC317
+; Line 549
+	nop	
+$SC336:
+	mov	WORD PTR $S314_dottednote,3
+	jmp	$FC317
+; Line 550
+	nop	
+$I342:
+; Line 566
+	mov	ax,WORD PTR $S309_indexadj
+	add	WORD PTR $S308_index,ax
+; Line 567
+	jmp	SHORT $L20012
+	nop	
+$FC345:
+; Line 568
+	add	WORD PTR $S308_index,12
+; Line 569
+	sar	WORD PTR $S313_noteoctavefactor,1
+; Line 570
+$L20012:
+	cmp	WORD PTR $S308_index,0
+	jl	$FC345
+; Line 571
+	jmp	SHORT $L20013
+$FC348:
+; Line 572
+	sub	WORD PTR $S308_index,12
+; Line 573
+	shl	WORD PTR $S313_noteoctavefactor,1
+; Line 574
+$L20013:
+	cmp	WORD PTR $S308_index,12
+	jge	$FC348
+; Line 575
+	push	WORD PTR $S313_noteoctavefactor
+	push	WORD PTR $S183_octavefactor
+	mov	bx,WORD PTR $S308_index
+	shl	bx,1
+	push	WORD PTR $S303_notefreq[bx]
+	call	_soundmul
+	add	sp,6
+	mov	WORD PTR $S306_freq,ax
+; Line 576
+$I343:
+; Line 577
+	push	WORD PTR $S306_freq
+	mov	ax,20280
+	mov	dx,20
+	push	dx
+	push	ax
+	call	_sounddiv
+	add	sp,6
+	mov	WORD PTR $S181_tunefreq,ax
+; Line 578
+	mov	ax,WORD PTR $S307_duration
+	mov	WORD PTR $S182_tunedura,ax
+; Line 579
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_playnote	ENDP
+_TEXT	ENDS
+END

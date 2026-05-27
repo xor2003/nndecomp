@@ -1,0 +1,2034 @@
+;	Static Name Aliases
+;
+;	$S148_soundtype	EQU	soundtype
+;	$S149_soundparm	EQU	soundparm
+;	$S150_soundobj	EQU	soundobj
+;	$S151_lastfreq	EQU	lastfreq
+;	$S152_lastobj	EQU	lastobj
+;	$S153_toneadj	EQU	toneadj
+;	$S154_tonetab	EQU	tonetab
+;	$S155_frsttone	EQU	frsttone
+;	$S156_freetone	EQU	freetone
+;	$S157_soundticks	EQU	soundticks
+;	$S158_numexpls	EQU	numexpls
+;	$S159_explplace	EQU	explplace
+;	$S160_explline	EQU	explline
+;	$S161_expltone	EQU	expltone
+;	$S162_explticks	EQU	explticks
+;	$S163_exploctv	EQU	exploctv
+;	$S164_expltune	EQU	expltune
+;	$S172_titleflg	EQU	titleflg
+;	$S173_titlplace	EQU	titlplace
+;	$S174_titlline	EQU	titlline
+;	$S175_titltone	EQU	titltone
+;	$S176_titlticks	EQU	titlticks
+;	$S177_titloctv	EQU	titloctv
+;	$S178_tune	EQU	tune
+;	$S179_line	EQU	line
+;	$S180_place	EQU	place
+;	$S181_tunefreq	EQU	tunefreq
+;	$S182_tunedura	EQU	tunedura
+;	$S183_octavefactor	EQU	octavefactor
+;	$S240_savefreq	EQU	savefreq
+;	$S299_i	EQU	i
+;	$S296_seed	EQU	seed
+;	$S302_noteindex	EQU	noteindex
+;	$S303_notefreq	EQU	notefreq
+;	$S304_durplace	EQU	durplace
+;	$S305_test	EQU	test
+;	$S306_freq	EQU	freq
+;	$S307_duration	EQU	duration
+;	$S308_index	EQU	index
+;	$S309_indexadj	EQU	indexadj
+;	$S310_durstring	EQU	durstring
+;	$S311_charatplace	EQU	charatplace
+;	$S312_noteletter	EQU	noteletter
+;	$S313_noteoctavefactor	EQU	noteoctavefactor
+;	$S314_dottednote	EQU	dottednote
+	TITLE   C:\SWSOUND.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_toupper:NEAR
+EXTRN	_isalpha:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_isdigit:NEAR
+EXTRN	_atoi:NEAR
+EXTRN	_soundmul:NEAR
+EXTRN	_sounddiv:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_inportb:NEAR
+EXTRN	_outportb:NEAR
+EXTRN	_soundflg:WORD
+EXTRN	_dispdbg:WORD
+_DATA      SEGMENT
+$SG165	DB	'b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./',  00H
+$SG166	DB	'e4/g8/g2/r16/>a8/<g8/e8/d2./',  00H
+$SG167	DB	'b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./',  00H
+$SG168	DB	'e4/>a8/a2/r16/<g8/f+8/e8/d2./',  00H
+$SG169	DB	'd8/g2/r16/g8/g+2/r16/g+8/>a2/r16/a8/c2/r16/',  00H
+$SG170	DB	'b8/a8/<g8/>b4/<g8/>b4/<g8/>a4./<g1/',  00H
+$SG171	DB	00H
+$S148_soundtype	DW	07fffH
+$S149_soundparm	DW	07fffH
+$S150_soundobj	DW	00H
+$S151_lastfreq	DW	00H
+$S152_lastobj	DW	00H
+$S153_toneadj	DW	00H
+$S164_expltune	DW	DGROUP:$SG165
+	DW	DGROUP:$SG166
+	DW	DGROUP:$SG167
+	DW	DGROUP:$SG168
+	DW	DGROUP:$SG169
+	DW	DGROUP:$SG170
+	DW	DGROUP:$SG171
+$S296_seed	DW	090b9H
+	DW	0bcfbH
+	DW	06564H
+	DW	03313H
+	DW	03190H
+	DW	0a980H
+	DW	0bcf0H
+	DW	06f97H
+	DW	037f4H
+	DW	064bH
+	DW	09fd8H
+	DW	0595bH
+	DW	01eeeH
+	DW	0820cH
+	DW	04201H
+	DW	0651eH
+	DW	0848eH
+	DW	015d5H
+	DW	01de7H
+	DW	01585H
+	DW	0a850H
+	DW	0213bH
+	DW	03953H
+	DW	01eb0H
+	DW	097a7H
+	DW	035ddH
+	DW	0af2fH
+	DW	01629H
+	DW	0be9bH
+	DW	0243fH
+	DW	0847dH
+	DW	0313aH
+	DW	03295H
+	DW	0bc11H
+	DW	06e6dH
+	DW	03398H
+	DW	0ad43H
+	DW	051ceH
+	DW	08f95H
+	DW	0507eH
+	DW	0499eH
+	DW	03bc1H
+	DW	05243H
+	DW	02017H
+	DW	09510H
+	DW	09865H
+	DW	065f6H
+	DW	06b56H
+	DW	036b9H
+	DW	05026H
+$S299_i	DW	00H
+$S302_noteindex	DW	00H
+	DW	02H
+	DW	03H
+	DW	05H
+	DW	07H
+	DW	08H
+	DW	0aH
+$S303_notefreq	DW	01b8H
+	DW	01d2H
+	DW	01eeH
+	DW	020bH
+	DW	022aH
+	DW	024bH
+	DW	026eH
+	DW	0293H
+	DW	02baH
+	DW	02e4H
+	DW	0310H
+	DW	033fH
+_DATA      ENDS
+_BSS      SEGMENT
+	ORG	$+2
+$S154_tonetab	DW 0190H DUP (?)
+	ORG	$+24
+$S155_frsttone	DW 01H DUP (?)
+	ORG	$-22
+$S156_freetone	DW 01H DUP (?)
+	ORG	$-808
+$S157_soundticks	DW 01H DUP (?)
+	ORG	$+828
+$S158_numexpls	DW 01H DUP (?)
+	ORG	$+2
+$S159_explplace	DW 01H DUP (?)
+	ORG	$-26
+$S160_explline	DW 01H DUP (?)
+	ORG	$+8
+$S161_expltone	DW 01H DUP (?)
+	ORG	$+16
+$S162_explticks	DW 01H DUP (?)
+	ORG	$-16
+$S163_exploctv	DW 01H DUP (?)
+	ORG	$-18
+$S172_titleflg	DW 01H DUP (?)
+	ORG	$+26
+$S173_titlplace	DW 01H DUP (?)
+	ORG	$-24
+$S174_titlline	DW 01H DUP (?)
+	ORG	$+6
+$S175_titltone	DW 01H DUP (?)
+	ORG	$+22
+$S304_durplace	DW 01H DUP (?)
+	ORG	$-6
+$S240_savefreq	DW 01H DUP (?)
+	ORG	$-4
+$S176_titlticks	DW 01H DUP (?)
+	ORG	$+2
+$S305_test	DW 01H DUP (?)
+	ORG	$-18
+$S177_titloctv	DW 01H DUP (?)
+	ORG	$+36
+$S306_freq	DW 01H DUP (?)
+	ORG	$-64
+$S178_tune	DW 01H DUP (?)
+	ORG	$+48
+$S307_duration	DW 01H DUP (?)
+	ORG	$-54
+$S179_line	DW 01H DUP (?)
+	ORG	$+58
+$S308_index	DW 01H DUP (?)
+	ORG	$-52
+$S180_place	DW 01H DUP (?)
+	ORG	$+44
+$S309_indexadj	DW 01H DUP (?)
+	ORG	$-42
+$S181_tunefreq	DW 01H DUP (?)
+	ORG	$+28
+$S310_durstring	DB 05H DUP (?)
+	ORG	$-37
+$S182_tunedura	DW 01H DUP (?)
+	ORG	$+42
+$S311_charatplace	DB 01H DUP (?)
+	ORG	$-29
+$S183_octavefactor	DW 01H DUP (?)
+	ORG	$+19
+$S312_noteletter	DB 01H DUP (?)
+	ORG	$+2
+$S313_noteoctavefactor	DW 01H DUP (?)
+	ORG	$+6
+$S314_dottednote	DW 01H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** /*
+; Line 1
+;|***         swsound  -      SW sound generation
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-04-11        Development
+;|***                         87-03-10        Microsoft compiler.
+;|*** */
+;|*** #include        "sw.h"
+; Line 17
+;|*** /*
+;|***         sw.h     -      SW  Manifest Definitions
+;|*** 
+;|***                         Copyright (C) 1984-2000 David L. Clark.
+;|*** 
+;|***                         All rights reserved except as specified in the
+;|***                         file license.txt.  Distribution of this file
+;|***                         without the license.txt file accompanying is
+;|***                         prohibited.
+;|*** 
+;|***                         Author: Dave Clark
+;|*** 
+;|***         Modification History:
+;|***                         84-02-02        Development
+;|***                         84-06-12        PCjr Speed-up
+;|***                         85-04-02        Asynch Mode
+;|***                         85-10-31        Atari
+;|***                         87-03-09        Microsoft compiler
+;|***                         87-03-12        Wounded airplanes
+;|***                         87-03-12        Crashed planes stay longer at home.
+;|***                         87-03-13        Splatted bird symbol
+;|***                         87-03-30        Novice Player
+;|***                         87-03-31        Missiles
+;|***                         87-04-04        Missile and starburst support
+;|***                         87-04-08        Delay between starbursts
+;|*** */
+;|*** #include        "std.h"
+; Line 27
+;|*** #include        "sysint.h"
+; Line 28
+;|*** #include        "setjmp.h"
+; Line 29
+;|*** #include        "swdeve.h"
+; Line 30
+;|*** #include        "swmach.h"
+; Line 31
+;|*** 
+;|*** 
+;|*** 
+;|*** #define         TIMER   0x40
+;|*** #define         PORTB   0x61
+;|*** #define         SNDSIZE 100
+;|*** 
+;|*** 
+;|*** extern  int     soundflg;               /*  Sound flag                      */
+;|*** extern  int     dispdbg;                /*  Debug value to be displayed   */
+;|*** 
+;|*** 
+;|*** static  int      soundtype = 32767;      /*  Current sound type and          */
+;|*** static  int      soundparm = 32767;      /*     and priority parameter       */
+;|*** static  OBJECTS  *soundobj =  NULL;      /*  Object making sound             */
+;|*** static  unsigned lastfreq  = 0;          /*  Last frequency used             */
+;|*** static  OBJECTS  *lastobj   = NULL;      /*  Previous object making sound    */
+;|*** static  int      ( *toneadj ) () = NULL; /*  Tone adjustment on clock tick   */
+;|*** 
+;|*** static  TONETAB  tonetab[SNDSIZE];       /*  Continuous tone table           */
+;|*** static  TONETAB  *frsttone, *freetone;   /*  Tone list and free list         */
+;|*** static  unsigned soundticks;             /*  Ticks since last sound selection*/
+;|*** 
+;|*** static  int      numexpls;               /*  Number of explosions currently  */
+;|***                                          /*  active                          */
+;|*** static  int      explplace;              /*  Place in explosion tune;        */
+;|*** static  int      explline;               /* Line in explosion tune           */
+;|*** static  unsigned expltone;               /*  Current explosion tone          */
+;|*** static  int      explticks;              /*  Ticks until note change         */
+;|*** static  int      exploctv;               /*  Octave                          */
+;|*** static  char     *expltune[7] = {
+;|***        "b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./",
+;|***        "e4/g8/g2/r16/>a8/<g8/e8/d2./",
+;|***        "b4/d8/d2/r16/c8/b8/a8/b4./c4./c+4./d4./",
+;|***        "e4/>a8/a2/r16/<g8/f+8/e8/d2./",
+;|***        "d8/g2/r16/g8/g+2/r16/g+8/>a2/r16/a8/c2/r16/",
+;|***        "b8/a8/<g8/>b4/<g8/>b4/<g8/>a4./<g1/",
+;|***        ""
+;|*** };
+;|*** 
+;|*** static  BOOL     titleflg;               /* Playing title tune               */
+;|*** static  int      titlplace;              /*  Place in title tune;            */
+;|*** static  int      titlline;               /* Line in title tune               */
+;|*** static  unsigned titltone;               /*  Current title tone              */
+;|*** static  int      titlticks;              /*  Ticks until note change         */
+;|*** static  int      titloctv;               /*  Octave                          */
+;|*** 
+;|*** 
+;|*** 
+;|*** static  char     **tune;                  /* Tune player statics              */
+;|*** static  int      line;
+;|*** static  int      place;
+;|*** static  unsigned tunefreq;
+;|*** static  int      tunedura;
+;|*** static  int      octavefactor;
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** initsndt()
+;|*** {
+; Line 78
+	PUBLIC	_initsndt
+_initsndt	PROC NEAR
+	*** 000000	33 c0 			xor	ax,ax
+	*** 000002	e8 00 00 		call	__aNchkstk
+	*** 000005	57 			push	di
+	*** 000006	56 			push	si
+;	register si = tt
+;	register di = i
+;|*** register TONETAB *tt;
+;|*** register int     i;
+;|*** 
+;|***         for ( i = 0, tt = tonetab; i < ( SNDSIZE - 1 ); ++i, ++tt )
+; Line 82
+	*** 000007	2b ff 			sub	di,di
+	*** 000009	be 02 00 		mov	si,OFFSET DGROUP:$S154_tonetab
+	*** 00000c	eb 0a 			jmp	SHORT $F188
+					$FC189:
+;|***                 tt->tt_next = tt + 1;
+; Line 83
+	*** 00000e	8d 44 08 		lea	ax,WORD PTR [si+8]
+	*** 000011	89 44 04 		mov	WORD PTR [si+4],ax
+	*** 000014	47 			inc	di
+	*** 000015	83 c6 08 		add	si,8
+					$F188:
+	*** 000018	83 ff 63 		cmp	di,99
+	*** 00001b	7c f1 			jl	$FC189
+;|***         tt->tt_next = NULL;
+;|***         frsttone = NULL;
+; Line 85
+	*** 00001d	2b c0 			sub	ax,ax
+	*** 00001f	89 44 04 		mov	WORD PTR [si+4],ax
+	*** 000022	a3 3a 03 		mov	WORD PTR $S155_frsttone,ax
+;|***         freetone = tonetab;
+; Line 86
+	*** 000025	c7 06 26 03 02 00 	mov	WORD PTR $S156_freetone,OFFSET DGROUP:$S154_tonetab
+;|*** }
+; Line 87
+	*** 00002b	5e 			pop	si
+	*** 00002c	5f 			pop	di
+	*** 00002d	c3 			ret	
+
+_initsndt	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** sound( type, parm, ob )
+;|*** int     type, parm;
+; Line 92
+	PUBLIC	_sound
+_sound	PROC NEAR
+	*** 00002e	55 			push	bp
+	*** 00002f	8b ec 			mov	bp,sp
+	*** 000031	33 c0 			xor	ax,ax
+	*** 000033	e8 00 00 		call	__aNchkstk
+;	ob = 8
+;	parm = 6
+;	type = 4
+;|*** OBJECTS *ob;
+;|*** {
+;|*** 
+;|***         if ( type < soundtype ) {
+; Line 96
+	*** 000036	8b 46 04 		mov	ax,WORD PTR [bp+4]	;type
+	*** 000039	39 06 dc 00 		cmp	WORD PTR $S148_soundtype,ax
+	*** 00003d	7e 09 			jle	$I196
+;|***                 soundtype = type;
+; Line 97
+	*** 00003f	a3 dc 00 		mov	WORD PTR $S148_soundtype,ax
+;|***                 soundparm = parm;
+; Line 98
+	*** 000042	8b 46 06 		mov	ax,WORD PTR [bp+6]	;parm
+	*** 000045	eb 10 			jmp	SHORT $L20005
+	*** 000047	90 			nop	
+					$I196:
+;|***                 soundobj = ob;
+;|***         } else
+;|***                 if ( ( type == soundtype ) && ( parm < soundparm ) ) {
+; Line 101
+	*** 000048	39 06 dc 00 		cmp	WORD PTR $S148_soundtype,ax
+	*** 00004c	75 12 			jne	$I198
+	*** 00004e	8b 46 06 		mov	ax,WORD PTR [bp+6]	;parm
+	*** 000051	39 06 de 00 		cmp	WORD PTR $S149_soundparm,ax
+	*** 000055	7e 09 			jle	$I198
+;|***                         soundparm = parm;
+; Line 102
+					$L20005:
+	*** 000057	a3 de 00 		mov	WORD PTR $S149_soundparm,ax
+;|***                         soundobj = ob;
+; Line 103
+	*** 00005a	8b 46 08 		mov	ax,WORD PTR [bp+8]	;ob
+	*** 00005d	a3 e0 00 		mov	WORD PTR $S150_soundobj,ax
+;|***                 }
+; Line 104
+;|*** }
+; Line 105
+					$I198:
+	*** 000060	8b e5 			mov	sp,bp
+	*** 000062	5d 			pop	bp
+	*** 000063	c3 			ret	
+
+_sound	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** swsound()
+;|*** {
+; Line 111
+	PUBLIC	_swsound
+_swsound	PROC NEAR
+	*** 000064	33 c0 			xor	ax,ax
+	*** 000066	e8 00 00 		call	__aNchkstk
+	*** 000069	56 			push	si
+;	register si = tt
+;|*** unsigned          rand();
+;|*** int               adjcont(),  adjshot();
+;|*** register TONETAB  *tt;
+;|*** 
+;|***         intsoff();
+; Line 116
+	*** 00006a	e8 00 00 		call	_intsoff
+;|***         tt = frsttone;
+; Line 117
+	*** 00006d	8b 36 3a 03 		mov	si,WORD PTR $S155_frsttone
+;|***         while ( tt ) {
+; Line 118
+	*** 000071	eb 0d 			jmp	SHORT $L20006
+	*** 000073	90 			nop	
+					$FC207:
+;|***                 tt->tt_tone += ( tt->tt_chng * soundticks );
+; Line 119
+	*** 000074	8b 44 02 		mov	ax,WORD PTR [si+2]
+	*** 000077	f7 26 00 00 		mul	WORD PTR $S157_soundticks
+	*** 00007b	01 04 			add	WORD PTR [si],ax
+;|***                 tt = tt->tt_next;
+; Line 120
+	*** 00007d	8b 74 04 		mov	si,WORD PTR [si+4]
+;|***         }
+; Line 121
+					$L20006:
+	*** 000080	0b f6 			or	si,si
+	*** 000082	75 f0 			jne	$FC207
+;|*** 
+;|***         soundticks = 0;
+; Line 123
+	*** 000084	89 36 00 00 		mov	WORD PTR $S157_soundticks,si
+;|***         titleflg = FALSE;
+; Line 124
+	*** 000088	89 36 28 03 		mov	WORD PTR $S172_titleflg,si
+;|*** 
+;|***         switch ( soundtype ) {
+; Line 126
+	*** 00008c	a1 dc 00 		mov	ax,WORD PTR $S148_soundtype
+	*** 00008f	3d 3c 00 		cmp	ax,60
+	*** 000092	74 1c 			je	$SC215
+	*** 000094	76 03 			jbe	$JCC148
+	*** 000096	e9 d1 00 		jmp	$SC213
+					$JCC148:
+	*** 000099	3c 14 			cmp	al,20
+	*** 00009b	74 37 			je	$SC219
+	*** 00009d	7e 03 			jle	$JCC157
+	*** 00009f	e9 bc 00 		jmp	$L20003
+					$JCC157:
+	*** 0000a2	2c 05 			sub	al,5
+	*** 0000a4	75 03 			jne	$JCC164
+	*** 0000a6	e9 99 00 		jmp	$SC226
+					$JCC164:
+	*** 0000a9	2c 05 			sub	al,5
+	*** 0000ab	74 69 			je	$SC224
+	*** 0000ad	e9 ba 00 		jmp	$SC213
+;|*** 
+;|***                 case 0:
+;|***                 case 32767:
+;|***                 default:
+;|***                         soundoff();
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_PLANE:
+; Line 136
+					$SC215:
+;|***                         if ( soundparm == 0 )
+; Line 137
+	*** 0000b0	39 36 de 00 		cmp	WORD PTR $S149_soundparm,si
+	*** 0000b4	75 0e 			jne	$I216
+;|***                                 tone( 0xF000 );
+; Line 138
+	*** 0000b6	b8 00 f0 		mov	ax,-4096
+					$L20008:
+	*** 0000b9	50 			push	ax
+	*** 0000ba	e8 00 00 		call	tone
+	*** 0000bd	83 c4 02 		add	sp,2
+;|***                         else
+; Line 139
+	*** 0000c0	e9 aa 00 		jmp	$L20007
+	*** 0000c3	90 			nop	
+					$I216:
+;|***                                 tone( 0xD000 + soundparm * 0x1000 );
+; Line 140
+	*** 0000c4	b1 04 			mov	cl,4
+	*** 0000c6	8a 26 de 00 		mov	ah,BYTE PTR $S149_soundparm
+	*** 0000ca	80 ec 03 		sub	ah,3
+	*** 0000cd	2a c0 			sub	al,al
+	*** 0000cf	d3 e0 			shl	ax,cl
+	*** 0000d1	eb e6 			jmp	SHORT $L20008
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_BOMB:
+; Line 145
+	*** 0000d3	90 			nop	
+					$SC219:
+;|***                         if ( soundobj == lastobj )
+; Line 146
+	*** 0000d4	a1 e4 00 		mov	ax,WORD PTR $S152_lastobj
+	*** 0000d7	39 06 e0 00 		cmp	WORD PTR $S150_soundobj,ax
+	*** 0000db	75 03 			jne	$JCC219
+	*** 0000dd	e9 95 00 		jmp	$SB210
+					$JCC219:
+;|***                                 break;
+;|***                         toneadj = adjcont;
+;|***                         lastobj = soundobj;
+; Line 149
+					$L20009:
+	*** 0000e0	a1 e0 00 		mov	ax,WORD PTR $S150_soundobj
+	*** 0000e3	a3 e4 00 		mov	WORD PTR $S152_lastobj,ax
+;|***                         adjcont();
+; Line 150
+	*** 0000e6	b8 00 00 		mov	ax,OFFSET adjcont
+	*** 0000e9	a3 e6 00 		mov	WORD PTR $S153_toneadj,ax
+	*** 0000ec	ff d0 			call	ax
+;|***                         break;
+; Line 151
+	*** 0000ee	e9 84 00 		jmp	$SB210
+;|*** 
+;|***                 case S_FALLING:
+; Line 153
+	*** 0000f1	90 			nop	
+					$SC221:
+;|***                         if ( soundobj == lastobj )
+; Line 154
+	*** 0000f2	a1 e4 00 		mov	ax,WORD PTR $S152_lastobj
+	*** 0000f5	39 06 e0 00 		cmp	WORD PTR $S150_soundobj,ax
+	*** 0000f9	75 e5 			jne	$L20009
+;|***                                 break;
+; Line 155
+	*** 0000fb	eb 78 			jmp	SHORT $SB210
+	*** 0000fd	90 			nop	
+					$SC223:
+;|***                         toneadj = adjcont;
+;|***                         lastobj = soundobj;
+;|***                         adjcont();
+;|***                         break;
+;|*** 
+;|***                 case S_HIT:
+;|***                         tone( rand( 2 ) ? 0x9000 : 0xF000 );
+; Line 162
+	*** 0000fe	b8 02 00 		mov	ax,2
+	*** 000101	50 			push	ax
+	*** 000102	e8 00 00 		call	rand
+	*** 000105	83 c4 02 		add	sp,2
+	*** 000108	3d 01 00 		cmp	ax,1
+	*** 00010b	1b c0 			sbb	ax,ax
+	*** 00010d	25 00 60 		and	ax,24576
+	*** 000110	80 c4 90 		add	ah,144
+	*** 000113	eb a4 			jmp	SHORT $L20008
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_EXPLOSION:
+; Line 167
+	*** 000115	90 			nop	
+					$SC224:
+;|***                         tone( expltone );
+; Line 168
+	*** 000116	ff 36 34 03 		push	WORD PTR $S161_expltone
+	*** 00011a	e8 00 00 		call	tone
+	*** 00011d	83 c4 02 		add	sp,2
+;|***                         toneadj = NULL;
+;|***                         lastobj = NULL;
+; Line 170
+	*** 000120	2b c0 			sub	ax,ax
+	*** 000122	a3 e6 00 		mov	WORD PTR $S153_toneadj,ax
+	*** 000125	a3 e4 00 		mov	WORD PTR $S152_lastobj,ax
+;|***                         break;
+; Line 171
+	*** 000128	eb 4b 			jmp	SHORT $SB210
+;|*** 
+;|***                 case S_SHOT:
+; Line 173
+					$SC225:
+;|***                         tone( 0x1000 );
+; Line 174
+	*** 00012a	b8 00 10 		mov	ax,4096
+	*** 00012d	50 			push	ax
+	*** 00012e	e8 00 00 		call	tone
+	*** 000131	83 c4 02 		add	sp,2
+;|***                         toneadj = adjshot;
+; Line 175
+	*** 000134	c7 06 e6 00 00 00 	mov	WORD PTR $S153_toneadj,OFFSET adjshot
+;|***                         lastobj = NULL;
+; Line 176
+	*** 00013a	c7 06 e4 00 00 00 	mov	WORD PTR $S152_lastobj,0
+;|***                         break;
+; Line 177
+	*** 000140	eb 33 			jmp	SHORT $SB210
+;|*** 
+;|***                 case S_TITLE:
+; Line 179
+					$SC226:
+;|***                         titlline = 0;
+;|***                         titlplace = 0;
+; Line 181
+	*** 000142	2b c0 			sub	ax,ax
+	*** 000144	a3 2e 03 		mov	WORD PTR $S174_titlline,ax
+	*** 000147	a3 44 03 		mov	WORD PTR $S173_titlplace,ax
+;|***                         titlnote();
+; Line 182
+	*** 00014a	e8 00 00 		call	titlnote
+;|***                         toneadj = NULL;
+;|***                         lastobj = NULL;
+; Line 184
+	*** 00014d	2b c0 			sub	ax,ax
+	*** 00014f	a3 e6 00 		mov	WORD PTR $S153_toneadj,ax
+	*** 000152	a3 e4 00 		mov	WORD PTR $S152_lastobj,ax
+;|***                         titleflg = TRUE;
+; Line 185
+	*** 000155	c7 06 28 03 01 00 	mov	WORD PTR $S172_titleflg,1
+;|***                         break;
+; Line 186
+	*** 00015b	eb 18 			jmp	SHORT $SB210
+	*** 00015d	90 			nop	
+					$L20003:
+	*** 00015e	2c 1e 			sub	al,30
+	*** 000160	74 c8 			je	$SC225
+	*** 000162	2c 0a 			sub	al,10
+	*** 000164	74 8c 			je	$SC221
+	*** 000166	2c 0a 			sub	al,10
+	*** 000168	74 94 			je	$SC223
+					$SC213:
+;|***                         soundoff();
+; Line 131
+	*** 00016a	e8 00 00 		call	_soundoff
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+; Line 133
+					$L20007:
+	*** 00016d	2b c0 			sub	ax,ax
+	*** 00016f	a3 e4 00 		mov	WORD PTR $S152_lastobj,ax
+	*** 000172	a3 e6 00 		mov	WORD PTR $S153_toneadj,ax
+;|***                         break;
+; Line 134
+					$SB210:
+;|*** 
+;|***                 case S_PLANE:
+;|***                         if ( soundparm == 0 )
+;|***                                 tone( 0xF000 );
+;|***                         else
+;|***                                 tone( 0xD000 + soundparm * 0x1000 );
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_BOMB:
+;|***                         if ( soundobj == lastobj )
+;|***                                 break;
+;|***                         toneadj = adjcont;
+;|***                         lastobj = soundobj;
+;|***                         adjcont();
+;|***                         break;
+;|*** 
+;|***                 case S_FALLING:
+;|***                         if ( soundobj == lastobj )
+;|***                                 break;
+;|***                         toneadj = adjcont;
+;|***                         lastobj = soundobj;
+;|***                         adjcont();
+;|***                         break;
+;|*** 
+;|***                 case S_HIT:
+;|***                         tone( rand( 2 ) ? 0x9000 : 0xF000 );
+;|***                         lastobj = NULL;
+;|***                         toneadj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_EXPLOSION:
+;|***                         tone( expltone );
+;|***                         toneadj = NULL;
+;|***                         lastobj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_SHOT:
+;|***                         tone( 0x1000 );
+;|***                         toneadj = adjshot;
+;|***                         lastobj = NULL;
+;|***                         break;
+;|*** 
+;|***                 case S_TITLE:
+;|***                         titlline = 0;
+;|***                         titlplace = 0;
+;|***                         titlnote();
+;|***                         toneadj = NULL;
+;|***                         lastobj = NULL;
+;|***                         titleflg = TRUE;
+;|***                         break;
+;|*** 
+;|***         }
+;|*** 
+;|***         intson();
+; Line 190
+	*** 000175	e8 00 00 		call	_intson
+;|***         soundtype = soundparm = 32767;
+; Line 191
+	*** 000178	b8 ff 7f 		mov	ax,32767
+	*** 00017b	a3 de 00 		mov	WORD PTR $S149_soundparm,ax
+	*** 00017e	a3 dc 00 		mov	WORD PTR $S148_soundtype,ax
+;|*** }
+; Line 192
+	*** 000181	5e 			pop	si
+	*** 000182	c3 			ret	
+	*** 000183	90 			nop	
+
+_swsound	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** soundadj()
+;|*** {
+; Line 199
+	PUBLIC	_soundadj
+_soundadj	PROC NEAR
+	*** 000184	33 c0 			xor	ax,ax
+	*** 000186	e8 00 00 		call	__aNchkstk
+;|*** 
+;|***         ++soundticks;
+; Line 201
+	*** 000189	ff 06 00 00 		inc	WORD PTR $S157_soundticks
+;|*** 
+;|***         if ( lastfreq && toneadj )
+; Line 203
+	*** 00018d	83 3e e2 00 00 		cmp	WORD PTR $S151_lastfreq,0
+	*** 000192	74 0b 			je	$I231
+	*** 000194	83 3e e6 00 00 		cmp	WORD PTR $S153_toneadj,0
+	*** 000199	74 04 			je	$I231
+;|***                 ( *toneadj )();
+; Line 204
+	*** 00019b	ff 16 e6 00 		call	WORD PTR $S153_toneadj
+;|*** 
+;|***         if ( numexpls )
+; Line 206
+					$I231:
+	*** 00019f	83 3e 3e 03 00 		cmp	WORD PTR $S158_numexpls,0
+	*** 0001a4	74 03 			je	$I232
+;|***                 adjexpl();
+; Line 207
+	*** 0001a6	e8 00 00 		call	adjexpl
+;|*** 
+;|***         if ( titleflg )
+; Line 209
+					$I232:
+	*** 0001a9	83 3e 28 03 00 		cmp	WORD PTR $S172_titleflg,0
+	*** 0001ae	74 03 			je	$I234
+;|***                 adjtitl();
+; Line 210
+	*** 0001b0	e8 00 00 		call	adjtitl
+;|*** }
+; Line 211
+					$I234:
+	*** 0001b3	c3 			ret	
+
+_soundadj	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  adjcont()
+;|*** {
+; Line 217
+adjcont	PROC NEAR
+	*** 0001b4	33 c0 			xor	ax,ax
+	*** 0001b6	e8 00 00 		call	__aNchkstk
+	*** 0001b9	56 			push	si
+;	register si = tt
+;|*** register TONETAB *tt;
+;|*** 
+;|***         if ( tt = lastobj->ob_sound )
+; Line 220
+	*** 0001ba	8b 1e e4 00 		mov	bx,WORD PTR $S152_lastobj
+	*** 0001be	8b 77 66 		mov	si,WORD PTR [bx+102]
+	*** 0001c1	0b f6 			or	si,si
+	*** 0001c3	74 13 			je	$I238
+;|***                 tone( tt->tt_tone + tt->tt_chng * soundticks );
+; Line 221
+	*** 0001c5	8b 5f 66 		mov	bx,WORD PTR [bx+102]
+	*** 0001c8	8b 47 02 		mov	ax,WORD PTR [bx+2]
+	*** 0001cb	f7 26 00 00 		mul	WORD PTR $S157_soundticks
+	*** 0001cf	03 07 			add	ax,WORD PTR [bx]
+	*** 0001d1	50 			push	ax
+	*** 0001d2	e8 00 00 		call	tone
+	*** 0001d5	83 c4 02 		add	sp,2
+;|*** }
+; Line 222
+					$I238:
+	*** 0001d8	5e 			pop	si
+	*** 0001d9	c3 			ret	
+
+adjcont	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  adjshot()
+;|*** {
+; Line 228
+adjshot	PROC NEAR
+	*** 0001da	33 c0 			xor	ax,ax
+	*** 0001dc	e8 00 00 		call	__aNchkstk
+;|*** static  unsigned savefreq;
+;|*** 
+;|***         if ( lastfreq == 0xF000 )
+; Line 231
+	*** 0001df	81 3e e2 00 00 f0 	cmp	WORD PTR $S151_lastfreq,-4096
+	*** 0001e5	75 07 			jne	$I241
+;|***                 tone( savefreq );
+; Line 232
+	*** 0001e7	ff 36 4a 03 		push	WORD PTR $S240_savefreq
+	*** 0001eb	eb 0b 			jmp	SHORT $L20010
+	*** 0001ed	90 			nop	
+					$I241:
+;|***         else {
+;|***                 savefreq = lastfreq;
+; Line 234
+	*** 0001ee	a1 e2 00 		mov	ax,WORD PTR $S151_lastfreq
+	*** 0001f1	a3 4a 03 		mov	WORD PTR $S240_savefreq,ax
+;|***                 tone( 0xF000 );
+; Line 235
+	*** 0001f4	b8 00 f0 		mov	ax,-4096
+	*** 0001f7	50 			push	ax
+					$L20010:
+	*** 0001f8	e8 00 00 		call	tone
+	*** 0001fb	83 c4 02 		add	sp,2
+;|***         }
+; Line 236
+;|*** }
+; Line 237
+	*** 0001fe	c3 			ret	
+	*** 0001ff	90 			nop	
+
+adjshot	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static adjexpl()
+;|*** {
+; Line 243
+adjexpl	PROC NEAR
+	*** 000200	33 c0 			xor	ax,ax
+	*** 000202	e8 00 00 		call	__aNchkstk
+;|***         if ( --explticks >= 0 )
+; Line 244
+	*** 000205	ff 0e 46 03 		dec	WORD PTR $S162_explticks
+	*** 000209	79 03 			jns	$EX243
+;|***                 return;
+;|*** 
+;|***         explnote();
+; Line 247
+	*** 00020b	e8 00 00 		call	explnote
+;|*** }
+; Line 248
+					$EX243:
+	*** 00020e	c3 			ret	
+	*** 00020f	90 			nop	
+
+adjexpl	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static explnote()
+;|*** {
+; Line 254
+explnote	PROC NEAR
+	*** 000210	33 c0 			xor	ax,ax
+	*** 000212	e8 00 00 		call	__aNchkstk
+;|***         line = explline;
+; Line 255
+	*** 000215	a1 2a 03 		mov	ax,WORD PTR $S160_explline
+	*** 000218	a3 22 03 		mov	WORD PTR $S179_line,ax
+;|***         place = explplace;
+; Line 256
+	*** 00021b	a1 42 03 		mov	ax,WORD PTR $S159_explplace
+	*** 00021e	a3 2c 03 		mov	WORD PTR $S180_place,ax
+;|***         tune = expltune;
+; Line 257
+	*** 000221	c7 06 24 03 e8 00 	mov	WORD PTR $S178_tune,OFFSET DGROUP:$S164_expltune
+;|***         octavefactor = exploctv;
+; Line 258
+	*** 000227	a1 38 03 		mov	ax,WORD PTR $S163_exploctv
+	*** 00022a	a3 40 03 		mov	WORD PTR $S183_octavefactor,ax
+;|***         playnote();
+; Line 259
+	*** 00022d	e8 00 00 		call	_playnote
+;|***         explline = line;
+; Line 260
+	*** 000230	a1 22 03 		mov	ax,WORD PTR $S179_line
+	*** 000233	a3 2a 03 		mov	WORD PTR $S160_explline,ax
+;|***         explplace = place;
+; Line 261
+	*** 000236	a1 2c 03 		mov	ax,WORD PTR $S180_place
+	*** 000239	a3 42 03 		mov	WORD PTR $S159_explplace,ax
+;|***         expltone = tunefreq;
+; Line 262
+	*** 00023c	a1 32 03 		mov	ax,WORD PTR $S181_tunefreq
+	*** 00023f	a3 34 03 		mov	WORD PTR $S161_expltone,ax
+;|***         intsoff();
+; Line 263
+	*** 000242	e8 00 00 		call	_intsoff
+;|***         explticks += tunedura;
+; Line 264
+	*** 000245	a1 30 03 		mov	ax,WORD PTR $S182_tunedura
+	*** 000248	01 06 46 03 		add	WORD PTR $S162_explticks,ax
+;|***         intson();
+; Line 265
+	*** 00024c	e8 00 00 		call	_intson
+;|***         exploctv = octavefactor;
+; Line 266
+	*** 00024f	a1 40 03 		mov	ax,WORD PTR $S183_octavefactor
+	*** 000252	a3 38 03 		mov	WORD PTR $S163_exploctv,ax
+;|*** }
+; Line 267
+	*** 000255	c3 			ret	
+
+explnote	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static adjtitl()
+;|*** {
+; Line 273
+adjtitl	PROC NEAR
+	*** 000256	33 c0 			xor	ax,ax
+	*** 000258	e8 00 00 		call	__aNchkstk
+;|***         if ( --titlticks >= 0 )
+; Line 274
+	*** 00025b	ff 0e 48 03 		dec	WORD PTR $S176_titlticks
+	*** 00025f	79 03 			jns	$EX248
+;|***                 return;
+;|***         titlnote();
+; Line 276
+	*** 000261	e8 00 00 		call	titlnote
+;|*** }
+; Line 277
+					$EX248:
+	*** 000264	c3 			ret	
+	*** 000265	90 			nop	
+
+adjtitl	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static titlnote()
+;|*** {
+; Line 283
+titlnote	PROC NEAR
+	*** 000266	33 c0 			xor	ax,ax
+	*** 000268	e8 00 00 		call	__aNchkstk
+;|*** 
+;|***         line = titlline;
+; Line 285
+	*** 00026b	a1 2e 03 		mov	ax,WORD PTR $S174_titlline
+	*** 00026e	a3 22 03 		mov	WORD PTR $S179_line,ax
+;|***         place = titlplace;
+; Line 286
+	*** 000271	a1 44 03 		mov	ax,WORD PTR $S173_titlplace
+	*** 000274	a3 2c 03 		mov	WORD PTR $S180_place,ax
+;|***         tune = expltune;
+; Line 287
+	*** 000277	c7 06 24 03 e8 00 	mov	WORD PTR $S178_tune,OFFSET DGROUP:$S164_expltune
+;|***         octavefactor = titloctv;
+; Line 288
+	*** 00027d	a1 3c 03 		mov	ax,WORD PTR $S177_titloctv
+	*** 000280	a3 40 03 		mov	WORD PTR $S183_octavefactor,ax
+;|***         playnote();
+; Line 289
+	*** 000283	e8 00 00 		call	_playnote
+;|***         titlline = line;
+; Line 290
+	*** 000286	a1 22 03 		mov	ax,WORD PTR $S179_line
+	*** 000289	a3 2e 03 		mov	WORD PTR $S174_titlline,ax
+;|***         titlplace = place;
+; Line 291
+	*** 00028c	a1 2c 03 		mov	ax,WORD PTR $S180_place
+	*** 00028f	a3 44 03 		mov	WORD PTR $S173_titlplace,ax
+;|***         titltone = tunefreq;
+; Line 292
+	*** 000292	a1 32 03 		mov	ax,WORD PTR $S181_tunefreq
+	*** 000295	a3 36 03 		mov	WORD PTR $S175_titltone,ax
+;|***         intsoff();
+; Line 293
+	*** 000298	e8 00 00 		call	_intsoff
+;|***         titlticks += tunedura;
+; Line 294
+	*** 00029b	a1 30 03 		mov	ax,WORD PTR $S182_tunedura
+	*** 00029e	01 06 48 03 		add	WORD PTR $S176_titlticks,ax
+;|***         intson();
+; Line 295
+	*** 0002a2	e8 00 00 		call	_intson
+;|***         titloctv = octavefactor;
+; Line 296
+	*** 0002a5	a1 40 03 		mov	ax,WORD PTR $S183_octavefactor
+	*** 0002a8	a3 3c 03 		mov	WORD PTR $S177_titloctv,ax
+;|***         soundoff();
+; Line 297
+	*** 0002ab	e8 00 00 		call	_soundoff
+;|***         tone( titltone );
+; Line 298
+	*** 0002ae	ff 36 36 03 		push	WORD PTR $S175_titltone
+	*** 0002b2	e8 00 00 		call	tone
+	*** 0002b5	83 c4 02 		add	sp,2
+;|*** }
+; Line 299
+	*** 0002b8	c3 			ret	
+	*** 0002b9	90 			nop	
+
+titlnote	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** initsound( obp, type )
+;|*** OBJECTS *obp;
+; Line 306
+	PUBLIC	_initsound
+_initsound	PROC NEAR
+	*** 0002ba	55 			push	bp
+	*** 0002bb	8b ec 			mov	bp,sp
+	*** 0002bd	33 c0 			xor	ax,ax
+	*** 0002bf	e8 00 00 		call	__aNchkstk
+	*** 0002c2	57 			push	di
+	*** 0002c3	56 			push	si
+;	register di = tt
+;	register si = ob
+;	type = 6
+;	obp = 4
+;|*** int     type;
+;|*** {
+;|*** register OBJECTS *ob;
+;|*** register TONETAB *tt;
+;|*** TONETAB          *allocton();
+;|*** 
+;|***         if ( ( ob = obp )->ob_sound )
+; Line 313
+	*** 0002c4	8b 76 04 		mov	si,WORD PTR [bp+4]	;obp
+	*** 0002c7	83 7c 66 00 		cmp	WORD PTR [si+102],0
+	*** 0002cb	75 63 			jne	$I261
+;|***                 return;
+;|*** 
+;|***         if ( ob->ob_type == EXPLOSION ) {
+; Line 316
+	*** 0002cd	83 7c 60 05 		cmp	WORD PTR [si+96],5
+	*** 0002d1	75 27 			jne	$I259
+;|***                 intsoff();
+; Line 317
+	*** 0002d3	e8 00 00 		call	_intsoff
+;|***                 if ( ++numexpls == 1 ) {
+; Line 318
+	*** 0002d6	ff 06 3e 03 		inc	WORD PTR $S158_numexpls
+	*** 0002da	83 3e 3e 03 01 		cmp	WORD PTR $S158_numexpls,1
+	*** 0002df	75 0b 			jne	$I260
+;|***                         explline = 0;
+;|***                         explplace = 0;
+; Line 320
+	*** 0002e1	2b c0 			sub	ax,ax
+	*** 0002e3	a3 2a 03 		mov	WORD PTR $S160_explline,ax
+	*** 0002e6	a3 42 03 		mov	WORD PTR $S159_explplace,ax
+;|***                         explnote();
+; Line 321
+	*** 0002e9	e8 24 ff 		call	explnote
+;|***                 }
+; Line 322
+;|***                 ob->ob_sound = (struct tt *) 1;
+; Line 323
+					$I260:
+	*** 0002ec	c7 44 66 01 00 		mov	WORD PTR [si+102],1
+;|***                 intson();
+; Line 324
+					$L20011:
+	*** 0002f1	e8 00 00 		call	_intson
+;|***                 return;
+; Line 325
+	*** 0002f4	5e 			pop	si
+	*** 0002f5	5f 			pop	di
+	*** 0002f6	8b e5 			mov	sp,bp
+	*** 0002f8	5d 			pop	bp
+	*** 0002f9	c3 			ret	
+;|***         }
+; Line 326
+;|*** 
+;|***         if ( tt = allocton() ) {
+; Line 328
+					$I259:
+	*** 0002fa	e8 00 00 		call	allocton
+	*** 0002fd	8b f8 			mov	di,ax
+	*** 0002ff	0b ff 			or	di,di
+	*** 000301	74 2d 			je	$I261
+;|***                 intsoff();
+; Line 329
+	*** 000303	e8 00 00 		call	_intsoff
+;|***                 switch ( type ) {
+; Line 330
+	*** 000306	8b 46 06 		mov	ax,WORD PTR [bp+6]	;type
+	*** 000309	2d 14 00 		sub	ax,20
+	*** 00030c	74 08 			je	$SC266
+	*** 00030e	2d 14 00 		sub	ax,20
+	*** 000311	74 11 			je	$SC267
+;|***                         case S_BOMB:
+;|***                                 tt->tt_tone = 0x0300;
+;|***                                 tt->tt_chng = 8;
+;|***                                 break;
+;|***                         case S_FALLING:
+;|***                                 tt->tt_tone = 0x1200;
+;|***                                 tt->tt_chng = -8;
+;|***                                 break;
+;|***                         default:
+;|***                                 break;
+; Line 340
+	*** 000313	eb 0a 			jmp	SHORT $SB263
+;|***                         case S_BOMB:
+; Line 331
+	*** 000315	90 			nop	
+					$SC266:
+;|***                                 tt->tt_tone = 0x0300;
+; Line 332
+	*** 000316	c7 05 00 03 		mov	WORD PTR [di],768
+;|***                                 tt->tt_chng = 8;
+; Line 333
+	*** 00031a	c7 45 02 08 00 		mov	WORD PTR [di+2],8
+;|***                                 break;
+; Line 334
+					$SB263:
+;|***                         case S_FALLING:
+;|***                                 tt->tt_tone = 0x1200;
+;|***                                 tt->tt_chng = -8;
+;|***                                 break;
+;|***                         default:
+;|***                                 break;
+;|***                 }
+;|***                 ob->ob_sound = tt;
+; Line 342
+	*** 00031f	89 7c 66 		mov	WORD PTR [si+102],di
+	*** 000322	eb cd 			jmp	SHORT $L20011
+;|***                         case S_FALLING:
+; Line 335
+					$SC267:
+;|***                                 tt->tt_tone = 0x1200;
+; Line 336
+	*** 000324	c7 05 00 12 		mov	WORD PTR [di],4608
+;|***                                 tt->tt_chng = -8;
+; Line 337
+	*** 000328	c7 45 02 f8 ff 		mov	WORD PTR [di+2],-8
+;|***                                 break;
+; Line 338
+	*** 00032d	eb f0 			jmp	SHORT $SB263
+;|***                         default:
+; Line 339
+	*** 00032f	90 			nop	
+					$I261:
+	*** 000330	5e 			pop	si
+	*** 000331	5f 			pop	di
+	*** 000332	8b e5 			mov	sp,bp
+	*** 000334	5d 			pop	bp
+	*** 000335	c3 			ret	
+
+_initsound	ENDP
+;|***                                 break;
+;|***                 }
+;|***                 ob->ob_sound = tt;
+;|***                 intson();
+;|***                 return;
+;|***         }
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  TONETAB *allocton()
+;|*** {
+; Line 352
+allocton	PROC NEAR
+	*** 000336	33 c0 			xor	ax,ax
+	*** 000338	e8 00 00 		call	__aNchkstk
+	*** 00033b	56 			push	si
+;	register si = tt
+;|*** register TONETAB *tt;
+;|*** 
+;|***         if ( !freetone )
+; Line 355
+	*** 00033c	83 3e 26 03 00 		cmp	WORD PTR $S156_freetone,0
+	*** 000341	75 05 			jne	$I271
+;|***                 return( 0 );
+; Line 356
+	*** 000343	2b c0 			sub	ax,ax
+	*** 000345	5e 			pop	si
+	*** 000346	c3 			ret	
+;|*** 
+;|***         tt = freetone;
+; Line 358
+	*** 000347	90 			nop	
+					$I271:
+;|***         freetone = tt->tt_next;
+; Line 359
+	*** 000348	8b 36 26 03 		mov	si,WORD PTR $S156_freetone
+	*** 00034c	8b 44 04 		mov	ax,WORD PTR [si+4]
+	*** 00034f	a3 26 03 		mov	WORD PTR $S156_freetone,ax
+;|*** 
+;|***         tt->tt_next = frsttone;
+; Line 361
+	*** 000352	a1 3a 03 		mov	ax,WORD PTR $S155_frsttone
+	*** 000355	89 44 04 		mov	WORD PTR [si+4],ax
+;|***         tt->tt_prev = NULL;
+; Line 362
+	*** 000358	c7 44 06 00 00 		mov	WORD PTR [si+6],0
+;|*** 
+;|***         if ( frsttone )
+; Line 364
+	*** 00035d	83 3e 3a 03 00 		cmp	WORD PTR $S155_frsttone,0
+	*** 000362	74 07 			je	$I272
+;|***                 frsttone->tt_prev = tt;
+; Line 365
+	*** 000364	8b 1e 3a 03 		mov	bx,WORD PTR $S155_frsttone
+	*** 000368	89 77 06 		mov	WORD PTR [bx+6],si
+;|*** 
+;|***         return( frsttone = tt );
+; Line 367
+					$I272:
+	*** 00036b	89 36 3a 03 		mov	WORD PTR $S155_frsttone,si
+	*** 00036f	8b c6 			mov	ax,si
+;|*** }
+; Line 368
+	*** 000371	5e 			pop	si
+	*** 000372	c3 			ret	
+	*** 000373	90 			nop	
+
+allocton	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** static  deallton( ttp )
+;|*** TONETAB *ttp;
+; Line 373
+deallton	PROC NEAR
+	*** 000374	55 			push	bp
+	*** 000375	8b ec 			mov	bp,sp
+	*** 000377	33 c0 			xor	ax,ax
+	*** 000379	e8 00 00 		call	__aNchkstk
+	*** 00037c	57 			push	di
+	*** 00037d	56 			push	si
+;	register si = ttb
+;	register di = tt
+;	ttp = 4
+;|*** {
+;|*** register TONETAB *ttb, *tt;
+;|*** 
+;|*** 
+;|***         if ( ttb = ( tt = ttp )->tt_prev )
+; Line 378
+	*** 00037e	8b 7e 04 		mov	di,WORD PTR [bp+4]	;ttp
+	*** 000381	8b 75 06 		mov	si,WORD PTR [di+6]
+	*** 000384	0b f6 			or	si,si
+	*** 000386	74 08 			je	$I278
+;|***                 ttb->tt_next = tt->tt_next;
+; Line 379
+	*** 000388	8b 45 04 		mov	ax,WORD PTR [di+4]
+	*** 00038b	89 44 04 		mov	WORD PTR [si+4],ax
+;|***         else
+; Line 380
+	*** 00038e	eb 06 			jmp	SHORT $I279
+					$I278:
+;|***                 frsttone = tt->tt_next;
+; Line 381
+	*** 000390	8b 45 04 		mov	ax,WORD PTR [di+4]
+	*** 000393	a3 3a 03 		mov	WORD PTR $S155_frsttone,ax
+					$I279:
+;|*** 
+;|***         if ( ttb = tt->tt_next )
+; Line 383
+	*** 000396	8b 75 04 		mov	si,WORD PTR [di+4]
+	*** 000399	0b f6 			or	si,si
+	*** 00039b	74 06 			je	$I280
+;|***                 ttb->tt_prev = tt->tt_prev;
+; Line 384
+	*** 00039d	8b 45 06 		mov	ax,WORD PTR [di+6]
+	*** 0003a0	89 44 06 		mov	WORD PTR [si+6],ax
+;|*** 
+;|***         tt->tt_next = freetone;
+; Line 386
+					$I280:
+	*** 0003a3	a1 26 03 		mov	ax,WORD PTR $S156_freetone
+	*** 0003a6	89 45 04 		mov	WORD PTR [di+4],ax
+;|***         freetone = tt;
+; Line 387
+	*** 0003a9	89 3e 26 03 		mov	WORD PTR $S156_freetone,di
+;|*** }
+; Line 388
+	*** 0003ad	5e 			pop	si
+	*** 0003ae	5f 			pop	di
+	*** 0003af	8b e5 			mov	sp,bp
+	*** 0003b1	5d 			pop	bp
+	*** 0003b2	c3 			ret	
+	*** 0003b3	90 			nop	
+
+deallton	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** stopsound( ob )
+;|*** OBJECTS *ob;
+; Line 398
+	PUBLIC	_stopsound
+_stopsound	PROC NEAR
+	*** 0003b4	55 			push	bp
+	*** 0003b5	8b ec 			mov	bp,sp
+	*** 0003b7	b8 02 00 		mov	ax,2
+	*** 0003ba	e8 00 00 		call	__aNchkstk
+;	tt = -2
+;	ob = 4
+;|*** {
+;|*** TONETAB *tt;
+;|*** 
+;|***         if ( !( tt = ob->ob_sound ) )
+; Line 402
+	*** 0003bd	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 0003c0	8b 47 66 		mov	ax,WORD PTR [bx+102]
+	*** 0003c3	89 46 fe 		mov	WORD PTR [bp-2],ax	;tt
+	*** 0003c6	0b c0 			or	ax,ax
+	*** 0003c8	74 26 			je	$EX283
+;|***                 return;
+;|*** 
+;|***         intsoff();
+; Line 405
+	*** 0003ca	e8 00 00 		call	_intsoff
+;|***         if ( ob->ob_type == EXPLOSION )
+; Line 406
+	*** 0003cd	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 0003d0	83 7f 60 05 		cmp	WORD PTR [bx+96],5
+	*** 0003d4	75 06 			jne	$I286
+;|***                 --numexpls;
+; Line 407
+	*** 0003d6	ff 0e 3e 03 		dec	WORD PTR $S158_numexpls
+;|***         else
+; Line 408
+	*** 0003da	eb 09 			jmp	SHORT $I287
+					$I286:
+;|***                 deallton( tt );
+; Line 409
+	*** 0003dc	ff 76 fe 		push	WORD PTR [bp-2]	;tt
+	*** 0003df	e8 92 ff 		call	deallton
+	*** 0003e2	83 c4 02 		add	sp,2
+					$I287:
+;|***         ob->ob_sound = NULL;
+; Line 410
+	*** 0003e5	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;ob
+	*** 0003e8	c7 47 66 00 00 		mov	WORD PTR [bx+102],0
+;|***         intson();
+; Line 411
+	*** 0003ed	e8 00 00 		call	_intson
+;|*** }
+; Line 412
+					$EX283:
+	*** 0003f0	8b e5 			mov	sp,bp
+	*** 0003f2	5d 			pop	bp
+	*** 0003f3	c3 			ret	
+
+_stopsound	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  tone( freq )
+;|*** unsigned freq;
+; Line 420
+tone	PROC NEAR
+	*** 0003f4	55 			push	bp
+	*** 0003f5	8b ec 			mov	bp,sp
+	*** 0003f7	33 c0 			xor	ax,ax
+	*** 0003f9	e8 00 00 		call	__aNchkstk
+;	freq = 4
+;|*** {
+;|*** 
+;|***         if ( !soundflg )
+; Line 423
+	*** 0003fc	83 3e 00 00 00 		cmp	WORD PTR _soundflg,0
+	*** 000401	74 5e 			je	$EX289
+;|***                 return;
+;|*** 
+;|***         if ( lastfreq == freq )
+; Line 426
+	*** 000403	8b 46 04 		mov	ax,WORD PTR [bp+4]	;freq
+	*** 000406	39 06 e2 00 		cmp	WORD PTR $S151_lastfreq,ax
+	*** 00040a	74 55 			je	$EX289
+;|***                 return;
+;|*** 
+;|*** #ifdef IBMPC
+;|***         if ( !lastfreq )
+; Line 430
+	*** 00040c	83 3e e2 00 00 		cmp	WORD PTR $S151_lastfreq,0
+	*** 000411	75 0d 			jne	$I292
+;|***                 outportb( TIMER + 3, 0xB6 );
+; Line 431
+	*** 000413	b8 b6 00 		mov	ax,182
+	*** 000416	50 			push	ax
+	*** 000417	b8 43 00 		mov	ax,67
+	*** 00041a	50 			push	ax
+	*** 00041b	e8 00 00 		call	_outportb
+	*** 00041e	8b e5 			mov	sp,bp
+;|***         outportb( TIMER + 2, freq & 0x00FF );
+; Line 432
+					$I292:
+	*** 000420	8a 46 04 		mov	al,BYTE PTR [bp+4]	;freq
+	*** 000423	2a e4 			sub	ah,ah
+	*** 000425	50 			push	ax
+	*** 000426	b8 42 00 		mov	ax,66
+	*** 000429	50 			push	ax
+	*** 00042a	e8 00 00 		call	_outportb
+	*** 00042d	8b e5 			mov	sp,bp
+;|***         outportb( TIMER + 2, freq >> 8 );
+; Line 433
+	*** 00042f	8a 46 05 		mov	al,BYTE PTR [bp+5]
+	*** 000432	2a e4 			sub	ah,ah
+	*** 000434	50 			push	ax
+	*** 000435	b8 42 00 		mov	ax,66
+	*** 000438	50 			push	ax
+	*** 000439	e8 00 00 		call	_outportb
+	*** 00043c	8b e5 			mov	sp,bp
+;|***         if ( !lastfreq )
+; Line 434
+	*** 00043e	83 3e e2 00 00 		cmp	WORD PTR $S151_lastfreq,0
+	*** 000443	75 13 			jne	$I293
+;|***                 outportb( PORTB, 0x03 | inportb( PORTB ) );
+; Line 435
+	*** 000445	b8 61 00 		mov	ax,97
+	*** 000448	50 			push	ax
+	*** 000449	e8 00 00 		call	_inportb
+	*** 00044c	8b e5 			mov	sp,bp
+	*** 00044e	0c 03 			or	al,3
+	*** 000450	50 			push	ax
+	*** 000451	b8 61 00 		mov	ax,97
+	*** 000454	50 			push	ax
+	*** 000455	e8 00 00 		call	_outportb
+;|*** #endif
+;|*** 
+;|***         lastfreq = freq;
+; Line 438
+					$I293:
+;|***         dispdbg = freq;
+; Line 439
+	*** 000458	8b 46 04 		mov	ax,WORD PTR [bp+4]	;freq
+	*** 00045b	a3 e2 00 		mov	WORD PTR $S151_lastfreq,ax
+	*** 00045e	a3 00 00 		mov	WORD PTR _dispdbg,ax
+;|*** }
+; Line 440
+					$EX289:
+	*** 000461	8b e5 			mov	sp,bp
+	*** 000463	5d 			pop	bp
+	*** 000464	c3 			ret	
+	*** 000465	90 			nop	
+
+tone	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** soundoff()
+;|*** {
+; Line 446
+	PUBLIC	_soundoff
+_soundoff	PROC NEAR
+	*** 000466	33 c0 			xor	ax,ax
+	*** 000468	e8 00 00 		call	__aNchkstk
+;|***         if ( lastfreq ) {
+; Line 447
+	*** 00046b	83 3e e2 00 00 		cmp	WORD PTR $S151_lastfreq,0
+	*** 000470	74 24 			je	$I295
+;|*** #ifdef IBMPC
+;|***                 outportb( PORTB, 0xFC & inportb( PORTB ) );
+; Line 449
+	*** 000472	b8 61 00 		mov	ax,97
+	*** 000475	50 			push	ax
+	*** 000476	e8 00 00 		call	_inportb
+	*** 000479	83 c4 02 		add	sp,2
+	*** 00047c	25 fc 00 		and	ax,252
+	*** 00047f	50 			push	ax
+	*** 000480	b8 61 00 		mov	ax,97
+	*** 000483	50 			push	ax
+	*** 000484	e8 00 00 		call	_outportb
+	*** 000487	83 c4 04 		add	sp,4
+;|*** #endif
+;|***                 lastfreq = 0;
+; Line 451
+	*** 00048a	c7 06 e2 00 00 00 	mov	WORD PTR $S151_lastfreq,0
+;|***                 dispdbg = 0;
+; Line 452
+	*** 000490	c7 06 00 00 00 00 	mov	WORD PTR _dispdbg,0
+;|***         }
+; Line 453
+;|*** }
+; Line 454
+					$I295:
+	*** 000496	c3 			ret	
+	*** 000497	90 			nop	
+
+_soundoff	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** static  int       seed[50] = {
+;|***         0x90B9, 0xBCFB, 0x6564, 0x3313, 0x3190, 0xA980, 0xBCF0, 0x6F97,
+;|***         0x37F4, 0x064B, 0x9FD8, 0x595B, 0x1EEE, 0x820C, 0x4201, 0x651E,
+;|***         0x848E, 0x15D5, 0x1DE7, 0x1585, 0xA850, 0x213B, 0x3953, 0x1EB0,
+;|***         0x97A7, 0x35DD, 0xAF2F, 0x1629, 0xBE9B, 0x243F, 0x847D, 0x313A,
+;|***         0x3295, 0xBC11, 0x6E6D, 0x3398, 0xAD43, 0x51CE, 0x8F95, 0x507E,
+;|***         0x499E, 0x3BC1, 0x5243, 0x2017, 0x9510, 0x9865, 0x65F6, 0x6B56,
+;|***         0x36B9, 0x5026
+;|*** };
+;|*** 
+;|*** 
+;|*** 
+;|*** static  unsigned  rand( modulo )
+;|*** unsigned  modulo;
+; Line 473
+rand	PROC NEAR
+	*** 000498	55 			push	bp
+	*** 000499	8b ec 			mov	bp,sp
+	*** 00049b	b8 02 00 		mov	ax,2
+	*** 00049e	e8 00 00 		call	__aNchkstk
+;	modulo = 4
+;|*** {
+;|*** static    i = 0;
+;|*** 
+;|***         if ( i >= 50 )
+; Line 477
+	*** 0004a1	83 3e 5a 01 32 		cmp	WORD PTR $S299_i,50
+	*** 0004a6	7c 06 			jl	$I300
+;|***                 i = 0;
+; Line 478
+	*** 0004a8	c7 06 5a 01 00 00 	mov	WORD PTR $S299_i,0
+;|***         return( seed[i++] % modulo );
+; Line 479
+					$I300:
+	*** 0004ae	8b 1e 5a 01 		mov	bx,WORD PTR $S299_i
+	*** 0004b2	ff 06 5a 01 		inc	WORD PTR $S299_i
+	*** 0004b6	d1 e3 			shl	bx,1
+	*** 0004b8	8b 87 f6 00 		mov	ax,WORD PTR $S296_seed[bx]
+	*** 0004bc	2b d2 			sub	dx,dx
+	*** 0004be	f7 76 04 		div	WORD PTR [bp+4]	;modulo
+	*** 0004c1	8b c2 			mov	ax,dx
+;|*** }
+; Line 480
+	*** 0004c3	8b e5 			mov	sp,bp
+	*** 0004c5	5d 			pop	bp
+	*** 0004c6	c3 			ret	
+	*** 0004c7	90 			nop	
+
+rand	ENDP
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** #define NOTEEND     '/'
+;|*** #define UPOCTAVE    '>'
+;|*** #define DOWNOCTAVE  '<'
+;|*** #define SHARP       '+'
+;|*** #define FLAT        '-'
+;|*** #define DOT         '.'
+;|*** #define REST        'R'
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** 
+;|*** playnote()
+;|***   {
+; Line 501
+	PUBLIC	_playnote
+_playnote	PROC NEAR
+	*** 0004c8	55 			push	bp
+	*** 0004c9	8b ec 			mov	bp,sp
+	*** 0004cb	b8 04 00 		mov	ax,4
+	*** 0004ce	e8 00 00 		call	__aNchkstk
+	*** 0004d1	56 			push	si
+;	firstplace = -2
+;|*** 
+;|***     static int noteindex[] = { 0,2,3,5,7,8,10 };
+;|***     static int notefreq[]  = {440,466,494,523,554,587,622,659,698,740,784,831};
+;|*** 
+;|***     static int durplace, test, freq, duration;
+;|***     static int index;
+;|***     static int indexadj;
+;|*** 
+;|***     static  char    durstring[5];
+;|***     static  char    charatplace, noteletter;
+;|*** 
+;|***     static  int   noteoctavefactor;
+;|***     static  int   dottednote;
+;|*** 
+;|***     BOOL          firstplace = TRUE;
+; Line 516
+	*** 0004d2	c7 46 fe 01 00 		mov	WORD PTR [bp-2],1	;firstplace
+;|*** 
+;|***     indexadj = 0;
+;|***     durplace = 0;
+; Line 519
+	*** 0004d7	2b c0 			sub	ax,ax
+	*** 0004d9	a3 5a 03 		mov	WORD PTR $S309_indexadj,ax
+	*** 0004dc	a3 4e 03 		mov	WORD PTR $S304_durplace,ax
+;|***     dottednote = 2;
+; Line 520
+	*** 0004df	c7 06 60 03 02 00 	mov	WORD PTR $S314_dottednote,2
+;|***     noteoctavefactor = 256;
+; Line 521
+	*** 0004e5	c7 06 58 03 00 01 	mov	WORD PTR $S313_noteoctavefactor,256
+;|*** 
+;|***     FOREVER {
+; Line 523
+					$FC317:
+;|***         if ( ( !line ) && ( !place ) )
+; Line 524
+	*** 0004eb	83 3e 22 03 00 		cmp	WORD PTR $S179_line,0
+	*** 0004f0	75 0d 			jne	$I319
+	*** 0004f2	83 3e 2c 03 00 		cmp	WORD PTR $S180_place,0
+	*** 0004f7	75 06 			jne	$I319
+;|***                 octavefactor = 256;
+; Line 525
+	*** 0004f9	c7 06 40 03 00 01 	mov	WORD PTR $S183_octavefactor,256
+;|*** 
+;|***         if ( !( charatplace = toupper( tune[line][place++] ) ) ) {
+; Line 527
+					$I319:
+	*** 0004ff	a1 2c 03 		mov	ax,WORD PTR $S180_place
+	*** 000502	ff 06 2c 03 		inc	WORD PTR $S180_place
+	*** 000506	8b 1e 22 03 		mov	bx,WORD PTR $S179_line
+	*** 00050a	d1 e3 			shl	bx,1
+	*** 00050c	8b 36 24 03 		mov	si,WORD PTR $S178_tune
+	*** 000510	8b 18 			mov	bx,WORD PTR [bx][si]
+	*** 000512	8b f0 			mov	si,ax
+	*** 000514	8a 00 			mov	al,BYTE PTR [bx][si]
+	*** 000516	98 			cbw	
+	*** 000517	50 			push	ax
+	*** 000518	e8 00 00 		call	_toupper
+	*** 00051b	83 c4 02 		add	sp,2
+	*** 00051e	a2 5c 03 		mov	BYTE PTR $S311_charatplace,al
+	*** 000521	0a c0 			or	al,al
+	*** 000523	75 77 			jne	$I321
+;|***                 if ( !( charatplace = tune[++line][place = 0] ) ) {
+; Line 528
+	*** 000525	c7 06 2c 03 00 00 	mov	WORD PTR $S180_place,0
+	*** 00052b	ff 06 22 03 		inc	WORD PTR $S179_line
+	*** 00052f	8b 1e 22 03 		mov	bx,WORD PTR $S179_line
+	*** 000533	d1 e3 			shl	bx,1
+	*** 000535	8b 36 24 03 		mov	si,WORD PTR $S178_tune
+	*** 000539	8b 18 			mov	bx,WORD PTR [bx][si]
+	*** 00053b	8a 07 			mov	al,BYTE PTR [bx]
+	*** 00053d	a2 5c 03 		mov	BYTE PTR $S311_charatplace,al
+	*** 000540	0a c0 			or	al,al
+	*** 000542	75 06 			jne	$I322
+;|***                         line = 0;
+; Line 529
+	*** 000544	c7 06 22 03 00 00 	mov	WORD PTR $S179_line,0
+;|***                 }
+; Line 530
+;|*** 
+;|***                 if ( firstplace )
+; Line 532
+					$I322:
+	*** 00054a	83 7e fe 00 		cmp	WORD PTR [bp-2],0	;firstplace
+	*** 00054e	75 9b 			jne	$FC317
+;|***                         continue;
+;|***                 break;
+; Line 534
+					$FB318:
+;|***         }
+;|***         firstplace = FALSE;
+;|***         if ( charatplace == NOTEEND )
+;|***                 break;
+;|*** 
+;|***         if ( test = isalpha( charatplace )) {
+;|***             index = *(noteindex + (charatplace - 'A'));
+;|***             noteletter = charatplace;
+;|***         } else
+;|***             switch( charatplace ) {
+;|***                 case UPOCTAVE : octavefactor <<= 1; break;
+;|***                 case DOWNOCTAVE : octavefactor >>= 1; break;
+;|***                 case SHARP    : indexadj++; break;
+;|***                 case FLAT     : indexadj--; break;
+;|***                 case DOT      : dottednote = 3; break;
+;|***                 default       :
+;|***                         if ( test = isdigit(charatplace))
+;|***                             *(durstring + durplace++) = charatplace;
+;|***                         break;
+;|***             }
+;|*** 
+;|***     }
+;|*** 
+;|***     *(durstring + durplace) = '\0';
+; Line 558
+	*** 000550	8b 1e 4e 03 		mov	bx,WORD PTR $S304_durplace
+	*** 000554	c6 87 50 03 00 		mov	BYTE PTR $S310_durstring[bx],0
+;|***     duration = atoi( durstring );
+; Line 559
+	*** 000559	b8 50 03 		mov	ax,OFFSET DGROUP:$S310_durstring
+	*** 00055c	50 			push	ax
+	*** 00055d	e8 00 00 		call	_atoi
+	*** 000560	83 c4 02 		add	sp,2
+	*** 000563	a3 56 03 		mov	WORD PTR $S307_duration,ax
+;|***     if (duration <= 0) duration = 4;
+; Line 560
+	*** 000566	0b c0 			or	ax,ax
+	*** 000568	7f 06 			jg	$I341
+	*** 00056a	c7 06 56 03 04 00 	mov	WORD PTR $S307_duration,4
+;|***     duration = (1440 * dottednote / (60*duration)) >> 1;
+; Line 561
+					$I341:
+	*** 000570	b8 3c 00 		mov	ax,60
+	*** 000573	f7 2e 56 03 		imul	WORD PTR $S307_duration
+	*** 000577	8b c8 			mov	cx,ax
+	*** 000579	b8 a0 05 		mov	ax,1440
+	*** 00057c	f7 2e 60 03 		imul	WORD PTR $S314_dottednote
+	*** 000580	99 			cwd	
+	*** 000581	f7 f9 			idiv	cx
+	*** 000583	d1 f8 			sar	ax,1
+	*** 000585	a3 56 03 		mov	WORD PTR $S307_duration,ax
+;|*** 
+;|***     if (noteletter == REST)
+; Line 563
+	*** 000588	80 3e 55 03 52 		cmp	BYTE PTR $S312_noteletter,82
+	*** 00058d	74 03 			je	$JCC1421
+	*** 00058f	e9 ac 00 		jmp	$I342
+					$JCC1421:
+;|***         freq = 32000;
+; Line 564
+	*** 000592	c7 06 62 03 00 7d 	mov	WORD PTR $S306_freq,32000
+;|***     else {
+; Line 565
+	*** 000598	e9 ea 00 		jmp	$I343
+;|***         }
+; Line 535
+;|***         firstplace = FALSE;
+; Line 536
+	*** 00059b	90 			nop	
+					$I321:
+	*** 00059c	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;firstplace
+;|***         if ( charatplace == NOTEEND )
+; Line 537
+	*** 0005a1	80 3e 5c 03 2f 		cmp	BYTE PTR $S311_charatplace,47
+	*** 0005a6	74 a8 			je	$FB318
+;|***                 break;
+;|*** 
+;|***         if ( test = isalpha( charatplace )) {
+; Line 540
+	*** 0005a8	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 0005ab	98 			cbw	
+	*** 0005ac	50 			push	ax
+	*** 0005ad	e8 00 00 		call	_isalpha
+	*** 0005b0	83 c4 02 		add	sp,2
+	*** 0005b3	a3 4c 03 		mov	WORD PTR $S305_test,ax
+	*** 0005b6	0b c0 			or	ax,ax
+	*** 0005b8	74 18 			je	$I326
+;|***             index = *(noteindex + (charatplace - 'A'));
+; Line 541
+	*** 0005ba	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 0005bd	98 			cbw	
+	*** 0005be	8b d8 			mov	bx,ax
+	*** 0005c0	d1 e3 			shl	bx,1
+	*** 0005c2	8b 87 da 00 		mov	ax,WORD PTR $S302_noteindex[bx-130]
+	*** 0005c6	a3 5e 03 		mov	WORD PTR $S308_index,ax
+;|***             noteletter = charatplace;
+; Line 542
+	*** 0005c9	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 0005cc	a2 55 03 		mov	BYTE PTR $S312_noteletter,al
+;|***         } else
+; Line 543
+	*** 0005cf	e9 19 ff 		jmp	$FC317
+					$I326:
+;|***             switch( charatplace ) {
+; Line 544
+	*** 0005d2	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 0005d5	98 			cbw	
+	*** 0005d6	3d 3e 00 		cmp	ax,62
+	*** 0005d9	74 39 			je	$SC332
+	*** 0005db	77 10 			ja	$SD337
+	*** 0005dd	2c 2b 			sub	al,43
+	*** 0005df	74 43 			je	$SC334
+	*** 0005e1	2c 02 			sub	al,2
+	*** 0005e3	74 47 			je	$SC335
+	*** 0005e5	fe c8 			dec	al
+	*** 0005e7	74 4b 			je	$SC336
+	*** 0005e9	2c 0e 			sub	al,14
+	*** 0005eb	74 2f 			je	$SC333
+					$SD337:
+;|***                 case UPOCTAVE : octavefactor <<= 1; break;
+;|***                 case DOWNOCTAVE : octavefactor >>= 1; break;
+;|***                 case SHARP    : indexadj++; break;
+;|***                 case FLAT     : indexadj--; break;
+;|***                 case DOT      : dottednote = 3; break;
+;|***                 default       :
+;|***                         if ( test = isdigit(charatplace))
+; Line 551
+	*** 0005ed	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 0005f0	98 			cbw	
+	*** 0005f1	50 			push	ax
+	*** 0005f2	e8 00 00 		call	_isdigit
+	*** 0005f5	83 c4 02 		add	sp,2
+	*** 0005f8	a3 4c 03 		mov	WORD PTR $S305_test,ax
+	*** 0005fb	0b c0 			or	ax,ax
+	*** 0005fd	75 03 			jne	$JCC1533
+	*** 0005ff	e9 e9 fe 		jmp	$FC317
+					$JCC1533:
+;|***                             *(durstring + durplace++) = charatplace;
+; Line 552
+	*** 000602	a0 5c 03 		mov	al,BYTE PTR $S311_charatplace
+	*** 000605	8b 1e 4e 03 		mov	bx,WORD PTR $S304_durplace
+	*** 000609	88 87 50 03 		mov	BYTE PTR $S310_durstring[bx],al
+	*** 00060d	ff 06 4e 03 		inc	WORD PTR $S304_durplace
+;|***                         break;
+; Line 553
+	*** 000611	e9 d7 fe 		jmp	$FC317
+;|***                 case UPOCTAVE : octavefactor <<= 1; break;
+; Line 545
+					$SC332:
+	*** 000614	d1 26 40 03 		shl	WORD PTR $S183_octavefactor,1
+;|***                 case DOWNOCTAVE : octavefactor >>= 1; break;
+;|***                 case SHARP    : indexadj++; break;
+;|***                 case FLAT     : indexadj--; break;
+;|***                 case DOT      : dottednote = 3; break;
+;|***                 default       :
+;|***                         if ( test = isdigit(charatplace))
+;|***                             *(durstring + durplace++) = charatplace;
+;|***                         break;
+;|***             }
+;|*** 
+;|***     }
+; Line 556
+	*** 000618	e9 d0 fe 		jmp	$FC317
+;|***                 case DOWNOCTAVE : octavefactor >>= 1; break;
+; Line 546
+	*** 00061b	90 			nop	
+					$SC333:
+	*** 00061c	d1 3e 40 03 		sar	WORD PTR $S183_octavefactor,1
+	*** 000620	e9 c8 fe 		jmp	$FC317
+;|***                 case SHARP    : indexadj++; break;
+; Line 547
+	*** 000623	90 			nop	
+					$SC334:
+	*** 000624	ff 06 5a 03 		inc	WORD PTR $S309_indexadj
+	*** 000628	e9 c0 fe 		jmp	$FC317
+;|***                 case FLAT     : indexadj--; break;
+; Line 548
+	*** 00062b	90 			nop	
+					$SC335:
+	*** 00062c	ff 0e 5a 03 		dec	WORD PTR $S309_indexadj
+	*** 000630	e9 b8 fe 		jmp	$FC317
+;|***                 case DOT      : dottednote = 3; break;
+; Line 549
+	*** 000633	90 			nop	
+					$SC336:
+	*** 000634	c7 06 60 03 03 00 	mov	WORD PTR $S314_dottednote,3
+	*** 00063a	e9 ae fe 		jmp	$FC317
+;|***                 default       :
+; Line 550
+	*** 00063d	90 			nop	
+					$I342:
+;|***                         if ( test = isdigit(charatplace))
+;|***                             *(durstring + durplace++) = charatplace;
+;|***                         break;
+;|***             }
+;|*** 
+;|***     }
+;|*** 
+;|***     *(durstring + durplace) = '\0';
+;|***     duration = atoi( durstring );
+;|***     if (duration <= 0) duration = 4;
+;|***     duration = (1440 * dottednote / (60*duration)) >> 1;
+;|*** 
+;|***     if (noteletter == REST)
+;|***         freq = 32000;
+;|***     else {
+;|***         index += indexadj;
+; Line 566
+	*** 00063e	a1 5a 03 		mov	ax,WORD PTR $S309_indexadj
+	*** 000641	01 06 5e 03 		add	WORD PTR $S308_index,ax
+;|***         while (index < 0) {
+; Line 567
+	*** 000645	eb 0a 			jmp	SHORT $L20012
+	*** 000647	90 			nop	
+					$FC345:
+;|***             index += 12;
+; Line 568
+	*** 000648	83 06 5e 03 0c 		add	WORD PTR $S308_index,12
+;|***             noteoctavefactor >>= 1 ;
+; Line 569
+	*** 00064d	d1 3e 58 03 		sar	WORD PTR $S313_noteoctavefactor,1
+;|***         }
+; Line 570
+					$L20012:
+	*** 000651	83 3e 5e 03 00 		cmp	WORD PTR $S308_index,0
+	*** 000656	7c f0 			jl	$FC345
+;|***         while ( index >= 12 ) {
+; Line 571
+	*** 000658	eb 09 			jmp	SHORT $L20013
+					$FC348:
+;|***             index -= 12;
+; Line 572
+	*** 00065a	83 2e 5e 03 0c 		sub	WORD PTR $S308_index,12
+;|***             noteoctavefactor <<= 1 ;
+; Line 573
+	*** 00065f	d1 26 58 03 		shl	WORD PTR $S313_noteoctavefactor,1
+;|***         }
+; Line 574
+					$L20013:
+	*** 000663	83 3e 5e 03 0c 		cmp	WORD PTR $S308_index,12
+	*** 000668	7d f0 			jge	$FC348
+;|***         freq = soundmul( *(notefreq+index), octavefactor, noteoctavefactor );
+; Line 575
+	*** 00066a	ff 36 58 03 		push	WORD PTR $S313_noteoctavefactor
+	*** 00066e	ff 36 40 03 		push	WORD PTR $S183_octavefactor
+	*** 000672	8b 1e 5e 03 		mov	bx,WORD PTR $S308_index
+	*** 000676	d1 e3 			shl	bx,1
+	*** 000678	ff b7 6a 01 		push	WORD PTR $S303_notefreq[bx]
+	*** 00067c	e8 00 00 		call	_soundmul
+	*** 00067f	83 c4 06 		add	sp,6
+	*** 000682	a3 62 03 		mov	WORD PTR $S306_freq,ax
+;|***     }
+; Line 576
+					$I343:
+;|***     tunefreq = sounddiv( 1331000L, freq );
+; Line 577
+	*** 000685	ff 36 62 03 		push	WORD PTR $S306_freq
+	*** 000689	b8 38 4f 		mov	ax,20280
+	*** 00068c	ba 14 00 		mov	dx,20
+	*** 00068f	52 			push	dx
+	*** 000690	50 			push	ax
+	*** 000691	e8 00 00 		call	_sounddiv
+	*** 000694	83 c4 06 		add	sp,6
+	*** 000697	a3 32 03 		mov	WORD PTR $S181_tunefreq,ax
+;|***     tunedura = duration;
+; Line 578
+	*** 00069a	a1 56 03 		mov	ax,WORD PTR $S307_duration
+	*** 00069d	a3 30 03 		mov	WORD PTR $S182_tunedura,ax
+;|***   }
+; Line 579
+	*** 0006a0	5e 			pop	si
+	*** 0006a1	8b e5 			mov	sp,bp
+	*** 0006a3	5d 			pop	bp
+	*** 0006a4	c3 			ret	
+	*** 0006a5	90 			nop	
+
+_playnote	ENDP
+_TEXT	ENDS
+END

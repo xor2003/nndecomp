@@ -1,0 +1,17 @@
+bool Initialize(Progdata progdata)
+{
+	paperroute[0] = 70;
+	paperroute[1] = 65;
+	paperroute[2] = 64;
+	paperroute[3] = 63;
+	paperroute[4] = 68;
+	paperroute[5] = 67;
+
+	return (SetRooms(progdata.rooms)
+		&&	SetLivings(progdata.living)
+		&&	SetItems(progdata.items));
+
+}
+
+bool SetRooms(Rooms &rooms)
+{

@@ -1,0 +1,274 @@
+#include<iostream.h>
+#include<conio.h>
+#include<dos.h>
+#include<stdio.h>
+#include<string.h>
+#include<fstream.h>
+char auth[]={"123456789"};
+class proc
+{
+public:
+char check[9];
+int i;
+void back();
+void fndelay();
+char login();
+void menu();
+void out(char a[200],int size,char,char);
+}begin;
+class autoc: public proc
+{
+int ID,year;
+char name[40],inventory[40],rating[5];
+long double investment,profit,revenue,profitper;
+int authtoken;
+public:
+char cat[30];
+void view();
+void add();
+void modify();
+void edit();
+void category(char in[40]);
+};
+void autoc::category(char in[][40])
+{
+char bodywork[5][10]={"Bumpers","Doors","Hood","Poof Panel","Mirrors"};
+char structure[5][30]={"Superstructure","Door Reinforcers","Bumper Supports","Dashboard Cross Member","Front Cross Member"};
+char steering[5][40]={"Wheels","Front and rear axles","steering wheel","Electric power-assisted steering","Springs and shock absorbers"};
+char mechanical[7][30]={"Braking","Handbrake mechanism","Exhaust system","Heat shield","Tank","Engine-Gearbox","Transmission"};
+char safety[11][30]={"Front headrest","Heat side airbags","Thorax side airbags","Seat belts","ImpactECU","Horn","Tyres","Tyre Pressure","Antiskid","Emergency Brake Assist","Seat Frame"};
+char comfort[12][30]={"Carpets","Seats","Dashboard","Instrument Panel","Air Distribution","Air Conditioning","Lighting","Window Lift mechanism","Hood Opening","Sunroof","Wiper System","Washer fluid tank"};
+char electricity[6][30]={"Headlamps","Dashboard wiring","Main wiring","Front wiring","Doors wiring"};
+char aerodynamics[7][40]={"Front Bumper","Bumper flexible blade","Wheel arch covers","Fixed glazing partial flush-fitting","Rims","Mirrors","Tailgate top moulding"};
+char environment[3][30]={"Exhaust","Engine","EGR"};
+for(int i=0;i<5;i++)
+if(strcmpi(in[0],bodywork[i])==0)
+strcpy(cat,"Bodywork");
+for(i=0;i<5;i++)
+if(strcmpi(in[0],structure[i])==0)
+strcpy(cat,"Structure");
+for(i=0;i<5;i++)
+if(strcmpi(in[0],steering[i])==0)
+strcpy(cat,"Steering Axle");
+for(i=0;i<7;i++)
+if(strcmpi(in[0],mechanical[i])==0)
+strcpy(cat,"Mechaninal Components");
+for(i=0;i<11;i++)
+if(strcmpi(in[0],safety[i])==0)
+strcpy(cat,"Safety");
+for(i=0;i<12;i++)
+if(strcmpi(in[0],comfort[i])==0)
+strcpy(cat,"Comfort");
+for(i=0;i<6;i++)
+if(strcmpi(in[0],electricity[i])==0)
+strcpy(cat,"Electricity");
+for(i=0;i<7;i++)
+if(strcmpi(in[0],aerodynamics[i])==0)
+strcpy(cat,"Aerodynamics");
+for(i=0;i<3;i++)
+if(strcmpi(in[0],environment[i])==0)
+strcpy(cat,"Environment");
+}
+void autoc::view()
+{
+clrscr();
+cout<<"test view";
+getch();
+}
+void autoc::modify()
+{
+
+}
+void autoc::add()
+{
+clrscr();
+out("Welcome to the ADD Module!!",sizeof("Welcome to the ADD Module!!"),10,5);
+out("Enter the name of the company",sizeof("Enter the name of the company"),10,6);
+cin>>name;
+out("Enter the year of joining",sizeof("Enter the year of joining"),10,7);
+cin>>year;
+out("Enter investment of company",sizeof("Enter investment of company"),10,8);
+cin>>investment;
+out("Enter the annual revenue of the company",sizeof("Enter the annual revenue of the company"),10,9);
+cin>>revenue;
+out("Enter the profit",sizeof("Enter the profit"),10,10);
+cin>>profit;
+profitper=(profit/investment)*100;
+if(profitper<=20)
+strcpy(rating,"*");
+else if(profitper>20&&profitper<=40)
+strcpy(rating,"**");
+else if(profitper>40&&profitper<=60)
+strcpy(rating,"***");
+else if(profitper>60&&profitper<=80)
+strcpy(rating,"****");
+else if(profitper>80&&profitper<=100)
+strcpy(rating,"*****");
+out("Enter the Inventory",sizeof("Enter the Inventory"));
+cin>>inventory;
+category(inventory);
+getch();
+}
+void autoc::edit()
+{
+clrscr();
+cout<<"test edit";
+getch();
+}
+void proc::back()
+{
+}
+void proc::out(char a[200],int size,char x=10,char y=5)
+{ //UNDER DEVELOPMENT #STATIC TEXT BACKGROUND , THUMBS UP
+/*for(int j=0;j<80;j++)
+{
+gotoxy(j,0);
+cout<<"&";
+}
+for(j=0;j<80;j++)
+{
+gotoxy(j,24);
+cout<<"&";
+}*/
+gotoxy(x,y);
+for(int i=0;i<size;i++)
+{
+cout<<a[i];
+delay(50);
+}
+}
+void proc::fndelay()
+{
+	for(i=0;i<4;i++)
+	{
+	out(".....",sizeof("....."),10,6+i);
+	}
+}
+
+
+
+char proc::login()
+{
+
+		start:
+		clrscr();
+		char ch;
+		out("Enter the system password!!!",sizeof("Enter the system password!!!"));
+		while(1)
+		{
+		ch=getch();                                                           // 1
+		if(ch==13)                                                            //  2
+		break;
+		cout<<"*";                                                              // 3
+		check[i++]=ch;                                                       //4
+		}
+		check[i]='\0';
+
+			if(strcmp(check,auth)==0)
+			{
+			clrscr();
+			out("Authenticated!!",sizeof("Authenticated!!"));
+			return 'y';
+			}
+			if(check!=auth)
+			{
+			clrscr();
+			strcpy(check,NULL);
+			out("Fatal Error!! Incorrect password, Please try again",sizeof("Fatal Error!! Incorrect password, Please try again"));
+			getch();
+			goto start;
+			}
+ return 'n';
+}
+void proc::menu()
+{
+	clrscr();
+	out("Welcome to AutomobileLogistics ver-0.0.1",sizeof("Welcome to AutomobileLogistics ver-0.0.1"));
+	fndelay();
+	fndelay();
+	char ask='n';
+	do
+	{
+	int s=0;
+	clrscr();
+	out("What operation would you like to perform",sizeof("What operation would you like to perform"));
+	out("1.View company records",sizeof("1.View company records"),10,11);
+	out("2.Edit company records",sizeof("2.Edit company records"),10,12);
+	out("3.Add company record",sizeof("3.Add company record"),10,13);
+	out("4.Quit AutomobileLogistics ver-0.0.1",sizeof("4.Quit AutomobileLogistics ver-0.0.1"),10,14);
+	out("5.Help!!",sizeof("5.Help!!"),10,15);
+	cin>>s;
+	switch(s)
+		{
+		case 1:
+			autoc v;
+			v.view();
+			clrscr();
+			out("Do you want to return to main menu?(y/n)",sizeof("Do you want to return to main menu?(y/n)"));
+			cin>>ask;
+			break;
+		case 2:
+			autoc e;
+			e.edit();
+			clrscr();
+			out("Do you want to return to main menu?(y/n)",sizeof("Do you want to return to main menu?(y/n)"));cout<<"Do you want to return to main menu?(y/n)";
+			cin>>ask;
+			break;
+		case 3:
+			autoc a;
+			a.add();
+			ofstream fout;
+			fout.open("RECORD.dat",ios::binary);
+			fout.write((char*)&a,sizeof(a));
+			out("RECORD ADDED",sizeof("RECORD ADDED"));
+			fout.close();
+			clrscr();
+			out("Do you want to return to main menu?(y/n)",sizeof("Do you want to return to main menu?(y/n)"));
+			cin>>ask;
+			break;
+		case 4:
+			clrscr();
+			out("Are you sure you want to quit this program(y/n)?",sizeof("Are you sure you want to quit this program(y/n)?"));
+			cin>>ask;
+			if(ask=='y'||'Y')
+			ask='n';
+			else
+			ask='y';
+			clrscr();
+			out("Bye!!Bye!!",sizeof("Bye!!Bye!!"));
+			break;
+		case 5:
+			clrscr();
+			out("Searching databases",sizeof("Searching databases"));
+			fndelay();
+			cout<<endl;
+			out("Sorry for the inconvenience! This database is yet to be update",sizeof("Sorry for the inconvenience! This database is yet to be update"));
+			clrscr();
+			out("Do you want to return to main menu?(y/n)",sizeof("Sorry for the inconvenience! This database is yet to be update"));
+			cin>>ask;
+			clrscr();
+			break;
+		default:
+			out("Invalid Option!!",sizeof("Invalid Option!!"));
+			ask='n';break;
+		}
+	}while(ask=='y'||ask=='Y');
+}
+void main()
+	{
+	textbackground(BLUE);
+	char ch;
+	begin.back();
+	ch=begin.login();
+	getch();
+if(ch=='y')
+	{
+	cout<<endl;
+	begin.out("Executing Program",sizeof("Executing Program"));
+	begin.fndelay();
+	begin.out("Press any key to enter program!!",sizeof("Press any key to enter program!!"),10,16);
+	getch();
+	begin.menu();
+	}
+getch();
+}

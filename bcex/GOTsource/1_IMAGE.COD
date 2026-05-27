@@ -1,0 +1,1758 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SRC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_load_actor:NEAR
+EXTRN	_exit:NEAR
+EXTRN	_rnd:NEAR
+EXTRN	_printf:NEAR
+EXTRN	_xcopys2d:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_exit_code:NEAR
+EXTRN	_magic_item:BYTE
+EXTRN	_magic_pic:BYTE
+_BSS      SEGMENT
+COMM NEAR	_magic_ami:	BYTE:	 2
+COMM NEAR	_magic_mask_buff:	BYTE:	 4
+COMM NEAR	_ami_store1:	BYTE:	 2
+COMM NEAR	_ami_store2:	BYTE:	 2
+COMM NEAR	_mask_store1:	BYTE:	 4
+COMM NEAR	_mask_store2:	BYTE:	 4
+_BSS      ENDS
+EXTRN	_ami_buff:WORD
+EXTRN	_abuff:BYTE
+EXTRN	_mask_buff:DWORD
+EXTRN	_mask_buff_start:DWORD
+EXTRN	_actor:BYTE
+EXTRN	_enemy:BYTE
+EXTRN	_shot:BYTE
+EXTRN	_enemy_type:BYTE
+_BSS      SEGMENT
+COMM NEAR	_etype:	 2:	 16
+COMM NEAR	_latch_mem:	BYTE:	 2
+COMM NEAR	_enemy_mb:	BYTE:	 4
+COMM NEAR	_enemy_lm:	BYTE:	 2
+COMM NEAR	_enemy_ami:	BYTE:	 2
+_BSS      ENDS
+EXTRN	_thor_x1:WORD
+EXTRN	_thor_y1:WORD
+EXTRN	_thor_x2:WORD
+EXTRN	_thor_y2:WORD
+EXTRN	_thor:WORD
+EXTRN	_hammer:WORD
+EXTRN	_explosion:BYTE
+EXTRN	_sparkle:BYTE
+EXTRN	_thor_info:BYTE
+EXTRN	_tmp_buff:WORD
+EXTRN	_scrn:BYTE
+_DATA      SEGMENT
+$SG955	DB	'Too Many Actor Frames',  0dH,  0aH,  00H
+$SG1002	DB	'Too Many Actor Frames',  0dH,  0aH,  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 4
+; Line 5
+; Line 6
+; Line 7
+; Line 9
+; Line 10
+; Line 55
+	PUBLIC	_make_mask
+_make_mask	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,26
+	call	__aNchkstk
+	push	di
+	push	si
+;	page_offset = -4
+;	size = -16
+;	align = -14
+;	set = -20
+;	work_ami = -8
+;	scan_line = -18
+;	bit_num = -22
+;	temp_image_width = -6
+;	mask_temp = -2
+;	new_mask_ptr = -12
+;	old_mask_ptr = -24
+;	image_height = 12
+;	image_width = 10
+;	Image = 8
+;	page_start = 6
+;	new_image = 4
+; Line 65
+	mov	ax,WORD PTR [bp+6]	;page_start
+	mov	WORD PTR [bp-4],ax	;page_offset
+; Line 66
+	mov	WORD PTR [bp-20],0	;set
+; Line 67
+	mov	WORD PTR [bp-14],0	;align
+	jmp	$F923
+$FC924:
+	add	WORD PTR [bp-14],2	;align
+$F923:
+	cmp	WORD PTR [bp-14],3	;align
+	jl	$JCC38
+	jmp	$FB925
+$JCC38:
+; Line 69
+	mov	ax,WORD PTR _ami_buff
+	mov	bx,WORD PTR [bp-20]	;set
+	shl	bx,1
+	mov	si,WORD PTR [bp+4]	;new_image
+	mov	WORD PTR [bx][si],ax
+	mov	WORD PTR [bp-8],ax	;work_ami
+	inc	WORD PTR [bp-20]	;set
+; Line 70
+	add	WORD PTR _ami_buff,8
+; Line 72
+	mov	ax,WORD PTR [bp-14]	;align
+	add	ax,WORD PTR [bp+10]	;image_width
+	add	ax,3
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,2
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	WORD PTR [bx],ax
+; Line 73
+	mov	ax,WORD PTR [bp-4]	;page_offset
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	WORD PTR [bx+2],ax
+; Line 78
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	ax,WORD PTR [bx]
+	shl	ax,1
+	shl	ax,1
+	push	ax
+	push	WORD PTR [bp+10]	;image_width
+	push	WORD PTR [bp-4]	;page_offset
+	push	WORD PTR [bp+8]	;Image
+	mov	ax,0
+	push	ax
+	push	WORD PTR [bp-14]	;align
+	push	WORD PTR [bp+12]	;image_height
+	push	WORD PTR [bp+10]	;image_width
+	push	ax
+	push	ax
+	call	_xcopys2d
+	add	sp,20
+; Line 82
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	ax,WORD PTR [bx]
+	imul	WORD PTR [bp+12]	;image_height
+	mov	WORD PTR [bp-16],ax	;size
+; Line 83
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	WORD PTR [bx+4],ax
+	mov	WORD PTR [bx+6],dx
+; Line 84
+	mov	ax,WORD PTR [bp-16]	;size
+	add	WORD PTR _mask_buff,ax
+; Line 88
+	mov	ax,WORD PTR [bp+8]	;Image
+	mov	WORD PTR [bp-24],ax	;old_mask_ptr
+; Line 89
+	mov	bx,WORD PTR [bp-8]	;work_ami
+	mov	ax,WORD PTR [bx+4]
+	mov	dx,WORD PTR [bx+6]
+	mov	WORD PTR [bp-12],ax	;new_mask_ptr
+	mov	WORD PTR [bp-10],dx
+; Line 90
+	mov	WORD PTR [bp-18],0	;scan_line
+	jmp	$F926
+$FC927:
+	inc	WORD PTR [bp-18]	;scan_line
+$F926:
+	mov	ax,WORD PTR [bp+12]	;image_height
+	cmp	WORD PTR [bp-18],ax	;scan_line
+	jl	$JCC216
+	jmp	$FB928
+$JCC216:
+; Line 91
+	mov	ax,WORD PTR [bp-14]	;align
+	mov	WORD PTR [bp-22],ax	;bit_num
+; Line 92
+	mov	BYTE PTR [bp-2],0	;mask_temp
+; Line 93
+	mov	ax,WORD PTR [bp+10]	;image_width
+	mov	WORD PTR [bp-6],ax	;temp_image_width
+; Line 94
+$D929:
+; Line 97
+	mov	bx,WORD PTR [bp-24]	;old_mask_ptr
+	cmp	BYTE PTR [bx],15
+	jne	$JCC243
+	jmp	$L20001
+$JCC243:
+	mov	bx,WORD PTR [bp-24]	;old_mask_ptr
+	cmp	BYTE PTR [bx],0
+	jne	$JCC254
+	jmp	$L20001
+$JCC254:
+	mov	WORD PTR [bp-26],1
+	jmp	$L20002
+$L20001:
+	mov	WORD PTR [bp-26],0
+$L20002:
+	mov	cl,BYTE PTR [bp-22]	;bit_num
+	mov	al,BYTE PTR [bp-26]
+	shl	al,cl
+	or	BYTE PTR [bp-2],al	;mask_temp
+; Line 98
+	inc	WORD PTR [bp-24]	;old_mask_ptr
+; Line 99
+	inc	WORD PTR [bp-22]	;bit_num
+	cmp	WORD PTR [bp-22],3	;bit_num
+	jg	$JCC293
+	jmp	$I932
+$JCC293:
+; Line 100
+	mov	al,BYTE PTR [bp-2]	;mask_temp
+	les	bx,DWORD PTR [bp-12]	;new_mask_ptr
+	mov	BYTE PTR es:[bx],al
+; Line 101
+	inc	WORD PTR [bp-12]	;new_mask_ptr
+; Line 102
+	mov	ax,0
+	mov	WORD PTR [bp-22],ax	;bit_num
+	mov	BYTE PTR [bp-2],al	;mask_temp
+; Line 103
+; Line 104
+$I932:
+$DC930:
+	dec	WORD PTR [bp-6]	;temp_image_width
+	cmp	WORD PTR [bp-6],0	;temp_image_width
+	je	$JCC326
+	jmp	$D929
+$JCC326:
+$DB931:
+; Line 108
+	cmp	WORD PTR [bp-22],0	;bit_num
+	jne	$JCC335
+	jmp	$I933
+$JCC335:
+; Line 109
+	mov	al,BYTE PTR [bp-2]	;mask_temp
+	les	bx,DWORD PTR [bp-12]	;new_mask_ptr
+	mov	BYTE PTR es:[bx],al
+; Line 110
+	inc	WORD PTR [bp-12]	;new_mask_ptr
+; Line 111
+; Line 112
+$I933:
+	jmp	$FC927
+$FB928:
+; Line 113
+	mov	ax,WORD PTR [bp-16]	;size
+	add	WORD PTR [bp-4],ax	;page_offset
+; Line 114
+	jmp	$FC924
+$FB925:
+; Line 115
+	mov	ax,WORD PTR [bp-4]	;page_offset
+	sub	ax,WORD PTR [bp+6]	;page_start
+	jmp	$EX911
+; Line 116
+$EX911:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_make_mask	ENDP
+; Line 118
+	PUBLIC	_setup_actor
+_setup_actor	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,0
+	call	__aNchkstk
+	push	di
+	push	si
+;	y = 12
+;	x = 10
+;	dir = 8
+;	num = 6
+;	actr = 4
+; Line 120
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+187],0
+; Line 121
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+5]
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+168],al
+; Line 122
+	mov	al,BYTE PTR [bp+8]	;dir
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+169],al
+; Line 123
+	mov	al,BYTE PTR [bp+8]	;dir
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+170],al
+; Line 124
+	mov	bx,WORD PTR [bp+4]	;actr
+	cmp	BYTE PTR [bx+3],1
+	je	$JCC438
+	jmp	$I940
+$JCC438:
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+169],0
+; Line 125
+$I940:
+	mov	bx,WORD PTR [bp+4]	;actr
+	cmp	BYTE PTR [bx+3],2
+	je	$JCC458
+	jmp	$I941
+$JCC458:
+	mov	bx,WORD PTR [bp+4]	;actr
+	and	BYTE PTR [bx+169],1
+; Line 126
+$I941:
+	mov	bx,WORD PTR [bp+4]	;actr
+	cmp	BYTE PTR [bx+3],4
+	je	$JCC478
+	jmp	$I942
+$JCC478:
+	mov	bx,WORD PTR [bp+4]	;actr
+	cmp	BYTE PTR [bx+4],1
+	je	$JCC490
+	jmp	$I942
+$JCC490:
+; Line 127
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+169],0
+; Line 128
+	mov	al,BYTE PTR [bp+8]	;dir
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+187],al
+; Line 129
+; Line 131
+$I942:
+	mov	ax,WORD PTR [bp+10]	;x
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+172],ax
+; Line 132
+	mov	ax,WORD PTR [bp+12]	;y
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+174],ax
+; Line 133
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+1],16
+; Line 134
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+2],16
+; Line 135
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+176],0
+; Line 136
+	mov	ax,WORD PTR [bp+10]	;x
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+178],ax
+; Line 137
+	mov	ax,WORD PTR [bp+10]	;x
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+180],ax
+; Line 138
+	mov	ax,WORD PTR [bp+12]	;y
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+182],ax
+; Line 139
+	mov	ax,WORD PTR [bp+12]	;y
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+184],ax
+; Line 140
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+186],1
+; Line 141
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+188],8
+; Line 142
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+189],20
+; Line 143
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+190],20
+; Line 144
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+191],0
+; Line 145
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+192],0
+; Line 146
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+193],0
+; Line 147
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+200],0
+; Line 148
+	mov	al,BYTE PTR [bp+6]	;num
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+194],al
+; Line 149
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+203],0
+; Line 150
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+204],0
+; Line 151
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+205],20
+; Line 152
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+209],0
+; Line 153
+	mov	ax,100
+	push	ax
+	call	_rnd
+	add	sp,2
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	WORD PTR [bx+210],ax
+; Line 154
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+201],0
+; Line 155
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+14]
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	BYTE PTR [bx+230],al
+; Line 156
+$EX939:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_setup_actor	ENDP
+; Line 158
+	PUBLIC	_make_actor_mask
+_make_actor_mask	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+	push	di
+	push	si
+;	d = -2
+;	f = -4
+;	actr = 4
+; Line 161
+	mov	WORD PTR [bp-2],0	;d
+	jmp	$F948
+$FC949:
+	inc	WORD PTR [bp-2]	;d
+$F948:
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+3]
+	cbw	
+	cmp	ax,WORD PTR [bp-2]	;d
+	jg	$JCC778
+	jmp	$FB950
+$JCC778:
+; Line 162
+	mov	WORD PTR [bp-4],0	;f
+	jmp	$F951
+$FC952:
+	inc	WORD PTR [bp-4]	;f
+$F951:
+	mov	bx,WORD PTR [bp+4]	;actr
+	mov	al,BYTE PTR [bx+4]
+	cbw	
+	cmp	ax,WORD PTR [bp-4]	;f
+	jg	$JCC804
+	jmp	$FB953
+$JCC804:
+; Line 163
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp-2]	;d
+	shl	ah,1
+	shl	ah,1
+	add	ah,BYTE PTR [bp-4]	;f
+	sub	al,al
+	add	ax,WORD PTR _tmp_buff
+	push	ax
+	push	WORD PTR _latch_mem
+	mov	cl,3
+	mov	ax,WORD PTR [bp-2]	;d
+	shl	ax,1
+	shl	ax,1
+	add	ax,WORD PTR [bp-4]	;f
+	shl	ax,cl
+	add	ax,WORD PTR [bp+4]	;actr
+	add	ax,40
+	push	ax
+	call	_make_mask
+	add	sp,10
+; Line 164
+	add	WORD PTR _latch_mem,144
+; Line 165
+	cmp	WORD PTR _latch_mem,-115
+	ja	$JCC873
+	jmp	$I954
+$JCC873:
+; Line 166
+	mov	ax,0
+	push	ax
+	call	_exit_code
+	add	sp,2
+; Line 167
+	mov	ax,OFFSET DGROUP:$SG955
+	push	ax
+	call	_printf
+	add	sp,2
+; Line 168
+	mov	ax,0
+	push	ax
+	call	_exit
+	add	sp,2
+; Line 169
+; Line 170
+$I954:
+	jmp	$FC952
+$FB953:
+; Line 171
+	jmp	$FC949
+$FB950:
+; Line 172
+$EX945:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_make_actor_mask	ENDP
+; Line 174
+	PUBLIC	_load_standard_actors
+_load_standard_actors	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,0
+	call	__aNchkstk
+	push	di
+	push	si
+; Line 176
+	mov	WORD PTR _latch_mem,-15376
+; Line 177
+	mov	ax,WORD PTR _mask_buff_start
+	mov	dx,WORD PTR _mask_buff_start+2
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 178
+	mov	WORD PTR _ami_buff,OFFSET _abuff
+; Line 180
+	mov	al,BYTE PTR _thor_info+38
+	cbw	
+	add	ax,100
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 181
+	mov	ax,40
+	push	ax
+	mov	cx,WORD PTR _tmp_buff
+	add	cx,5120
+	push	cx
+	mov	cx,OFFSET _actor
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 182
+	mov	ax,100
+	push	ax
+	push	ax
+	mov	cl,0
+	push	cx
+	push	cx
+	mov	dx,OFFSET _actor
+	push	dx
+	call	_setup_actor
+	add	sp,10
+; Line 183
+	mov	WORD PTR _thor,OFFSET _actor
+; Line 185
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR _ami_store1,ax
+; Line 186
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR _mask_store1,ax
+	mov	WORD PTR _mask_store1+2,dx
+; Line 187
+	mov	ax,OFFSET _actor
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 189
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	add	ax,2
+	mov	WORD PTR _thor_x1,ax
+; Line 190
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	add	ax,2
+	mov	WORD PTR _thor_y1,ax
+; Line 191
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+172]
+	add	ax,14
+	mov	WORD PTR _thor_x2,ax
+; Line 192
+	mov	bx,WORD PTR _thor
+	mov	ax,WORD PTR [bx+174]
+	add	ax,14
+	mov	WORD PTR _thor_y2,ax
+; Line 194
+	mov	al,BYTE PTR _thor_info+38
+	cbw	
+	add	ax,103
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 195
+	mov	ax,40
+	push	ax
+	mov	cx,WORD PTR _tmp_buff
+	add	cx,5120
+	push	cx
+	mov	cx,OFFSET _actor+258
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 196
+	mov	ax,100
+	push	ax
+	push	ax
+	mov	cl,0
+	push	cx
+	mov	dl,1
+	push	dx
+	mov	dx,OFFSET _actor+258
+	push	dx
+	call	_setup_actor
+	add	sp,10
+; Line 197
+	mov	BYTE PTR _actor+444,0
+; Line 198
+	mov	WORD PTR _hammer,OFFSET _actor+258
+; Line 200
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR _ami_store2,ax
+; Line 201
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR _mask_store2,ax
+	mov	WORD PTR _mask_store2+2,dx
+; Line 202
+	mov	ax,OFFSET _actor+258
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 204
+	mov	ax,106
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 205
+	mov	ax,40
+	push	ax
+	mov	cx,WORD PTR _tmp_buff
+	add	cx,5120
+	push	cx
+	mov	cx,OFFSET _sparkle
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 206
+	mov	ax,100
+	push	ax
+	push	ax
+	mov	cl,0
+	push	cx
+	mov	dl,20
+	push	dx
+	mov	bx,OFFSET _sparkle
+	push	bx
+	call	_setup_actor
+	add	sp,10
+; Line 207
+	mov	BYTE PTR _sparkle+186,0
+; Line 208
+	mov	ax,OFFSET _sparkle
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 210
+	mov	ax,107
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 211
+	mov	ax,40
+	push	ax
+	mov	cx,WORD PTR _tmp_buff
+	add	cx,5120
+	push	cx
+	mov	cx,OFFSET _explosion
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 212
+	mov	ax,100
+	push	ax
+	push	ax
+	mov	al,0
+	push	ax
+	mov	cl,21
+	push	cx
+	mov	cx,OFFSET _explosion
+	push	cx
+	call	_setup_actor
+	add	sp,10
+; Line 213
+	mov	BYTE PTR _explosion+186,0
+; Line 214
+	mov	ax,OFFSET _explosion
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 216
+	mov	ax,108
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 217
+	mov	ax,40
+	push	ax
+	mov	cx,WORD PTR _tmp_buff
+	add	cx,5120
+	push	cx
+	mov	cx,OFFSET _magic_item
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 218
+	mov	ax,1024
+	push	ax
+	push	WORD PTR _tmp_buff
+	mov	cx,OFFSET _magic_pic
+	push	cx
+	call	_memcpy
+	add	sp,6
+; Line 219
+	mov	ax,0
+	push	ax
+	push	ax
+	mov	cl,0
+	push	cx
+	mov	dl,20
+	push	dx
+	mov	bx,OFFSET _magic_item
+	push	bx
+	call	_setup_actor
+	add	sp,10
+; Line 220
+	mov	BYTE PTR _magic_item+186,0
+; Line 222
+	mov	ax,1099
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 223
+	mov	ax,40
+	push	ax
+	mov	ax,WORD PTR _tmp_buff
+	add	ax,5120
+	push	ax
+	mov	ax,OFFSET _magic_item+258
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 224
+	mov	ax,1024
+	push	ax
+	push	WORD PTR _tmp_buff
+	mov	ax,OFFSET _magic_pic+1024
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 225
+	mov	ax,0
+	push	ax
+	push	ax
+	mov	al,0
+	push	ax
+	mov	cl,20
+	push	cx
+	mov	cx,OFFSET _magic_item+258
+	push	cx
+	call	_setup_actor
+	add	sp,10
+; Line 226
+	mov	BYTE PTR _magic_item+444,0
+; Line 228
+	mov	BYTE PTR _actor+702,0
+; Line 229
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR _magic_ami,ax
+; Line 230
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR _magic_mask_buff,ax
+	mov	WORD PTR _magic_mask_buff+2,dx
+; Line 232
+	mov	ax,OFFSET _magic_item
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 234
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR _enemy_mb,ax
+	mov	WORD PTR _enemy_mb+2,dx
+; Line 235
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR _enemy_ami,ax
+; Line 236
+	mov	ax,WORD PTR _latch_mem
+	mov	WORD PTR _enemy_lm,ax
+; Line 237
+	mov	ax,1
+	jmp	$EX956
+; Line 238
+$EX956:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_load_standard_actors	ENDP
+; Line 240
+	PUBLIC	_show_enemies
+_show_enemies	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,6
+	call	__aNchkstk
+	push	di
+	push	si
+;	r = -2
+;	i = -6
+;	d = -4
+; Line 243
+	mov	WORD PTR [bp-6],3	;i
+	jmp	$F961
+$FC962:
+	inc	WORD PTR [bp-6]	;i
+$F961:
+	cmp	WORD PTR [bp-6],35	;i
+	jl	$JCC1617
+	jmp	$FB963
+$JCC1617:
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	mov	BYTE PTR _actor[bx+186],0
+	jmp	$FC962
+$FB963:
+; Line 244
+	mov	WORD PTR [bp-6],0	;i
+	jmp	$F964
+$FC965:
+	inc	WORD PTR [bp-6]	;i
+$F964:
+	cmp	WORD PTR [bp-6],16	;i
+	jl	$JCC1653
+	jmp	$FB966
+$JCC1653:
+	mov	bx,WORD PTR [bp-6]	;i
+	mov	BYTE PTR _enemy_type[bx],0
+	jmp	$FC965
+$FB966:
+; Line 246
+	mov	ax,WORD PTR _enemy_lm
+	mov	WORD PTR _latch_mem,ax
+; Line 247
+	mov	ax,WORD PTR _enemy_mb
+	mov	dx,WORD PTR _enemy_mb+2
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 248
+	mov	ax,WORD PTR _enemy_ami
+	mov	WORD PTR _ami_buff,ax
+; Line 250
+	mov	WORD PTR [bp-6],0	;i
+	jmp	$F967
+$FC968:
+	inc	WORD PTR [bp-6]	;i
+$F967:
+	cmp	WORD PTR [bp-6],16	;i
+	jl	$JCC1710
+	jmp	$FB969
+$JCC1710:
+; Line 251
+	mov	bx,WORD PTR [bp-6]	;i
+	cmp	BYTE PTR _scrn[bx+242],0
+	jg	$JCC1723
+	jmp	$I970
+$JCC1723:
+; Line 252
+	mov	bx,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[bx+242]
+	cbw	
+	push	ax
+	call	_load_enemy
+	add	sp,2
+	mov	WORD PTR [bp-2],ax	;r
+; Line 253
+	cmp	WORD PTR [bp-2],0	;r
+	jge	$JCC1750
+	jmp	$I971
+$JCC1750:
+; Line 254
+	mov	ax,258
+	push	ax
+	mov	ax,258
+	imul	WORD PTR [bp-2]	;r
+	add	ax,OFFSET _enemy
+	push	ax
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	add	ax,OFFSET _actor+774
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 255
+	mov	bx,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[bx+493]
+	cbw	
+	mov	WORD PTR [bp-4],ax	;d
+; Line 258
+	mov	bx,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[bx+258]
+	mov	cl,20
+	cbw	
+	idiv	cl
+	cbw	
+	mov	cl,4
+	shl	ax,cl
+	push	ax
+	mov	dl,20
+	mov	bx,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[bx+258]
+	cbw	
+	idiv	dl
+	mov	al,ah
+	cbw	
+	shl	ax,cl
+	push	ax
+	mov	al,BYTE PTR [bp-4]	;d
+	push	ax
+	mov	al,BYTE PTR [bp-6]	;i
+	add	al,3
+	push	ax
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	add	ax,OFFSET _actor+774
+	push	ax
+	call	_setup_actor
+	add	sp,10
+; Line 259
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	mov	si,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[si+493]
+	mov	BYTE PTR _actor[bx+986],al
+; Line 260
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	mov	si,WORD PTR [bp-6]	;i
+	mov	al,BYTE PTR _scrn[si+274]
+	mov	BYTE PTR _actor[bx+987],al
+; Line 261
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	cmp	BYTE PTR _actor[bx+774],23
+	je	$JCC1909
+	jmp	$I972
+$JCC1909:
+; Line 262
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	test	BYTE PTR _actor[bx+987],1
+	jne	$JCC1927
+	jmp	$I973
+$JCC1927:
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	mov	BYTE PTR _actor[bx+774],24
+; Line 263
+$I973:
+; Line 264
+$I972:
+	mov	bx,WORD PTR [bp-6]	;i
+	cmp	BYTE PTR _scrn[bx+293],0
+	jne	$JCC1953
+	jmp	$I974
+$JCC1953:
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;i
+	mov	bx,ax
+	mov	BYTE PTR _actor[bx+960],0
+; Line 265
+$I974:
+; Line 266
+$I971:
+	mov	ax,WORD PTR [bp-2]	;r
+	mov	bx,WORD PTR [bp-6]	;i
+	shl	bx,1
+	mov	WORD PTR _etype[bx],ax
+; Line 267
+; Line 268
+$I970:
+	jmp	$FC968
+$FB969:
+; Line 269
+$EX957:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_show_enemies	ENDP
+; Line 271
+	PUBLIC	_load_enemy
+_load_enemy	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,10
+	call	__aNchkstk
+	push	di
+	push	si
+;	i = -10
+;	f = -8
+;	d = -4
+;	e = -6
+;	enm = -2
+;	type = 4
+; Line 275
+	mov	WORD PTR [bp-10],0	;i
+	jmp	$F982
+$FC983:
+	inc	WORD PTR [bp-10]	;i
+$F982:
+	cmp	WORD PTR [bp-10],16	;i
+	jl	$JCC2018
+	jmp	$FB984
+$JCC2018:
+	mov	bx,WORD PTR [bp-10]	;i
+	mov	al,BYTE PTR _enemy_type[bx]
+	cbw	
+	cmp	ax,WORD PTR [bp+4]	;type
+	je	$JCC2034
+	jmp	$I985
+$JCC2034:
+	mov	ax,WORD PTR [bp-10]	;i
+	jmp	$EX976
+; Line 277
+$I985:
+	jmp	$FC983
+$FB984:
+	push	WORD PTR [bp+4]	;type
+	mov	ax,1
+	push	ax
+	call	_load_actor
+	add	sp,4
+	cmp	ax,0
+	je	$JCC2064
+	jmp	$I986
+$JCC2064:
+; Line 278
+	mov	ax,-1
+	jmp	$EX976
+; Line 279
+; Line 280
+$I986:
+	mov	ax,WORD PTR _tmp_buff
+	add	ax,5120
+	mov	WORD PTR [bp-2],ax	;enm
+; Line 282
+	mov	WORD PTR [bp-6],-1	;e
+; Line 283
+	mov	WORD PTR [bp-10],0	;i
+	jmp	$F987
+$FC988:
+	inc	WORD PTR [bp-10]	;i
+$F987:
+	cmp	WORD PTR [bp-10],16	;i
+	jl	$JCC2104
+	jmp	$FB989
+$JCC2104:
+; Line 284
+	mov	bx,WORD PTR [bp-10]	;i
+	cmp	BYTE PTR _enemy_type[bx],0
+	je	$JCC2117
+	jmp	$I990
+$JCC2117:
+; Line 285
+	mov	ax,WORD PTR [bp-10]	;i
+	mov	WORD PTR [bp-6],ax	;e
+; Line 286
+	jmp	$FB989
+; Line 287
+; Line 288
+$I990:
+	jmp	$FC988
+$FB989:
+; Line 289
+	cmp	WORD PTR [bp-6],-1	;e
+	je	$JCC2138
+	jmp	$I991
+$JCC2138:
+	mov	ax,-1
+	jmp	$EX976
+; Line 291
+$I991:
+	mov	ax,40
+	push	ax
+	push	WORD PTR [bp-2]	;enm
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	add	ax,OFFSET _enemy
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 293
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	add	ax,OFFSET _enemy
+	push	ax
+	call	_make_actor_mask
+	add	sp,2
+; Line 294
+	mov	al,BYTE PTR [bp+4]	;type
+	mov	bx,WORD PTR [bp-6]	;e
+	mov	BYTE PTR _enemy_type[bx],al
+; Line 295
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	mov	BYTE PTR _enemy[bx+16],0
+; Line 297
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	cmp	BYTE PTR _enemy[bx+18],0
+	jne	$JCC2224
+	jmp	$I992
+$JCC2224:
+; Line 298
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	mov	al,BYTE PTR [bp-6]	;e
+	inc	al
+	mov	BYTE PTR _enemy[bx+16],al
+; Line 299
+	mov	ax,WORD PTR _tmp_buff
+	add	ax,5160
+	mov	WORD PTR [bp-2],ax	;enm
+; Line 300
+	mov	ax,40
+	push	ax
+	push	WORD PTR [bp-2]	;enm
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	add	ax,OFFSET _shot
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 301
+	mov	WORD PTR [bp-4],0	;d
+	jmp	$F993
+$FC994:
+	inc	WORD PTR [bp-4]	;d
+$F993:
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	mov	al,BYTE PTR _shot[bx+3]
+	cbw	
+	cmp	ax,WORD PTR [bp-4]	;d
+	jg	$JCC2305
+	jmp	$FB995
+$JCC2305:
+; Line 302
+	mov	WORD PTR [bp-8],0	;f
+	jmp	$F996
+$FC997:
+	inc	WORD PTR [bp-8]	;f
+$F996:
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	mov	al,BYTE PTR _shot[bx+4]
+	cbw	
+	cmp	ax,WORD PTR [bp-8]	;f
+	jg	$JCC2337
+	jmp	$FB998
+$JCC2337:
+; Line 303
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	mov	al,BYTE PTR _shot[bx+4]
+	mov	cx,ax
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	bx,ax
+	cmp	BYTE PTR _shot[bx+3],cl
+	jl	$JCC2368
+	jmp	$I999
+$JCC2368:
+; Line 305
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp-4]	;d
+	shl	ah,1
+	shl	ah,1
+	add	ah,BYTE PTR [bp-8]	;f
+	sub	al,al
+	add	ax,WORD PTR _tmp_buff
+	add	ax,4096
+	push	ax
+	push	WORD PTR _latch_mem
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	cl,3
+	mov	dx,WORD PTR [bp-4]	;d
+	shl	dx,1
+	shl	dx,1
+	add	dx,WORD PTR [bp-8]	;f
+	shl	dx,cl
+	add	dx,ax
+	add	dx,OFFSET _shot+40
+	push	dx
+	call	_make_mask
+	add	sp,10
+; Line 306
+	jmp	$I1000
+$I999:
+; Line 308
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp-8]	;f
+	shl	ah,1
+	shl	ah,1
+	add	ah,BYTE PTR [bp-4]	;d
+	sub	al,al
+	add	ax,WORD PTR _tmp_buff
+	add	ax,4096
+	push	ax
+	push	WORD PTR _latch_mem
+	mov	ax,258
+	imul	WORD PTR [bp-6]	;e
+	mov	cl,3
+	mov	dx,WORD PTR [bp-8]	;f
+	shl	dx,1
+	shl	dx,1
+	add	dx,WORD PTR [bp-4]	;d
+	shl	dx,cl
+	add	dx,ax
+	add	dx,OFFSET _shot+40
+	push	dx
+	call	_make_mask
+	add	sp,10
+$I1000:
+; Line 309
+	add	WORD PTR _latch_mem,144
+; Line 310
+	cmp	WORD PTR _latch_mem,-115
+	ja	$JCC2511
+	jmp	$I1001
+$JCC2511:
+; Line 311
+	mov	ax,0
+	push	ax
+	call	_exit_code
+	add	sp,2
+; Line 312
+	mov	ax,OFFSET DGROUP:$SG1002
+	push	ax
+	call	_printf
+	add	sp,2
+; Line 313
+	mov	ax,0
+	push	ax
+	call	_exit
+	add	sp,2
+; Line 314
+; Line 315
+$I1001:
+	jmp	$FC997
+$FB998:
+; Line 316
+	jmp	$FC994
+$FB995:
+; Line 317
+; Line 318
+$I992:
+	mov	ax,WORD PTR [bp-6]	;e
+	jmp	$EX976
+; Line 319
+$EX976:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_load_enemy	ENDP
+; Line 321
+	PUBLIC	_actor_visible
+_actor_visible	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+	push	di
+	push	si
+;	i = -4
+;	d = -2
+;	invis_num = 4
+; Line 324
+	mov	WORD PTR [bp-4],0	;i
+	jmp	$F1007
+$FC1008:
+	inc	WORD PTR [bp-4]	;i
+$F1007:
+	cmp	WORD PTR [bp-4],16	;i
+	jl	$JCC2590
+	jmp	$FB1009
+$JCC2590:
+; Line 325
+	mov	bx,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[bx+293]
+	cbw	
+	cmp	ax,WORD PTR [bp+4]	;invis_num
+	je	$JCC2606
+	jmp	$I1010
+$JCC2606:
+; Line 326
+	mov	bx,WORD PTR [bp-4]	;i
+	shl	bx,1
+	cmp	WORD PTR _etype[bx],0
+	jge	$JCC2621
+	jmp	$I1011
+$JCC2621:
+	mov	ax,258
+	imul	WORD PTR [bp-4]	;i
+	mov	bx,ax
+	cmp	BYTE PTR _actor[bx+960],0
+	je	$JCC2639
+	jmp	$I1011
+$JCC2639:
+; Line 327
+	mov	ax,258
+	push	ax
+	mov	ax,258
+	mov	bx,WORD PTR [bp-4]	;i
+	shl	bx,1
+	imul	WORD PTR _etype[bx]
+	add	ax,OFFSET _enemy
+	push	ax
+	mov	ax,258
+	imul	WORD PTR [bp-4]	;i
+	add	ax,OFFSET _actor+774
+	push	ax
+	call	_memcpy
+	add	sp,6
+; Line 328
+	mov	bx,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[bx+493]
+	cbw	
+	mov	WORD PTR [bp-2],ax	;d
+; Line 331
+	mov	bx,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[bx+258]
+	mov	cl,20
+	cbw	
+	idiv	cl
+	cbw	
+	mov	cl,4
+	shl	ax,cl
+	push	ax
+	mov	dl,20
+	mov	bx,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[bx+258]
+	cbw	
+	idiv	dl
+	mov	al,ah
+	cbw	
+	shl	ax,cl
+	push	ax
+	mov	al,BYTE PTR [bp-2]	;d
+	push	ax
+	mov	al,BYTE PTR [bp-4]	;i
+	add	al,3
+	push	ax
+	mov	ax,258
+	imul	WORD PTR [bp-4]	;i
+	add	ax,OFFSET _actor+774
+	push	ax
+	call	_setup_actor
+	add	sp,10
+; Line 332
+	mov	ax,258
+	imul	WORD PTR [bp-4]	;i
+	mov	bx,ax
+	mov	si,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[si+493]
+	mov	BYTE PTR _actor[bx+986],al
+; Line 333
+	mov	ax,258
+	imul	WORD PTR [bp-4]	;i
+	mov	bx,ax
+	mov	si,WORD PTR [bp-4]	;i
+	mov	al,BYTE PTR _scrn[si+274]
+	mov	BYTE PTR _actor[bx+987],al
+; Line 334
+	mov	ax,WORD PTR [bp-4]	;i
+	jmp	$EX1004
+; Line 335
+; Line 336
+	jmp	$I1012
+$I1011:
+	mov	ax,-1
+	jmp	$EX1004
+$I1012:
+; Line 337
+; Line 338
+$I1010:
+	jmp	$FC1008
+$FB1009:
+; Line 339
+	mov	ax,-1
+	jmp	$EX1004
+; Line 340
+$EX1004:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_actor_visible	ENDP
+; Line 342
+	PUBLIC	_setup_magic_item
+_setup_magic_item	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,8
+	call	__aNchkstk
+	push	di
+	push	si
+;	i = -4
+;	ami = -2
+;	mb = -8
+;	item = 4
+; Line 348
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR [bp-8],ax	;mb
+	mov	WORD PTR [bp-6],dx
+; Line 349
+	mov	ax,WORD PTR _magic_mask_buff
+	mov	dx,WORD PTR _magic_mask_buff+2
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 351
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR [bp-2],ax	;ami
+; Line 352
+	mov	ax,WORD PTR _magic_ami
+	mov	WORD PTR _ami_buff,ax
+; Line 354
+	mov	WORD PTR [bp-4],0	;i
+	jmp	$F1018
+$FC1019:
+	inc	WORD PTR [bp-4]	;i
+$F1018:
+	cmp	WORD PTR [bp-4],4	;i
+	jl	$JCC2886
+	jmp	$FB1020
+$JCC2886:
+; Line 355
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp+4]	;item
+	shl	ah,1
+	shl	ah,1
+	add	ah,BYTE PTR [bp-4]	;i
+	sub	al,al
+	add	ax,OFFSET _magic_pic
+	push	ax
+	mov	ax,144
+	imul	WORD PTR [bp-4]	;i
+	sub	ax,10336
+	push	ax
+	mov	ax,WORD PTR [bp-4]	;i
+	mov	cx,4
+	cwd	
+	idiv	cx
+	mov	ax,WORD PTR [bp-4]	;i
+	mov	bx,dx
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,2
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	shl	ax,1
+	shl	ax,1
+	add	bx,ax
+	mov	cl,3
+	shl	bx,cl
+	mov	ax,258
+	imul	WORD PTR [bp+4]	;item
+	add	bx,ax
+	add	bx,OFFSET _magic_item+40
+	push	bx
+	call	_make_mask
+	add	sp,10
+; Line 356
+	jmp	$FC1019
+$FB1020:
+; Line 357
+	mov	ax,WORD PTR [bp-2]	;ami
+	mov	WORD PTR _ami_buff,ax
+; Line 358
+	mov	ax,WORD PTR [bp-8]	;mb
+	mov	dx,WORD PTR [bp-6]
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 359
+$EX1014:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_setup_magic_item	ENDP
+; Line 361
+	PUBLIC	_load_new_thor
+_load_new_thor	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,8
+	call	__aNchkstk
+	push	di
+	push	si
+;	mb = -8
+;	rep = -4
+;	ami = -2
+; Line 367
+	mov	ax,WORD PTR _mask_buff
+	mov	dx,WORD PTR _mask_buff+2
+	mov	WORD PTR [bp-8],ax	;mb
+	mov	WORD PTR [bp-6],dx
+; Line 368
+	mov	ax,WORD PTR _ami_buff
+	mov	WORD PTR [bp-2],ax	;ami
+; Line 370
+	mov	ax,WORD PTR _mask_store1
+	mov	dx,WORD PTR _mask_store1+2
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 371
+	mov	ax,WORD PTR _ami_store1
+	mov	WORD PTR _ami_buff,ax
+; Line 373
+	mov	al,BYTE PTR _thor_info+38
+	cbw	
+	add	ax,100
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 374
+	mov	WORD PTR [bp-4],0	;rep
+	jmp	$F1025
+$FC1026:
+	inc	WORD PTR [bp-4]	;rep
+$F1025:
+	cmp	WORD PTR [bp-4],16	;rep
+	jl	$JCC3090
+	jmp	$FB1027
+$JCC3090:
+; Line 375
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp-4]	;rep
+	sub	al,al
+	add	ax,WORD PTR _tmp_buff
+	push	ax
+	mov	ax,144
+	imul	WORD PTR [bp-4]	;rep
+	sub	ax,15376
+	push	ax
+	mov	ax,WORD PTR [bp-4]	;rep
+	mov	cx,4
+	cwd	
+	idiv	cx
+	mov	ax,WORD PTR [bp-4]	;rep
+	mov	bx,dx
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,2
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	shl	ax,1
+	shl	ax,1
+	add	bx,ax
+	mov	cl,3
+	shl	bx,cl
+	add	bx,OFFSET _actor+40
+	push	bx
+	call	_make_mask
+	add	sp,10
+; Line 376
+	jmp	$FC1026
+$FB1027:
+; Line 377
+	mov	ax,WORD PTR _mask_store2
+	mov	dx,WORD PTR _mask_store2+2
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 378
+	mov	ax,WORD PTR _ami_store2
+	mov	WORD PTR _ami_buff,ax
+; Line 379
+	mov	al,BYTE PTR _thor_info+38
+	cbw	
+	add	ax,103
+	push	ax
+	mov	ax,0
+	push	ax
+	call	_load_actor
+	add	sp,4
+; Line 380
+	mov	WORD PTR [bp-4],0	;rep
+	jmp	$F1028
+$FC1029:
+	inc	WORD PTR [bp-4]	;rep
+$F1028:
+	cmp	WORD PTR [bp-4],16	;rep
+	jl	$JCC3225
+	jmp	$FB1030
+$JCC3225:
+; Line 381
+	mov	ax,16
+	push	ax
+	push	ax
+	mov	ah,BYTE PTR [bp-4]	;rep
+	sub	al,al
+	add	ax,WORD PTR _tmp_buff
+	push	ax
+	mov	ax,144
+	imul	WORD PTR [bp-4]	;rep
+	sub	ax,13072
+	push	ax
+	mov	ax,WORD PTR [bp-4]	;rep
+	mov	cx,4
+	cwd	
+	idiv	cx
+	mov	ax,WORD PTR [bp-4]	;rep
+	mov	bx,dx
+	cwd	
+	xor	ax,dx
+	sub	ax,dx
+	mov	cx,2
+	sar	ax,cl
+	xor	ax,dx
+	sub	ax,dx
+	shl	ax,1
+	shl	ax,1
+	add	bx,ax
+	mov	cl,3
+	shl	bx,cl
+	add	bx,OFFSET _actor+298
+	push	bx
+	call	_make_mask
+	add	sp,10
+; Line 382
+	jmp	$FC1029
+$FB1030:
+; Line 384
+	mov	ax,WORD PTR [bp-2]	;ami
+	mov	WORD PTR _ami_buff,ax
+; Line 385
+	mov	ax,WORD PTR [bp-8]	;mb
+	mov	dx,WORD PTR [bp-6]
+	mov	WORD PTR _mask_buff,ax
+	mov	WORD PTR _mask_buff+2,dx
+; Line 386
+$EX1021:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_load_new_thor	ENDP
+_TEXT	ENDS
+END

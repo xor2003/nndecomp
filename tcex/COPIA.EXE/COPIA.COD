@@ -1,0 +1,434 @@
+;	Static Name Aliases
+;
+	TITLE   C:\COPIA.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__acrtused:ABS
+EXTRN	_fseek:NEAR
+EXTRN	_ftell:NEAR
+EXTRN	_fwrite:NEAR
+EXTRN	_printf:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_fclose:NEAR
+EXTRN	_fopen:NEAR
+EXTRN	_fread:NEAR
+_DATA      SEGMENT
+$SG171	DB	'1',  00H
+$SG173	DB	'0',  00H
+$SG187	DB	'ORIGINAL.JPG',  00H
+$SG188	DB	0aH, 'LECTURA DE ''%s'' ',  00H
+$SG189	DB	'rb',  00H
+$SG191	DB	0aH, 'No se logro abrir el archivo para leer',  0aH,  00H
+$SG193	DB	0aH, 'EL archivo debe ser de 2 KBytes o menos',  0aH,  00H
+$SG194	DB	'rb',  00H
+$SG196	DB	0aH, 'No se logro abrir el archivo para leer',  0aH,  00H
+$SG198	DB	0aH, 'El archivo esta sin datos',  0aH,  00H
+$SG199	DB	'CON %d Bytes',  0aH,  00H
+$SG200	DB	'COPIA.JPG',  00H
+$SG201	DB	'ESCRITURA DE ''%s'' ',  00H
+$SG202	DB	'wb',  00H
+$SG204	DB	0aH, 'No se logro abrir el archivo para escribir',  0aH,  00H
+$SG206	DB	0aH, 'No se logro escribir datos',  0aH,  00H
+$SG207	DB	'CON %d Bytes',  0aH,  0aH,  00H
+$SG208	DB	'ab+',  00H
+$SG209	DB	'COPIADEBYTES.JPG',  00H
+$SG213	DB	'Byte[%d] = 0X%02x ',  00H
+$SG214	DB	0aH,  00H
+$SG215	DB	0aH, 'ESCRITURA DE ''COPIADEBYTES.JPG'' CON %d Bytes',  0aH,  0aH
+	DB	00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** #include <stdio.h>
+; Line 1
+;|*** 
+;|*** void printbin(int numero){
+; Line 3
+	PUBLIC	_printbin
+_printbin	PROC NEAR
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	b8 02 00 		mov	ax,2
+	*** 000006	e8 00 00 		call	__aNchkstk
+;	bit = -2
+;	numero = 4
+;|***     int bit;
+;|***     for(bit = 128; bit > 0; bit >>= 1){
+; Line 5
+	*** 000009	c7 46 fe 80 00 		mov	WORD PTR [bp-2],128	;bit
+	*** 00000e	eb 0d 			jmp	SHORT $F167
+					$I170:
+;|***         if((numero & bit) == bit){
+;|***                 printf("1");    
+;|***         }
+;|***         else{
+;|***                 printf("0");    
+; Line 10
+	*** 000010	b8 02 00 		mov	ax,OFFSET DGROUP:$SG173
+					$L20001:
+	*** 000013	50 			push	ax
+	*** 000014	e8 00 00 		call	_printf
+	*** 000017	83 c4 02 		add	sp,2
+;|***         }
+; Line 11
+;|***     }
+; Line 12
+	*** 00001a	d1 7e fe 		sar	WORD PTR [bp-2],1	;bit
+					$F167:
+	*** 00001d	83 7e fe 00 		cmp	WORD PTR [bp-2],0	;bit
+	*** 000021	7e 11 			jle	$FB169
+;|***         if((numero & bit) == bit){
+; Line 6
+	*** 000023	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;bit
+	*** 000026	23 46 04 		and	ax,WORD PTR [bp+4]	;numero
+	*** 000029	3b 46 fe 		cmp	ax,WORD PTR [bp-2]	;bit
+	*** 00002c	75 e2 			jne	$I170
+;|***                 printf("1");    
+; Line 7
+	*** 00002e	b8 00 00 		mov	ax,OFFSET DGROUP:$SG171
+	*** 000031	eb e0 			jmp	SHORT $L20001
+	*** 000033	90 			nop	
+					$FB169:
+;|***         }
+;|***         else{
+;|***                 printf("0");    
+;|***         }
+;|***     }
+;|*** }
+; Line 13
+	*** 000034	8b e5 			mov	sp,bp
+	*** 000036	5d 			pop	bp
+	*** 000037	c3 			ret	
+
+_printbin	ENDP
+;|*** 
+;|*** int main(){
+; Line 15
+	PUBLIC	_main
+_main	PROC NEAR
+	*** 000038	55 			push	bp
+	*** 000039	8b ec 			mov	bp,sp
+	*** 00003b	b8 14 08 		mov	ax,2068
+	*** 00003e	e8 00 00 		call	__aNchkstk
+	*** 000041	56 			push	si
+;	contador = -12
+;	puntero = -2064
+;	bytes = -8
+;	bytesmaximo = -4
+;	pesolectura = -6
+;	archivolectura = -16
+;	nombrearchivolectura = -2068
+;	pesoescritura = -10
+;	archivoescritura = -2066
+;	nombrearchivoescritura = -2
+;	archivodebytes = -14
+;|***     int contador;
+;|***     char puntero[(1024*2)];
+;|***     int bytes;
+;|***     int bytesmaximo;
+;|***     int pesolectura;
+;|***     FILE * archivolectura;
+;|***     char * nombrearchivolectura;
+;|***     int pesoescritura;
+;|***     FILE * archivoescritura;
+;|***     char * nombrearchivoescritura;
+;|***     FILE *archivodebytes;
+;|***     bytes = 1;
+; Line 27
+	*** 000042	c7 46 f8 01 00 		mov	WORD PTR [bp-8],1	;bytes
+;|***     bytesmaximo = (1024*2);
+; Line 28
+	*** 000047	c7 46 fc 00 08 		mov	WORD PTR [bp-4],2048	;bytesmaximo
+;|***     nombrearchivolectura = "ORIGINAL.JPG";
+;|***     printf("\nLECTURA DE '%s' ",nombrearchivolectura);
+; Line 30
+	*** 00004c	b8 04 00 		mov	ax,OFFSET DGROUP:$SG187
+	*** 00004f	89 86 ec f7 		mov	WORD PTR [bp-2068],ax	;nombrearchivolectura
+	*** 000053	50 			push	ax
+	*** 000054	b8 11 00 		mov	ax,OFFSET DGROUP:$SG188
+	*** 000057	50 			push	ax
+	*** 000058	e8 00 00 		call	_printf
+	*** 00005b	83 c4 04 		add	sp,4
+;|***     archivolectura = fopen(nombrearchivolectura,"rb");
+;|***     if(archivolectura == NULL){ 
+; Line 32
+	*** 00005e	b8 23 00 		mov	ax,OFFSET DGROUP:$SG189
+	*** 000061	50 			push	ax
+	*** 000062	b8 04 00 		mov	ax,OFFSET DGROUP:$SG187
+	*** 000065	50 			push	ax
+	*** 000066	e8 00 00 		call	_fopen
+	*** 000069	83 c4 04 		add	sp,4
+	*** 00006c	89 46 f0 		mov	WORD PTR [bp-16],ax	;archivolectura
+	*** 00006f	0b c0 			or	ax,ax
+	*** 000071	75 13 			jne	$I190
+;|***             printf("\nNo se logro abrir el archivo para leer\n");
+; Line 33
+	*** 000073	b8 26 00 		mov	ax,OFFSET DGROUP:$SG191
+					$L20002:
+	*** 000076	50 			push	ax
+	*** 000077	e8 00 00 		call	_printf
+	*** 00007a	83 c4 02 		add	sp,2
+;|***             return -1; 
+; Line 34
+	*** 00007d	b8 ff ff 		mov	ax,-1
+	*** 000080	5e 			pop	si
+	*** 000081	8b e5 			mov	sp,bp
+	*** 000083	5d 			pop	bp
+	*** 000084	c3 			ret	
+;|***     }
+; Line 35
+;|***     
+;|***     fseek(archivolectura, 0, SEEK_END);
+; Line 37
+	*** 000085	90 			nop	
+					$I190:
+	*** 000086	b8 02 00 		mov	ax,2
+	*** 000089	50 			push	ax
+	*** 00008a	2b c0 			sub	ax,ax
+	*** 00008c	50 			push	ax
+	*** 00008d	50 			push	ax
+	*** 00008e	ff 76 f0 		push	WORD PTR [bp-16]	;archivolectura
+	*** 000091	e8 00 00 		call	_fseek
+	*** 000094	83 c4 08 		add	sp,8
+;|***     pesolectura = ftell(archivolectura);
+;|***     if(pesolectura>(1024*2)){
+; Line 39
+	*** 000097	ff 76 f0 		push	WORD PTR [bp-16]	;archivolectura
+	*** 00009a	e8 00 00 		call	_ftell
+	*** 00009d	83 c4 02 		add	sp,2
+	*** 0000a0	89 46 fa 		mov	WORD PTR [bp-6],ax	;pesolectura
+	*** 0000a3	3d 00 08 		cmp	ax,2048
+	*** 0000a6	7e 06 			jle	$I192
+;|***             printf("\nEL archivo debe ser de 2 KBytes o menos\n");
+; Line 40
+	*** 0000a8	b8 4f 00 		mov	ax,OFFSET DGROUP:$SG193
+	*** 0000ab	eb c9 			jmp	SHORT $L20002
+;|***             return -1;
+;|***     }
+; Line 42
+;|***     fclose(archivolectura);        
+; Line 43
+	*** 0000ad	90 			nop	
+					$I192:
+	*** 0000ae	ff 76 f0 		push	WORD PTR [bp-16]	;archivolectura
+	*** 0000b1	e8 00 00 		call	_fclose
+	*** 0000b4	83 c4 02 		add	sp,2
+;|***     archivolectura = fopen(nombrearchivolectura,"rb");
+;|***     if(archivolectura == NULL){ 
+; Line 45
+	*** 0000b7	b8 79 00 		mov	ax,OFFSET DGROUP:$SG194
+	*** 0000ba	50 			push	ax
+	*** 0000bb	ff b6 ec f7 		push	WORD PTR [bp-2068]	;nombrearchivolectura
+	*** 0000bf	e8 00 00 		call	_fopen
+	*** 0000c2	83 c4 04 		add	sp,4
+	*** 0000c5	89 46 f0 		mov	WORD PTR [bp-16],ax	;archivolectura
+	*** 0000c8	0b c0 			or	ax,ax
+	*** 0000ca	75 06 			jne	$I195
+;|***             printf("\nNo se logro abrir el archivo para leer\n");
+; Line 46
+	*** 0000cc	b8 7c 00 		mov	ax,OFFSET DGROUP:$SG196
+	*** 0000cf	eb a5 			jmp	SHORT $L20002
+;|***             return -1; 
+;|***     }
+; Line 48
+;|***     pesolectura = fread(puntero, bytes, bytesmaximo, archivolectura);
+; Line 49
+	*** 0000d1	90 			nop	
+					$I195:
+;|***     if(pesolectura==0){
+; Line 50
+	*** 0000d2	50 			push	ax
+	*** 0000d3	ff 76 fc 		push	WORD PTR [bp-4]	;bytesmaximo
+	*** 0000d6	ff 76 f8 		push	WORD PTR [bp-8]	;bytes
+	*** 0000d9	8d 86 f0 f7 		lea	ax,WORD PTR [bp-2064]	;puntero
+	*** 0000dd	50 			push	ax
+	*** 0000de	e8 00 00 		call	_fread
+	*** 0000e1	83 c4 08 		add	sp,8
+	*** 0000e4	89 46 fa 		mov	WORD PTR [bp-6],ax	;pesolectura
+	*** 0000e7	0b c0 			or	ax,ax
+	*** 0000e9	75 05 			jne	$I197
+;|***             printf("\nEl archivo esta sin datos\n");
+; Line 51
+	*** 0000eb	b8 a5 00 		mov	ax,OFFSET DGROUP:$SG198
+	*** 0000ee	eb 86 			jmp	SHORT $L20002
+;|***             return -1; 
+;|***     }
+; Line 53
+;|***     printf("CON %d Bytes\n", pesolectura);
+; Line 54
+					$I197:
+	*** 0000f0	50 			push	ax
+	*** 0000f1	b8 c1 00 		mov	ax,OFFSET DGROUP:$SG199
+	*** 0000f4	50 			push	ax
+	*** 0000f5	e8 00 00 		call	_printf
+	*** 0000f8	83 c4 04 		add	sp,4
+;|***     bytes = 1;
+; Line 55
+	*** 0000fb	c7 46 f8 01 00 		mov	WORD PTR [bp-8],1	;bytes
+;|***     bytesmaximo = (1024*2);
+; Line 56
+	*** 000100	c7 46 fc 00 08 		mov	WORD PTR [bp-4],2048	;bytesmaximo
+;|***     nombrearchivoescritura = "COPIA.JPG";
+;|***     printf("ESCRITURA DE '%s' ",nombrearchivoescritura);
+; Line 58
+	*** 000105	b8 cf 00 		mov	ax,OFFSET DGROUP:$SG200
+	*** 000108	89 46 fe 		mov	WORD PTR [bp-2],ax	;nombrearchivoescritura
+	*** 00010b	50 			push	ax
+	*** 00010c	b8 d9 00 		mov	ax,OFFSET DGROUP:$SG201
+	*** 00010f	50 			push	ax
+	*** 000110	e8 00 00 		call	_printf
+	*** 000113	83 c4 04 		add	sp,4
+;|***     archivoescritura = fopen(nombrearchivoescritura,"wb"); 
+;|***     if(archivoescritura == NULL){ 
+; Line 60
+	*** 000116	b8 ec 00 		mov	ax,OFFSET DGROUP:$SG202
+	*** 000119	50 			push	ax
+	*** 00011a	b8 cf 00 		mov	ax,OFFSET DGROUP:$SG200
+	*** 00011d	50 			push	ax
+	*** 00011e	e8 00 00 		call	_fopen
+	*** 000121	83 c4 04 		add	sp,4
+	*** 000124	89 86 ee f7 		mov	WORD PTR [bp-2066],ax	;archivoescritura
+	*** 000128	0b c0 			or	ax,ax
+	*** 00012a	75 06 			jne	$I203
+;|***             printf("\nNo se logro abrir el archivo para escribir\n");
+; Line 61
+	*** 00012c	b8 ef 00 		mov	ax,OFFSET DGROUP:$SG204
+	*** 00012f	e9 44 ff 		jmp	$L20002
+;|***             return -1; 
+;|***     } 
+; Line 63
+;|***     pesoescritura = fwrite(&puntero, sizeof(unsigned char), pesolectura, archivoescritura);
+; Line 64
+					$I203:
+;|***     if(pesoescritura == 0){ 
+; Line 65
+	*** 000132	50 			push	ax
+	*** 000133	ff 76 fa 		push	WORD PTR [bp-6]	;pesolectura
+	*** 000136	b8 01 00 		mov	ax,1
+	*** 000139	50 			push	ax
+	*** 00013a	8d 86 f0 f7 		lea	ax,WORD PTR [bp-2064]	;puntero
+	*** 00013e	50 			push	ax
+	*** 00013f	e8 00 00 		call	_fwrite
+	*** 000142	83 c4 08 		add	sp,8
+	*** 000145	89 46 f6 		mov	WORD PTR [bp-10],ax	;pesoescritura
+	*** 000148	0b c0 			or	ax,ax
+	*** 00014a	75 06 			jne	$I205
+;|***             printf("\nNo se logro escribir datos\n");
+; Line 66
+	*** 00014c	b8 1c 01 		mov	ax,OFFSET DGROUP:$SG206
+	*** 00014f	e9 24 ff 		jmp	$L20002
+;|***             return -1; 
+;|***     } 
+; Line 68
+;|***     printf("CON %d Bytes\n\n", pesoescritura);
+; Line 69
+					$I205:
+	*** 000152	50 			push	ax
+	*** 000153	b8 39 01 		mov	ax,OFFSET DGROUP:$SG207
+	*** 000156	50 			push	ax
+	*** 000157	e8 00 00 		call	_printf
+	*** 00015a	83 c4 04 		add	sp,4
+;|***     archivodebytes = fopen("COPIADEBYTES.JPG","ab+");
+; Line 70
+	*** 00015d	b8 48 01 		mov	ax,OFFSET DGROUP:$SG208
+	*** 000160	50 			push	ax
+	*** 000161	b8 4c 01 		mov	ax,OFFSET DGROUP:$SG209
+	*** 000164	50 			push	ax
+	*** 000165	e8 00 00 		call	_fopen
+	*** 000168	83 c4 04 		add	sp,4
+	*** 00016b	89 46 f2 		mov	WORD PTR [bp-14],ax	;archivodebytes
+;|***     for(contador = 0; contador < (pesolectura / sizeof(unsigned char)); contador++){
+; Line 71
+	*** 00016e	c7 46 f4 00 00 		mov	WORD PTR [bp-12],0	;contador
+	*** 000173	eb 42 			jmp	SHORT $F210
+	*** 000175	90 			nop	
+					$FC211:
+;|***             /*Indice de Bytes, Hexadecimal, Binario*/
+;|***             printf("Byte[%d] = 0X%02x ", contador, (int)((unsigned char)puntero[contador])); 
+; Line 73
+	*** 000176	8b f0 			mov	si,ax
+	*** 000178	8a 8a f0 f7 		mov	cl,BYTE PTR [bp-2064][si]
+	*** 00017c	2a ed 			sub	ch,ch
+	*** 00017e	51 			push	cx
+	*** 00017f	50 			push	ax
+	*** 000180	b9 5d 01 		mov	cx,OFFSET DGROUP:$SG213
+	*** 000183	51 			push	cx
+	*** 000184	e8 00 00 		call	_printf
+	*** 000187	83 c4 06 		add	sp,6
+;|***             printbin((int)((unsigned char)puntero[contador]));
+; Line 74
+	*** 00018a	8a 82 f0 f7 		mov	al,BYTE PTR [bp-2064][si]
+	*** 00018e	2a e4 			sub	ah,ah
+	*** 000190	50 			push	ax
+	*** 000191	e8 6c fe 		call	_printbin
+	*** 000194	83 c4 02 		add	sp,2
+;|***             //printf(" %d",(int)puntero[contador]); //ASCII
+;|***             printf("\n");
+; Line 76
+	*** 000197	b8 70 01 		mov	ax,OFFSET DGROUP:$SG214
+	*** 00019a	50 			push	ax
+	*** 00019b	e8 00 00 		call	_printf
+	*** 00019e	83 c4 02 		add	sp,2
+;|***             fwrite(&puntero[contador], 1, 1, archivodebytes);
+; Line 77
+	*** 0001a1	ff 76 f2 		push	WORD PTR [bp-14]	;archivodebytes
+	*** 0001a4	b8 01 00 		mov	ax,1
+	*** 0001a7	50 			push	ax
+	*** 0001a8	50 			push	ax
+	*** 0001a9	8d 82 f0 f7 		lea	ax,WORD PTR [bp-2064][si]
+	*** 0001ad	50 			push	ax
+	*** 0001ae	e8 00 00 		call	_fwrite
+	*** 0001b1	83 c4 08 		add	sp,8
+;|***     }
+; Line 78
+	*** 0001b4	ff 46 f4 		inc	WORD PTR [bp-12]	;contador
+					$F210:
+	*** 0001b7	8b 46 f4 		mov	ax,WORD PTR [bp-12]	;contador
+	*** 0001ba	39 46 fa 		cmp	WORD PTR [bp-6],ax	;pesolectura
+	*** 0001bd	7f b7 			jg	$FC211
+;|***     fclose(archivodebytes);
+; Line 79
+	*** 0001bf	ff 76 f2 		push	WORD PTR [bp-14]	;archivodebytes
+	*** 0001c2	e8 00 00 		call	_fclose
+	*** 0001c5	83 c4 02 		add	sp,2
+;|***     printf("\nESCRITURA DE 'COPIADEBYTES.JPG' CON %d Bytes\n\n",pesoescritura);
+; Line 80
+	*** 0001c8	ff 76 f6 		push	WORD PTR [bp-10]	;pesoescritura
+	*** 0001cb	b8 72 01 		mov	ax,OFFSET DGROUP:$SG215
+	*** 0001ce	50 			push	ax
+	*** 0001cf	e8 00 00 		call	_printf
+	*** 0001d2	83 c4 04 		add	sp,4
+;|***     fclose (archivolectura);        
+; Line 81
+	*** 0001d5	ff 76 f0 		push	WORD PTR [bp-16]	;archivolectura
+	*** 0001d8	e8 00 00 		call	_fclose
+	*** 0001db	83 c4 02 		add	sp,2
+;|***     fclose (archivoescritura);
+; Line 82
+	*** 0001de	ff b6 ee f7 		push	WORD PTR [bp-2066]	;archivoescritura
+	*** 0001e2	e8 00 00 		call	_fclose
+	*** 0001e5	83 c4 02 		add	sp,2
+;|***     return 0; 
+; Line 83
+	*** 0001e8	2b c0 			sub	ax,ax
+;|*** }
+; Line 84
+	*** 0001ea	5e 			pop	si
+	*** 0001eb	8b e5 			mov	sp,bp
+	*** 0001ed	5d 			pop	bp
+	*** 0001ee	c3 			ret	
+	*** 0001ef	90 			nop	
+
+_main	ENDP
+_TEXT	ENDS
+END

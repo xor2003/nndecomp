@@ -1,0 +1,621 @@
+;	Static Name Aliases
+;
+;	$S227_seed	EQU	seed
+	TITLE   C:\SWDISP.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_swpntsym:NEAR
+EXTRN	_swpntcol:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	__aNulmul:NEAR
+EXTRN	__aNulrem:NEAR
+EXTRN	_sound:NEAR
+EXTRN	_swputsym:NEAR
+EXTRN	_swsetblk:NEAR
+EXTRN	_wdisp:BYTE
+EXTRN	_nobjects:WORD
+EXTRN	_shothole:WORD
+EXTRN	_splatbird:WORD
+EXTRN	_splatox:WORD
+EXTRN	_oxsplatted:WORD
+EXTRN	_swshtsym:BYTE
+EXTRN	_swsplsym:BYTE
+EXTRN	_countmove:WORD
+_DATA      SEGMENT
+$S227_seed	DD	04772791H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 21
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 43
+	PUBLIC	_dispplyr
+_dispplyr	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 45
+	cmp	WORD PTR _shothole,0
+	je	$I159
+; Line 46
+	call	_dispwindshot
+; Line 47
+$I159:
+	cmp	WORD PTR _splatbird,0
+	je	$I161
+; Line 48
+	call	_dispsplatbird
+; Line 49
+$I161:
+	push	WORD PTR [bp+4]	;ob
+	call	plnsound
+; Line 50
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dispplyr	ENDP
+; Line 58
+	PUBLIC	_dispbomb
+_dispbomb	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = ob
+;	obp = 4
+; Line 62
+	mov	si,WORD PTR [bp+4]	;obp
+	cmp	WORD PTR [si+8],0
+	jg	$I168
+; Line 63
+	push	si
+	mov	ax,WORD PTR [si+4]
+	neg	ax
+	push	ax
+	mov	ax,20
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 64
+$I168:
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dispbomb	ENDP
+; Line 71
+	PUBLIC	_dispmiss
+_dispmiss	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+;	obp = 4
+; Line 73
+	ret	
+
+_dispmiss	ENDP
+; Line 80
+	PUBLIC	_dispburst
+_dispburst	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+;	obp = 4
+; Line 82
+	ret	
+
+_dispburst	ENDP
+; Line 89
+	PUBLIC	_dispexpl
+_dispexpl	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = ob
+;	obp = 4
+; Line 93
+	mov	si,WORD PTR [bp+4]	;obp
+	cmp	WORD PTR [si+12],0
+	je	$I180
+; Line 94
+	push	si
+	push	WORD PTR [si+26]
+	mov	ax,10
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 95
+$I180:
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dispexpl	ENDP
+; Line 102
+	PUBLIC	_dispcomp
+_dispcomp	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 104
+	push	WORD PTR [bp+4]	;ob
+	call	plnsound
+; Line 105
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dispcomp	ENDP
+; Line 111
+	PUBLIC	_dispmult
+_dispmult	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 113
+	push	WORD PTR [bp+4]	;ob
+	call	plnsound
+; Line 114
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_dispmult	ENDP
+; Line 120
+	PUBLIC	_disptarg
+_disptarg	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 122
+	mov	bx,WORD PTR [bp+4]	;ob
+	cmp	WORD PTR [bx+20],0
+	je	$I190
+; Line 123
+	push	bx
+	sub	ax,ax
+	push	ax
+	mov	ax,30
+	push	ax
+	call	_sound
+; Line 124
+$I190:
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_disptarg	ENDP
+; Line 130
+	PUBLIC	_dispflck
+_dispflck	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 132
+	ret	
+
+_dispflck	ENDP
+; Line 138
+	PUBLIC	_dispbird
+_dispbird	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+;	ob = 4
+; Line 140
+	ret	
+
+_dispbird	ENDP
+; Line 147
+plnsound	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = ob
+;	obp = 4
+; Line 152
+	mov	si,WORD PTR [bp+4]	;obp
+	cmp	WORD PTR [si+20],0
+	je	$I200
+; Line 153
+	push	si
+	sub	ax,ax
+	push	ax
+	mov	ax,30
+$L20006:
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 154
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+$I200:
+; Line 155
+	mov	ax,WORD PTR [si]
+	jmp	SHORT $S202
+; Line 156
+$SC206:
+; Line 157
+	cmp	WORD PTR [si+8],0
+	jl	$I207
+; Line 158
+$L20004:
+	push	si
+	sub	ax,ax
+	push	ax
+	mov	ax,50
+	jmp	SHORT $L20006
+	nop	
+$I207:
+; Line 160
+	push	si
+	push	WORD PTR [si+4]
+	mov	ax,40
+	jmp	SHORT $L20006
+; Line 163
+	nop	
+$SC209:
+; Line 164
+	push	si
+	mov	ax,WORD PTR [si+14]
+	neg	ax
+	push	ax
+	mov	ax,60
+	jmp	SHORT $L20006
+$S202:
+	dec	ax
+	cmp	ax,9
+	ja	$SB203
+	shl	ax,1
+	xchg	ax,bx
+	jmp	WORD PTR cs:$L20001[bx]
+$L20001:
+		DW	$SC209
+		DW	$SB203
+		DW	$SB203
+		DW	$SB203
+		DW	$SC206
+		DW	$SB203
+		DW	$L20004
+		DW	$SB203
+		DW	$L20004
+		DW	$L20004
+$SB203:
+; Line 177
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+plnsound	ENDP
+; Line 183
+	PUBLIC	_dispwobj
+_dispwobj	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,6
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = ob
+;	register di = ow
+;	ox = -2
+;	oy = -4
+;	oldplot = -6
+;	obp = 4
+; Line 190
+	mov	si,WORD PTR [bp+4]	;obp
+	mov	ax,WORD PTR [si+56]
+	mov	cx,ax
+	shl	ax,1
+	add	ax,cx
+	shl	ax,1
+	add	ax,OFFSET _wdisp
+	mov	di,ax
+; Line 192
+	mov	bx,di
+	cmp	WORD PTR [bx],0
+	je	$I220
+; Line 193
+	mov	cx,WORD PTR [bx]
+	dec	cx
+	push	cx
+	push	WORD PTR [bx+4]
+	push	WORD PTR [bx+2]
+	call	_swpntsym
+	add	sp,6
+; Line 195
+$I220:
+	cmp	WORD PTR [si],91
+	jge	$L20007
+; Line 204
+	mov	ax,WORD PTR [si+34]
+	cwd	
+	sub	ax,dx
+	sar	ax,1
+	sub	ax,WORD PTR [si+4]
+	neg	ax
+	mov	cx,13
+	cwd	
+	idiv	cx
+	mov	WORD PTR [di+4],ax
+	mov	ax,WORD PTR [si+36]
+	cwd	
+	sub	ax,dx
+	sar	ax,1
+	add	ax,WORD PTR [si+2]
+	mov	cx,19
+	cwd	
+	idiv	cx
+	add	ax,152
+	mov	WORD PTR [di+2],ax
+; Line 206
+	mov	bx,WORD PTR [si+32]
+	push	WORD PTR [bx+42]
+	push	WORD PTR [di+4]
+	push	ax
+	call	_swpntcol
+	add	sp,6
+	mov	WORD PTR [bp-6],ax	;oldplot
+	or	ax,ax
+	je	$I226
+	and	al,3
+	cmp	al,3
+	jne	$I225
+$I226:
+; Line 207
+	mov	ax,WORD PTR [bp-6]	;oldplot
+	inc	ax
+	mov	WORD PTR [di],ax
+; Line 208
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 209
+; Line 210
+$I225:
+	push	WORD PTR [bp-6]	;oldplot
+	push	WORD PTR [di+4]
+	push	WORD PTR [di+2]
+	call	_swpntsym
+	add	sp,6
+; Line 211
+$L20007:
+	mov	WORD PTR [di],0
+; Line 212
+; Line 213
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dispwobj	ENDP
+; Line 219
+	PUBLIC	_randsd
+_randsd	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 220
+	push	WORD PTR $S227_seed+2
+	push	WORD PTR $S227_seed
+	mov	ax,WORD PTR _countmove
+	cwd	
+	push	dx
+	push	ax
+	call	__aNulmul
+	add	ax,7491
+	adc	dx,0
+	mov	WORD PTR $S227_seed,ax
+	mov	WORD PTR $S227_seed+2,dx
+	or	dx,ax
+	jne	$I230
+; Line 221
+	mov	WORD PTR $S227_seed,10129
+	mov	WORD PTR $S227_seed+2,1143
+; Line 222
+$I230:
+	ret	
+
+_randsd	ENDP
+; Line 227
+	PUBLIC	_dispwindshot
+_dispwindshot	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,118
+	call	__aNchkstk
+;	ob = -118
+; Line 230
+	mov	WORD PTR [bp-22],99
+; Line 231
+	mov	ax,16
+	mov	WORD PTR [bp-82],ax
+	mov	WORD PTR [bp-84],ax
+; Line 232
+	mov	WORD PTR [bp-76],1
+; Line 233
+	mov	WORD PTR [bp-40],OFFSET _swshtsym
+; Line 234
+$D233:
+; Line 235
+	call	_randsd
+; Line 238
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	ax,150
+	cwd	
+	push	dx
+	push	ax
+	push	WORD PTR $S227_seed+2
+	push	WORD PTR $S227_seed
+	call	__aNulrem
+	add	ax,50
+	push	ax
+	mov	ax,304
+	cwd	
+	push	dx
+	push	ax
+	push	WORD PTR $S227_seed+2
+	push	WORD PTR $S227_seed
+	call	__aNulrem
+	push	ax
+	call	_swputsym
+	add	sp,6
+; Line 239
+	dec	WORD PTR _shothole
+	jne	$D233
+; Line 240
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dispwindshot	ENDP
+; Line 245
+	PUBLIC	_dispsplatbird
+_dispsplatbird	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,118
+	call	__aNchkstk
+;	ob = -118
+; Line 248
+	mov	WORD PTR [bp-22],99
+; Line 249
+	mov	ax,32
+	mov	WORD PTR [bp-82],ax
+	mov	WORD PTR [bp-84],ax
+; Line 250
+	mov	WORD PTR [bp-76],2
+; Line 251
+	mov	WORD PTR [bp-40],OFFSET _swsplsym
+; Line 252
+$D239:
+; Line 253
+	call	_randsd
+; Line 256
+	lea	ax,WORD PTR [bp-118]	;ob
+	push	ax
+	mov	ax,140
+	cwd	
+	push	dx
+	push	ax
+	push	WORD PTR $S227_seed+2
+	push	WORD PTR $S227_seed
+	call	__aNulrem
+	add	ax,60
+	push	ax
+	mov	ax,288
+	cwd	
+	push	dx
+	push	ax
+	push	WORD PTR $S227_seed+2
+	push	WORD PTR $S227_seed
+	call	__aNulrem
+	push	ax
+	call	_swputsym
+	add	sp,6
+; Line 257
+	dec	WORD PTR _splatbird
+	jne	$D239
+; Line 258
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_dispsplatbird	ENDP
+; Line 264
+	PUBLIC	_dispoxsplat
+_dispoxsplat	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = ob
+;	register di = i
+; Line 269
+	mov	ax,170
+	push	ax
+	mov	cx,7280
+	push	cx
+	mov	cx,-18432
+	push	cx
+	sub	dx,dx
+	push	dx
+	call	_swsetblk
+	add	sp,8
+; Line 271
+	mov	ax,170
+	push	ax
+	mov	ax,7200
+	push	ax
+	mov	ax,-18432
+	push	ax
+	mov	ax,8192
+	push	ax
+	call	_swsetblk
+	add	sp,8
+; Line 273
+	mov	WORD PTR _oxsplatted,1
+; Line 275
+	mov	si,WORD PTR _nobjects
+; Line 276
+	sub	di,di
+	mov	WORD PTR _splatox,di
+	jmp	SHORT $F247
+$FC248:
+; Line 277
+	sub	ax,ax
+	mov	WORD PTR [si+64],ax
+	mov	WORD PTR [si+62],ax
+	inc	di
+	add	si,118
+$F247:
+	cmp	di,100
+	jl	$FC248
+; Line 278
+	pop	si
+	pop	di
+	ret	
+
+_dispoxsplat	ENDP
+_TEXT	ENDS
+END
