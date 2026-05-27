@@ -48,6 +48,35 @@ python3 scripts/make_cod_function_qa.py \
 - Symbol names are anonymized (`fn1`, `id1`, `arg1`, `loc1`, `lbl1`).
 - High-confidence subset (`label_match`) can be generated directly with `--only-label-match`.
 
+### 4) Build combo dataset (single or two-stage)
+```bash
+python3 scripts/build_combo_dataset.py \
+  --reports artifacts/msex_cod_build_report.json artifacts/retest_chunk2_report.json \
+  --compiler msc61 \
+  --out artifacts/dataset/cod_combo.jsonl \
+  --index artifacts/dataset/cod_combo.index.jsonl \
+  --dataset-mode two-stage \
+  --prompt-tags \
+  --max-kept-variants-per-source 24
+```
+
+### 5) Smoke evaluation (compile/run rates + stratified report)
+```bash
+scripts/run_eval_dos_smoke.sh \
+  artifacts/dataset/cod_combo_two_stage_small.jsonl \
+  artifacts/eval/dos_reexec_smoke.json
+```
+
+Direct evaluator usage:
+```bash
+python3 scripts/eval_dos_reexec.py \
+  --dataset artifacts/dataset/cod_combo_two_stage_small.jsonl \
+  --stage-filter readable \
+  --with-edit-sim \
+  --with-run \
+  --report artifacts/eval/dos_reexec.json
+```
+
 TODO:
 
 [x] Collect C++ sources of 16 bit code
@@ -74,5 +103,4 @@ doscompilelib.sh - library to execute various builders
 sources.tar.bz2 - backup archive of source examples for Borland C++ 3/5, Turbo C++, Microsoft C++
 
 /bcex/crc16eas/Source/ - first project to test on
-
 

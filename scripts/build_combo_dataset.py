@@ -316,6 +316,32 @@ def compile_variant(src:Path, tc_name:str, flags:str, timeout:int, slot:int=0, r
     return {'flags':flags,'raw':raw,'norm':norm,'asm':data.decode('latin1',errors='replace'),'rc':r.returncode}
 
 
+def make_stage1_skeleton(ans_text: str) -> str:
+    sk = ans_text
+    sk = re.sub(r'\b(unsigned|signed|short|long|int|char|float|double|void)\b', 'T', sk)
+    sk = re.sub(r'\b(struct|union|enum)\s+[A-Za-z_][A-Za-z0-9_]*', r'\1 T', sk)
+    sk = re.sub(r'\s+', ' ', sk).strip()
+    return sk + '\n'
+
+
+def make_prompt_tags(compiler: str, flags: str, source_rel: str) -> str:
+    lang = 'dos-cpp' if source_rel.lower().endswith('.cpp') else 'dos-c'
+    opt = 'OPTUNK'
+    m = re.search(r'/O([a-zA-Z]+)', flags)
+    if m:
+        opt = ('O' + m.group(1)).upper()
+    return f"[{compiler.upper()}][{opt}][16BIT-DOS][{lang}]"
+
+
+def build_user_prompt(asm: str, tags: str, stage: int, skeleton: str = '') -> str:
+    pref = (tags + '\n') if tags else ''
+    if stage == 1:
+        return pref + "Recover the C/C++ function skeleton (types/identifiers may stay anonymized) from this assembly:\n\n" + asm
+    if stage == 2:
+        return pref + "Recover readable C/C++ from this assembly, using the provided skeleton as structure guidance.\n\n[SKELETON]\n" + skeleton + "\n[ASSEMBLY]\n" + asm
+    return pref + "Recover the function from this assembly:\n\n" + asm
+
+
 def process_source(src: Path, args, combos):
     rel=src.relative_to(REPO_ROOT).as_posix()
     text=src.read_text('latin1',errors='replace')
@@ -342,22 +368,50 @@ def process_source(src: Path, args, combos):
             lines=[x for x in asm.splitlines() if x.strip()]
             if mode!='label_match' or len(lines)<8 or len(lines)>4000:
                 continue
-            row={'messages':[
-                    {'role':'system','content':'Recover the C/C++ function from DOS compiler assembly/listing.'},
-                    {'role':'user','content':'Recover the function from this assembly:\n\n'+asm},
-                    {'role':'assistant','content':ans},
-                ]}
-            if not args.no_metadata:
-                row['meta']={
-                    'function': fn['name'],
-                    'flags': v['flags'],
-                    'compiler': args.compiler,
-                    'raw_hash': v['raw'],
-                    'norm_hash': v['norm'],
-                    'source': rel,
-                    'quality': 'high',
-                }
-            rows.append(row)
+            tags = make_prompt_tags(args.compiler, v['flags'], rel) if args.prompt_tags else ''
+            if args.dataset_mode == 'two-stage':
+                sk = make_stage1_skeleton(ans)
+                row1={'messages':[
+                        {'role':'system','content':'Recover C/C++ function structure from DOS assembly.'},
+                        {'role':'user','content':build_user_prompt(asm, tags, 1)},
+                        {'role':'assistant','content':sk},
+                    ]}
+                row2={'messages':[
+                        {'role':'system','content':'Recover readable C/C++ from DOS assembly using a provided skeleton.'},
+                        {'role':'user','content':build_user_prompt(asm, tags, 2, sk)},
+                        {'role':'assistant','content':ans},
+                    ]}
+                if not args.no_metadata:
+                    base_meta={
+                        'function': fn['name'],
+                        'flags': v['flags'],
+                        'compiler': args.compiler,
+                        'raw_hash': v['raw'],
+                        'norm_hash': v['norm'],
+                        'source': rel,
+                        'quality': 'high',
+                    }
+                    row1['meta']=dict(base_meta, stage='skeleton')
+                    row2['meta']=dict(base_meta, stage='readable')
+                rows.append(row1)
+                rows.append(row2)
+            else:
+                row={'messages':[
+                        {'role':'system','content':'Recover the C/C++ function from DOS compiler assembly/listing.'},
+                        {'role':'user','content':build_user_prompt(asm, tags, 0)},
+                        {'role':'assistant','content':ans},
+                    ]}
+                if not args.no_metadata:
+                    row['meta']={
+                        'function': fn['name'],
+                        'flags': v['flags'],
+                        'compiler': args.compiler,
+                        'raw_hash': v['raw'],
+                        'norm_hash': v['norm'],
+                        'source': rel,
+                        'quality': 'high',
+                    }
+                rows.append(row)
     return {
         'source': rel,
         'rows': rows,
@@ -381,6 +435,8 @@ def main():
     ap.add_argument('--no-metadata', action='store_true')
     ap.add_argument('--jobs', type=int, default=1)
     ap.add_argument('--compile-retries', type=int, default=2)
+    ap.add_argument('--dataset-mode', choices=['single','two-stage'], default='single')
+    ap.add_argument('--prompt-tags', action='store_true')
     args=ap.parse_args()
 
     srcs=[]
