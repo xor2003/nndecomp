@@ -1,0 +1,24 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SPRITES.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _bombsprites
+PUBLIC  _buildingsprites
+PUBLIC  _debrissprites
+PUBLIC  _shrapnelsprites
+PUBLIC  _planesprites
+PUBLIC  _finalesprites
+PUBLIC  _fallingsprites
+PUBLIC  _flocksprites
+PUBLIC  _birdsp

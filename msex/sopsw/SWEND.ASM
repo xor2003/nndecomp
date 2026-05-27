@@ -1,0 +1,411 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWEND.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_swcolour:NEAR
+EXTRN	_swposcur:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_dispd:NEAR
+EXTRN	_multclos:NEAR
+EXTRN	_asynclos:NEAR
+EXTRN	_set_type:NEAR
+EXTRN	_sound:NEAR
+EXTRN	_swsound:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	__intterm:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_histend:NEAR
+EXTRN	_puts:NEAR
+EXTRN	_swflush:NEAR
+EXTRN	_exit:NEAR
+EXTRN	_playmode:WORD
+EXTRN	_savemode:WORD
+EXTRN	_hires:WORD
+EXTRN	_objtop:WORD
+EXTRN	_multbuff:WORD
+EXTRN	_player:WORD
+EXTRN	_endsts:BYTE
+EXTRN	_endcount:WORD
+EXTRN	_goingsun:WORD
+EXTRN	_objsmax:WORD
+EXTRN	_repflag:WORD
+EXTRN	_inplay:WORD
+_DATA      SEGMENT
+$SG179	DB	0dH,  0aH,  00H
+$SG181	DB	0dH,  0aH,  00H
+$SG183	DB	0dH,  0aH,  00H
+$SG221	DB	'THE END',  00H
+$SG223	DB	0dH,  0aH, 'End of game statictics',  0dH,  0aH,  0dH,  0aH,  00H
+$SG224	DB	'Objects used: ',  00H
+$SG226	DB	0dH,  0aH,  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 18
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 41
+	PUBLIC	_swend
+_swend	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = closmsg
+;	update = 6
+;	msg = 4
+; Line 48
+	push	WORD PTR _savemode
+	call	_set_type
+	add	sp,2
+; Line 51
+	sub	si,si
+	push	si
+	sub	ax,ax
+	mov	WORD PTR _hires,ax
+	push	ax
+	push	ax
+	call	_sound
+	add	sp,6
+; Line 52
+	call	_swsound
+; Line 54
+	cmp	WORD PTR _repflag,si
+	je	$I169
+; Line 55
+	call	_swreport
+; Line 57
+$I169:
+	cmp	WORD PTR _playmode,1
+	jne	$I171
+; Line 58
+	push	WORD PTR [bp+6]	;update
+	call	_multclos
+	add	sp,2
+	jmp	SHORT $L20004
+	nop	
+$I171:
+	cmp	WORD PTR _playmode,3
+	jne	$I173
+; Line 60
+	call	_asynclos
+$L20004:
+	mov	si,ax
+; Line 62
+$I173:
+	call	_intsoff
+; Line 63
+	call	__intterm
+; Line 64
+	call	_intson
+; Line 65
+	call	_histend
+; Line 67
+	mov	ax,OFFSET DGROUP:$SG179
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 68
+	or	si,si
+	je	$I180
+; Line 69
+	push	si
+	call	_puts
+	add	sp,2
+; Line 70
+	mov	ax,OFFSET DGROUP:$SG181
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 71
+; Line 72
+$I180:
+	cmp	WORD PTR [bp+4],0	;msg
+	je	$I182
+; Line 73
+	push	WORD PTR [bp+4]	;msg
+	call	_puts
+	add	sp,2
+; Line 74
+	mov	ax,OFFSET DGROUP:$SG183
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 75
+; Line 77
+$I182:
+	mov	WORD PTR _inplay,0
+; Line 78
+	call	_swflush
+; Line 79
+	cmp	WORD PTR [bp+4],0	;msg
+	jne	$I186
+	or	si,si
+	je	$I185
+$I186:
+; Line 80
+	mov	ax,1
+	jmp	SHORT $L20003
+$I185:
+; Line 82
+	sub	ax,ax
+$L20003:
+	push	ax
+	call	_exit
+	add	sp,2
+; Line 83
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_swend	ENDP
+; Line 90
+	PUBLIC	_endgame
+_endgame	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = winclr
+;	register di = ob
+;	targclr = 4
+; Line 96
+	cmp	WORD PTR _playmode,1
+	je	$I196
+	cmp	WORD PTR _playmode,3
+	jne	$I195
+$I196:
+	mov	bx,WORD PTR _multbuff
+	cmp	WORD PTR [bx],1
+	jne	$I194
+$I195:
+; Line 97
+	mov	si,1
+; Line 98
+	jmp	SHORT $I199
+$I194:
+; Line 99
+	mov	bx,WORD PTR _objtop
+	mov	ax,WORD PTR [bx+22]
+	cmp	WORD PTR [bx+140],ax
+	jne	$I198
+; Line 100
+	mov	si,3
+	sub	si,WORD PTR [bp+4]	;targclr
+; Line 101
+	jmp	SHORT $I199
+	nop	
+$I198:
+; Line 103
+	cmp	WORD PTR [bx+140],ax
+	jle	$L20001
+	mov	si,1
+	jmp	SHORT $L20002
+	nop	
+$L20001:
+	sub	si,si
+$L20002:
+	inc	si
+$I199:
+; Line 105
+	mov	di,WORD PTR _objtop
+; Line 106
+	jmp	SHORT $L20006
+	nop	
+$FC201:
+; Line 107
+	mov	bx,WORD PTR [di+56]
+	shl	bx,1
+	cmp	WORD PTR _endsts[bx],0
+	jne	$I203
+; Line 115
+	cmp	WORD PTR [di+42],si
+	jne	$I204
+	cmp	WORD PTR [di+76],4
+	jl	$I206
+	cmp	WORD PTR [di+76],5
+	jge	$I204
+	cmp	WORD PTR [di],1
+	je	$I206
+	cmp	WORD PTR [di],7
+	je	$I206
+	cmp	WORD PTR [di],9
+	je	$I206
+	cmp	WORD PTR [di],10
+	jne	$I204
+$I206:
+; Line 116
+	push	di
+	call	_winner
+	jmp	SHORT $L20005
+	nop	
+$I204:
+; Line 118
+	push	di
+	call	_loser
+$L20005:
+	add	sp,2
+; Line 119
+$I203:
+	mov	di,WORD PTR [di+52]
+; Line 120
+$L20006:
+	cmp	WORD PTR [di+96],1
+	je	$FC201
+; Line 121
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_endgame	ENDP
+; Line 128
+	PUBLIC	_winner
+_winner	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	di
+	push	si
+;	register si = n
+;	register di = ob
+;	obp = 4
+; Line 133
+	mov	di,WORD PTR [bp+4]	;obp
+	mov	si,WORD PTR [di+56]
+	mov	bx,si
+	shl	bx,1
+	mov	WORD PTR _endsts[bx],1
+; Line 134
+	cmp	WORD PTR _player,si
+	jne	$I214
+; Line 135
+	mov	WORD PTR _endcount,72
+; Line 136
+	mov	WORD PTR _goingsun,1
+; Line 137
+	sub	ax,ax
+	mov	WORD PTR [di+50],ax
+	mov	WORD PTR [di+48],ax
+	mov	WORD PTR [di+8],ax
+	mov	WORD PTR [di+6],ax
+; Line 138
+	mov	WORD PTR [di],1
+; Line 139
+	mov	WORD PTR [di+30],9000
+; Line 140
+	mov	WORD PTR [di+14],4
+; Line 141
+; Line 142
+$I214:
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_winner	ENDP
+; Line 148
+	PUBLIC	_loser
+_loser	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = n
+;	ob = 4
+; Line 152
+	mov	bx,WORD PTR [bp+4]	;ob
+	mov	si,WORD PTR [bx+56]
+	mov	bx,si
+	mov	WORD PTR _endsts[bx][si],2
+; Line 153
+	cmp	WORD PTR _player,si
+	jne	$I218
+; Line 154
+	mov	ax,130
+	push	ax
+	call	_swcolour
+	add	sp,2
+; Line 155
+	mov	ax,12
+	push	ax
+	mov	ax,16
+	push	ax
+	call	_swposcur
+	add	sp,4
+; Line 156
+	mov	ax,OFFSET DGROUP:$SG221
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 157
+	mov	WORD PTR _endcount,20
+; Line 158
+; Line 159
+$I218:
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+_loser	ENDP
+; Line 165
+	PUBLIC	_swreport
+_swreport	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+; Line 166
+	mov	ax,OFFSET DGROUP:$SG223
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 167
+	mov	ax,OFFSET DGROUP:$SG224
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 168
+	mov	ax,WORD PTR _objsmax
+	sub	ax,WORD PTR _objtop
+	inc	ax
+	mov	cx,118
+	cwd	
+	idiv	cx
+	push	ax
+	call	_dispd
+	add	sp,2
+; Line 169
+	mov	ax,OFFSET DGROUP:$SG226
+	push	ax
+	call	_puts
+	add	sp,2
+; Line 170
+	ret	
+	nop	
+
+_swreport	ENDP
+_TEXT	ENDS
+END

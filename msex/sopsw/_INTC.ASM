@@ -1,0 +1,203 @@
+;	Static Name Aliases
+;
+	TITLE   C:\_INTC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__int1vec:NEAR
+EXTRN	__int2vec:NEAR
+EXTRN	_get_ivec:NEAR
+EXTRN	_set_ivec:NEAR
+EXTRN	_csseg:NEAR
+EXTRN	__aNchkstk:NEAR
+_BSS      SEGMENT
+COMM NEAR	__inttab:	 10:	 10
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 44
+; Line 59
+	PUBLIC	__intsetup
+__intsetup	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,4
+	call	__aNchkstk
+	push	di
+	push	si
+;	vec1 = -4
+;	vec2 = -2
+;	register si = i
+;	offset = 6
+;	inter = 4
+; Line 71
+	sub	si,si
+	jmp	SHORT $F134
+; Line 74
+	nop	
+$FC135:
+	inc	si
+$F134:
+	cmp	si,10
+	jge	$FB136
+; Line 72
+	mov	bx,si
+	shl	bx,1
+	shl	bx,1
+	add	bx,si
+	shl	bx,1
+	cmp	WORD PTR __inttab[bx+8],0
+	jne	$FC135
+; Line 73
+$FB136:
+	cmp	si,10
+	jne	$I138
+; Line 75
+	mov	ax,-1
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 76
+	nop	
+$I138:
+	mov	ax,WORD PTR [bp+4]	;inter
+	inc	ax
+	mov	bx,si
+	shl	bx,1
+	shl	bx,1
+	add	bx,si
+	shl	bx,1
+	mov	WORD PTR __inttab[bx+8],ax
+; Line 85
+	push	WORD PTR [bp+4]	;inter
+	mov	di,bx
+	call	_get_ivec
+	add	sp,2
+	mov	WORD PTR __inttab[di+4],ax
+	mov	WORD PTR __inttab[di+6],dx
+; Line 86
+	mov	ax,WORD PTR [bp+6]	;offset
+	mov	WORD PTR __inttab[di],ax
+	mov	WORD PTR __inttab[di+2],ds
+; Line 89
+	call	_csseg
+	push	ax
+	mov	ax,OFFSET __int2vec
+	mov	cx,OFFSET __int1vec
+	sub	ax,cx
+	imul	si
+	add	ax,cx
+	push	ax
+	push	WORD PTR [bp+4]	;inter
+	call	_set_ivec
+	add	sp,6
+; Line 91
+	mov	ax,si
+; Line 92
+	pop	si
+	pop	di
+	mov	sp,bp
+	pop	bp
+	ret	
+
+__intsetup	ENDP
+; Line 97
+	PUBLIC	__intreset
+__intreset	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	i = 4
+; Line 104
+	cmp	WORD PTR [bp+4],0	;i
+	jl	$I145
+	cmp	WORD PTR [bp+4],10	;i
+	jge	$I145
+	mov	bx,WORD PTR [bp+4]	;i
+	mov	ax,bx
+	shl	bx,1
+	shl	bx,1
+	add	bx,ax
+	shl	bx,1
+	cmp	WORD PTR __inttab[bx+8],0
+	jne	$I144
+$I145:
+; Line 105
+	mov	ax,-1
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+; Line 112
+	nop	
+$I144:
+	mov	bx,ax
+	shl	bx,1
+	shl	bx,1
+	add	bx,ax
+	shl	bx,1
+	push	WORD PTR __inttab[bx+6]
+	push	WORD PTR __inttab[bx+4]
+	mov	ax,WORD PTR __inttab[bx+8]
+	dec	ax
+	push	ax
+	mov	si,bx
+	call	_set_ivec
+	add	sp,6
+; Line 113
+	mov	WORD PTR __inttab[si+8],0
+; Line 115
+	mov	ax,WORD PTR [bp+4]	;i
+; Line 116
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+
+__intreset	ENDP
+; Line 121
+	PUBLIC	__intterm
+__intterm	PROC NEAR
+	xor	ax,ax
+	call	__aNchkstk
+	push	si
+;	register si = i
+; Line 124
+	mov	si,9
+$FC150:
+; Line 125
+	mov	bx,si
+	shl	bx,1
+	shl	bx,1
+	add	bx,si
+	shl	bx,1
+	cmp	WORD PTR __inttab[bx+8],0
+	je	$I152
+; Line 126
+	push	si
+	call	__intreset
+	add	sp,2
+; Line 127
+$I152:
+	dec	si
+	jns	$FC150
+	pop	si
+	ret	
+
+__intterm	ENDP
+_TEXT	ENDS
+END

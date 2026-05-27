@@ -1,0 +1,243 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWMAIN.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  _lcompter
+PUBLIC  _rcompter
+PUBLIC  _objsmax
+PUBLIC  _keydelay
+PUBLIC  _sintab
+PUBLIC  _multbuff
+PUBLIC  _multaddr
+PUBLIC  _printflg
+EXTRN	__acrtused:ABS
+EXTRN	_setjmp:NEAR
+EXTRN	_swkeyint:NEAR
+EXTRN	_malloc:NEAR
+EXTRN	__aNchkstk:NEAR
+EXTRN	_swinit:NEAR
+EXTRN	_intsoff:NEAR
+EXTRN	_intson:NEAR
+EXTRN	_swmove:NEAR
+EXTRN	_swgetjoy:NEAR
+EXTRN	_swdisp:NEAR
+EXTRN	_swcollsn:NEAR
+EXTRN	__intreset:NEAR
+EXTRN	_swprint:NEAR
+EXTRN	__intsetup:NEAR
+EXTRN	_csseg:NEAR
+EXTRN	_dsseg:NEAR
+EXTRN	_swsound:NEAR
+_BSS      SEGMENT
+COMM NEAR	_compnear:	 2:	 4
+COMM NEAR	_endsts:	 2:	 4
+COMM NEAR	_endcount:	BYTE:	 2
+COMM NEAR	_player:	BYTE:	 2
+COMM NEAR	_currobx:	BYTE:	 2
+COMM NEAR	_plyrplane:	BYTE:	 2
+COMM NEAR	_compplane:	BYTE:	 2
+COMM NEAR	_wdisp:	 6:	 100
+COMM NEAR	_goingsun:	BYTE:	 2
+COMM NEAR	_forcdisp:	BYTE:	 2
+COMM NEAR	_histin:	BYTE:	 2
+COMM NEAR	_histout:	BYTE:	 2
+COMM NEAR	_explseed:	BYTE:	 2
+COMM NEAR	_dispcnt:	BYTE:	 2
+COMM NEAR	_endstat:	BYTE:	 2
+COMM NEAR	_playmode:	BYTE:	 2
+COMM NEAR	_currgame:	BYTE:	 2
+COMM NEAR	_maxcrash:	BYTE:	 2
+COMM NEAR	_targets:	 2:	 22
+COMM NEAR	_shothole:	BYTE:	 2
+COMM NEAR	_numtarg:	 2:	 2
+COMM NEAR	_splatbird:	BYTE:	 2
+COMM NEAR	_splatox:	BYTE:	 2
+COMM NEAR	_savemode:	BYTE:	 2
+COMM NEAR	_oxsplatted:	BYTE:	 2
+COMM NEAR	_tickmode:	BYTE:	 2
+COMM NEAR	_counttick:	BYTE:	 2
+COMM NEAR	_envrestart:	 2:	 9
+COMM NEAR	_countmove:	BYTE:	 2
+COMM NEAR	_movetick:	BYTE:	 2
+COMM NEAR	_movemax:	BYTE:	 2
+_BSS      ENDS
+EXTRN	__systype:WORD
+_BSS      SEGMENT
+COMM NEAR	_gamenum:	BYTE:	 2
+COMM NEAR	_gmaxspeed:	BYTE:	 2
+COMM NEAR	_gminspeed:	BYTE:	 2
+COMM NEAR	_targrnge:	BYTE:	 2
+COMM NEAR	_multiost:	BYTE:	 24
+COMM NEAR	_auxdisp:	 1:	 8192
+COMM NEAR	_multkey:	BYTE:	 2
+COMM NEAR	_multtick:	BYTE:	 2
+COMM NEAR	_hires:	BYTE:	 2
+COMM NEAR	_disppos:	BYTE:	 2
+COMM NEAR	_titleflg:	BYTE:	 2
+COMM NEAR	_dispdbg:	BYTE:	 2
+COMM NEAR	_soundflg:	BYTE:	 2
+COMM NEAR	_repflag:	BYTE:	 2
+COMM NEAR	_joystick:	BYTE:	 2
+COMM NEAR	_ibmkeybd:	BYTE:	 2
+COMM NEAR	_inplay:	BYTE:	 2
+COMM NEAR	_koveride:	BYTE:	 2
+COMM NEAR	_missok:	BYTE:	 2
+COMM NEAR	_displx:	BYTE:	 2
+COMM NEAR	_disprx:	BYTE:	 2
+COMM NEAR	_dispdx:	BYTE:	 2
+COMM NEAR	_dispinit:	BYTE:	 2
+COMM NEAR	_drawlist:	BYTE:	 2
+COMM NEAR	_nobjects:	BYTE:	 2
+COMM NEAR	_oobjects:	 118:	 4
+COMM NEAR	_objbot:	BYTE:	 2
+COMM NEAR	_objtop:	BYTE:	 2
+COMM NEAR	_objfree:	BYTE:	 2
+COMM NEAR	_deltop:	BYTE:	 2
+COMM NEAR	_delbot:	BYTE:	 2
+COMM NEAR	_topobj:	BYTE:	 118
+COMM NEAR	_botobj:	BYTE:	 118
+_BSS      ENDS
+_DATA      SEGMENT
+_multbuff	DW	DGROUP:_multiost
+_multaddr	DW	03f2H
+_printflg	DW	00H
+_lcompter	DW	00H
+	DW	0483H
+	DW	00H
+	DW	0829H
+_rcompter	DW	00H
+	DW	0828H
+	DW	0482H
+	DW	02710H
+_objsmax	DW	00H
+_keydelay	DW	0ffffH
+_sintab	DW	00H
+	DW	062H
+	DW	0b5H
+	DW	0edH
+	DW	0100H
+	DW	0edH
+	DW	0b5H
+	DW	062H
+	DW	00H
+	DW	0ff9eH
+	DW	0ff4bH
+	DW	0ff13H
+	DW	0ff00H
+	DW	0ff13H
+	DW	0ff4bH
+	DW	0ff9eH
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 22
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 134
+	PUBLIC	_main
+_main	PROC NEAR
+	push	bp
+	mov	bp,sp
+	xor	ax,ax
+	call	__aNchkstk
+;	argv = 6
+;	argc = 4
+; Line 139
+	mov	ax,11800
+	push	ax
+	call	_malloc
+	mov	sp,bp
+	mov	WORD PTR _nobjects,ax
+; Line 140
+	mov	WORD PTR __systype,0
+; Line 142
+	push	WORD PTR [bp+6]	;argv
+	push	WORD PTR [bp+4]	;argc
+	call	_swinit
+	mov	sp,bp
+; Line 143
+	mov	ax,OFFSET DGROUP:_envrestart
+	push	ax
+	call	_setjmp
+	mov	sp,bp
+; Line 144
+$FC227:
+; Line 150
+	mov	ax,WORD PTR _movetick
+	cmp	WORD PTR _movemax,ax
+	jg	$FC227
+; Line 151
+	call	_intsoff
+; Line 152
+	mov	ax,WORD PTR _movemax
+	sub	WORD PTR _movetick,ax
+; Line 153
+	call	_intson
+; Line 155
+	call	_swmove
+; Line 156
+	call	_swgetjoy
+; Line 157
+	call	_swdisp
+; Line 158
+	call	_swgetjoy
+; Line 159
+	call	_swcollsn
+; Line 160
+	call	_swgetjoy
+; Line 161
+	call	_intsoff
+; Line 162
+	cmp	WORD PTR _printflg,0
+	je	$I238
+; Line 163
+	mov	WORD PTR _printflg,0
+; Line 164
+	push	WORD PTR _koveride
+	call	__intreset
+	mov	sp,bp
+; Line 165
+	call	_intson
+; Line 166
+	call	_swprint
+; Line 167
+	call	_intsoff
+; Line 169
+	call	_dsseg
+	push	ax
+	call	_csseg
+	push	ax
+	mov	ax,OFFSET _swkeyint
+	push	ax
+	mov	ax,9
+	push	ax
+	call	__intsetup
+	mov	sp,bp
+	mov	WORD PTR _koveride,ax
+; Line 170
+; Line 171
+$I238:
+	call	_intson
+; Line 172
+	call	_swsound
+; Line 173
+	jmp	SHORT $FC227
+
+_main	ENDP
+_TEXT	ENDS
+END

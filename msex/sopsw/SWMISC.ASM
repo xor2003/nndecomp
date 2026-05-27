@@ -1,0 +1,64 @@
+;	Static Name Aliases
+;
+	TITLE   C:\SWMISC.C
+	.8087
+INCLUDELIB	SLIBCE
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	_swputc:NEAR
+EXTRN	__aNchkstk:NEAR
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+; Line 1
+; Line 17
+; Line 27
+; Line 28
+; Line 29
+; Line 30
+; Line 31
+; Line 23
+	PUBLIC	_puts
+_puts	PROC NEAR
+	push	bp
+	mov	bp,sp
+	mov	ax,2
+	call	__aNchkstk
+	push	si
+;	register si = s
+;	sp = 4
+; Line 27
+	mov	si,WORD PTR [bp+4]	;sp
+; Line 28
+	jmp	SHORT $L20001
+	nop	
+$FC151:
+; Line 29
+	mov	WORD PTR [bp-2],si
+	inc	si
+	mov	bx,WORD PTR [bp-2]
+	mov	al,BYTE PTR [bx]
+	cbw	
+	push	ax
+	call	_swputc
+	add	sp,2
+$L20001:
+	cmp	BYTE PTR [si],0
+	jne	$FC151
+; Line 30
+	pop	si
+	mov	sp,bp
+	pop	bp
+	ret	
+	nop	
+
+_puts	ENDP
+_TEXT	ENDS
+END
