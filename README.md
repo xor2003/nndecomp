@@ -1,12 +1,52 @@
 # nndecomp
 
-Neural network 16bit C/C++ decompiler
+`nndecomp` is a dataset and tooling project for training/evaluating decompilation LLMs on legacy **16-bit DOS C/C++** code.
 
-Want to implement something like [https://github.com/facebookresearch/CodeGen](TransCoder)
+The core idea is:
+1. build old sources with real DOS compilers under emulation,
+2. collect compiler-generated assembly/listings,
+3. pair assembly with function-level C targets,
+4. train/evaluate models on asm -> C recovery.
 
-## Current Dataset Pipeline
+## What This Project Contains
 
-### 1) Build `.COD` from corpus with KvikDOS + DOS compilers
+- DOS source corpora (`msex`, `bcex`, `tcex`).
+- DOS compiler toolchain directories (MSC variants, optional Borland/Turbo setups).
+- Build and dataset scripts in `scripts/`.
+- Dataset/evaluation artifacts under `artifacts/`.
+
+## How It Works
+
+### 1) Build phase
+Scripts run DOS compilers through `kvikdos` and produce listing/assembly outputs (`.COD`/`.ASM` depending on flow).
+
+### 2) Pairing phase
+Function-level C is matched with function-level assembly slices.
+
+### 3) Normalization phase
+Assembly and C are sanitized/anonymized to reduce leakage and improve training consistency.
+
+### 4) Dataset phase
+JSONL chat-format rows are produced for SFT:
+- single-stage: asm -> final C
+- two-stage: asm -> skeleton, then asm+skeleton -> readable C
+
+### 5) Evaluation phase
+Generated outputs are scored with DOS toolchain re-compilation checks (and optional run checks/edit similarity).
+
+## Main Scripts
+
+- `scripts/build_corpus_cod_kvikdos.py`: build corpus with DOS compilers.
+- `scripts/preprocess_dos_c_for_llm.py`: source preprocessing and function extraction.
+- `scripts/make_cod_function_qa.py`: strict asm/C QA construction.
+- `scripts/build_combo_dataset.py`: compiler-flag combo dataset generation (single/two-stage).
+- `scripts/eval_dos_reexec.py`: compile/run/edit-sim evaluator.
+- `scripts/run_final_combo_dataset.sh`: convenience wrapper for full combo generation.
+- `scripts/run_eval_dos_smoke.sh`: small evaluator smoke wrapper.
+
+## Typical Usage
+
+### Build corpus outputs
 ```bash
 python3 scripts/build_corpus_cod_kvikdos.py \
   --dirs msex bcex tcex \
@@ -16,39 +56,7 @@ python3 scripts/build_corpus_cod_kvikdos.py \
   --log artifacts/corpus_cod_build.log
 ```
 
-### 2) Preprocess sources (one function per row)
-```bash
-python3 scripts/preprocess_dos_c_for_llm.py \
-  --dirs msex bcex tcex \
-  --report artifacts/corpus_cod_build_report.json \
-  --out artifacts/dos_c_one_function.jsonl \
-  --formatter none \
-  --macro-expand none \
-  --one-function-per-row \
-  --make-compact-variant
-```
-
-### 3) Build strict decompilation QA dataset
-```bash
-python3 scripts/make_cod_function_qa.py \
-  --preprocessed-jsonl artifacts/dos_c_one_function.jsonl \
-  --out artifacts/cod_function_qa_strict_v2.jsonl \
-  --answer-variant compact \
-  --anonymize-symbols \
-  --anonymize-asm \
-  --require-cod \
-  --only-label-match \
-  --min-asm-lines 8 \
-  --max-asm-lines 4000
-```
-
-### Strict dataset properties
-- One function target per sample.
-- Prompt contains only sanitized assembly (no source path leakage, no source-echo listing lines).
-- Symbol names are anonymized (`fn1`, `id1`, `arg1`, `loc1`, `lbl1`).
-- High-confidence subset (`label_match`) can be generated directly with `--only-label-match`.
-
-### 4) Build combo dataset (single or two-stage)
+### Build combo training dataset
 ```bash
 python3 scripts/build_combo_dataset.py \
   --reports artifacts/msex_cod_build_report.json artifacts/retest_chunk2_report.json \
@@ -60,14 +68,14 @@ python3 scripts/build_combo_dataset.py \
   --max-kept-variants-per-source 24
 ```
 
-### 5) Smoke evaluation (compile/run rates + stratified report)
+### Evaluate dataset outputs (smoke)
 ```bash
 scripts/run_eval_dos_smoke.sh \
   artifacts/dataset/cod_combo_two_stage_small.jsonl \
   artifacts/eval/dos_reexec_smoke.json
 ```
 
-Direct evaluator usage:
+### Evaluate directly
 ```bash
 python3 scripts/eval_dos_reexec.py \
   --dataset artifacts/dataset/cod_combo_two_stage_small.jsonl \
@@ -77,30 +85,34 @@ python3 scripts/eval_dos_reexec.py \
   --report artifacts/eval/dos_reexec.json
 ```
 
-TODO:
+## Dataset Format (Current)
 
-[x] Collect C++ sources of 16 bit code
+Rows are JSON objects with `messages` (chat format) and optional `meta`.
 
-[ ] Prepare build environment to convert .CPP into assembler. Prepare compilation validators
+`meta` can include:
+- `function`
+- `flags`
+- `compiler`
+- `source`
+- `raw_hash`, `norm_hash`
+- `stage` (`skeleton` / `readable`) for two-stage mode
 
-[ ] Adopt compilers input/output to analyze with LLM
+## Current Features
 
-[ ] Train LLM with compilers input/output
+- DOS compiler build automation via `kvikdos`.
+- Multi-flag variant generation with dedup by raw/normalized assembly hashes.
+- Function-level asm extraction and strict filtering (`label_match`, line bounds).
+- Symbol anonymization for both C and asm.
+- Two-stage dataset generation (`single` / `two-stage`).
+- Prompt tagging by compiler/opt/domain.
+- Re-exec evaluator with:
+  - compile-rate,
+  - optional run-rate,
+  - stratified metrics,
+  - optional edit similarity.
 
-[ ] Profit
+## Notes
 
-Thoughts:
-1. Probably the NN should be trained on the sources processed by the preprocessor and indented.
-2. And without system headers.
-3. And somehow train on small fragments. For example one function or shorter.
-4. Probably the source code in assembler is not suitable at all.
-5 typedefs - must be replaced
-
-build_prj.sh - will convert Borland C++ .prj file into makefile and build
-
-doscompilelib.sh - library to execute various builders
-
-sources.tar.bz2 - backup archive of source examples for Borland C++ 3/5, Turbo C++, Microsoft C++
-
-/bcex/crc16eas/Source/ - first project to test on
-
+- This project intentionally targets old DOS toolchains and source conventions.
+- Keep original source encoding/line style where possible; avoid destructive rewrites to legacy code.
+- Use smoke runs first, then scale up.
