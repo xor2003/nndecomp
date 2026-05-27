@@ -1,0 +1,24 @@
+# Python/cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# IDE/local
+.idea/
+.roo/
+*.code-workspace
+
+# Generated artifacts
+artifacts/
+*.log
+*.stdout
+*.stderr
+STDERR.TXT
+STDOUT.TXT
+TEST.TXT
+
+# Local virtual env
+venv/
+

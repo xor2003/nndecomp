@@ -104,6 +104,19 @@ def maybe_include_flags(src_dir: Path, kind: str, mount_root: Path):
     for child in mount_root.iterdir():
         if child.is_dir() and child.name.lower() == 'include':
             candidates.add(child)
+    # Many legacy trees keep shared headers in sibling COMMON directories.
+    cur = src_dir
+    while True:
+        parent = cur.parent
+        if parent == cur:
+            break
+        for sib in ('COMMON', 'common'):
+            p = parent / sib
+            if p.is_dir():
+                candidates.add(p)
+        if cur == mount_root:
+            break
+        cur = parent
 
     for cand in sorted(candidates):
         if cand.exists() and cand.is_dir():
@@ -136,6 +149,29 @@ def choose_mount_root(src_file: Path, repo_root: Path):
             break
         cur = cur.parent
     return best
+
+
+def _copy_first_existing(candidates: list[Path], target: Path) -> bool:
+    for c in candidates:
+        if c.exists() and c.is_file() and c.stat().st_size > 0:
+            shutil.copyfile(c, target)
+            return True
+    return False
+
+
+def _find_candidate_outputs(dir_path: Path, stem: str, suffix: str) -> list[Path]:
+    suffix = suffix.lower()
+    out = []
+    if not dir_path.exists():
+        return out
+    for p in dir_path.iterdir():
+        if not p.is_file():
+            continue
+        if p.suffix.lower() != suffix:
+            continue
+        if p.stem.lower() in {stem.lower(), 'src'}:
+            out.append(p)
+    return out
 
 
 def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, extra_flags: list[str], timeout_sec: int):
@@ -215,6 +251,9 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
 
     kind = tc_cfg['kind']
     exe_dos = tc_cfg['exe_dos']
+    tc_include_flag = []
+    if (tc_cfg['root'] / 'INCLUDE').exists():
+        tc_include_flag = ['/ID:\\INCLUDE'] if kind == 'msc' else ['-ID:\\INCLUDE']
 
     common = [
         str(KVIKDOS),
@@ -225,6 +264,7 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
     ]
 
     if kind == 'msc':
+        asm_path = src_file.with_suffix('.ASM')
         cmd = common + [
             '--env=PATH=D:\\BIN;D:\\',
             '--env=INCLUDE=D:\\INCLUDE',
@@ -232,19 +272,23 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
             exe_dos,
             '/c',
             *DEFAULT_FLAGS['msc'],
+            *tc_include_flag,
             *maybe_include_flags(src_dir, 'msc', mount_root),
             *extra_flags,
-            f'/FcC:\\{cod_path.name}',
+            f'/FaC:\\{asm_path.name}',
             src_dos,
         ]
         try:
             res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
         except subprocess.TimeoutExpired as e:
             return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
+        cod_candidates = []
         if use_stage:
-            staged_cod = mount_root / ('SRC.COD')
-            if staged_cod.exists() and not cod_path.exists():
-                shutil.copyfile(staged_cod, cod_path)
+            cod_candidates.append(mount_root / 'SRC.ASM')
+        cod_candidates.append(asm_path)
+        cod_candidates.extend(_find_candidate_outputs(src_dir, src_file.stem, '.ASM'))
+        if not cod_path.exists():
+            _copy_first_existing(cod_candidates, cod_path)
         ok = cod_path.exists() and cod_path.stat().st_size > 0
         return ok, res.returncode, res.stdout
 
@@ -257,21 +301,25 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
             exe_dos,
             '-c',
             *DEFAULT_FLAGS['bcc'],
+            *tc_include_flag,
             *maybe_include_flags(src_dir, 'bcc', mount_root),
             *extra_flags,
-            f'-nC:\\{asm_path.name}',
+            '-nC:\\',
             src_dos,
         ]
         try:
             res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
         except subprocess.TimeoutExpired as e:
             return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
+        asm_candidates = []
         if use_stage:
-            staged_asm = mount_root / ('SRC.ASM')
-            if staged_asm.exists() and not cod_path.exists():
-                shutil.copyfile(staged_asm, cod_path)
-        elif asm_path.exists() and (not cod_path.exists()):
-            shutil.copyfile(asm_path, cod_path)
+            asm_candidates.append(mount_root / 'SRC.ASM')
+        asm_candidates.append(asm_path)
+        asm_candidates.extend(_find_candidate_outputs(src_dir, src_file.stem, '.ASM'))
+        # Some C++ toolchain invocations succeed without emitting ASM; keep OBJ as COD fallback.
+        asm_candidates.extend(_find_candidate_outputs(src_dir, src_file.stem, '.OBJ'))
+        if not cod_path.exists():
+            _copy_first_existing(asm_candidates, cod_path)
         ok = cod_path.exists() and cod_path.stat().st_size > 0
         return ok, res.returncode, res.stdout
 
@@ -282,21 +330,24 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
         exe_dos,
         '-c',
         *DEFAULT_FLAGS['tcc'],
+        *tc_include_flag,
         *maybe_include_flags(src_dir, 'tcc', mount_root),
         *extra_flags,
-        f'-nC:\\{asm_path.name}',
+        '-nC:\\',
             src_dos,
     ]
     try:
         res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
     except subprocess.TimeoutExpired as e:
         return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
+    asm_candidates = []
     if use_stage:
-        staged_asm = mount_root / ('SRC.ASM')
-        if staged_asm.exists() and not cod_path.exists():
-            shutil.copyfile(staged_asm, cod_path)
-    elif asm_path.exists() and (not cod_path.exists()):
-        shutil.copyfile(asm_path, cod_path)
+        asm_candidates.append(mount_root / 'SRC.ASM')
+    asm_candidates.append(asm_path)
+    asm_candidates.extend(_find_candidate_outputs(src_dir, src_file.stem, '.ASM'))
+    asm_candidates.extend(_find_candidate_outputs(src_dir, src_file.stem, '.OBJ'))
+    if not cod_path.exists():
+        _copy_first_existing(asm_candidates, cod_path)
     ok = cod_path.exists() and cod_path.stat().st_size > 0
     return ok, res.returncode, res.stdout
 

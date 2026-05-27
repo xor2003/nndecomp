@@ -67,9 +67,9 @@ def compile_one(c_file: Path, compiler_name: str, compiler_dir: Path, msex_root:
     cod_rel = rel.with_suffix(".COD")
     src_name = c_file.name
     cod_name = c_file.with_suffix(".COD").name
+    asm_name = c_file.with_suffix(".ASM").name
     src_dir = c_file.parent
     if compiler_name == "tcpp1":
-        asm_name = c_file.with_suffix(".ASM").name
         cmd = [
             str(KVIKDOS),
             f"--mount=c:{src_dir}/",
@@ -107,13 +107,17 @@ def compile_one(c_file: Path, compiler_name: str, compiler_dir: Path, msex_root:
         "D:\\BIN\\CL.EXE",
         "/c",
         "/AS",
-        f"/FcC:\\{cod_name}",
+        f"/FaC:\\{asm_name}",
         f"C:\\{src_name}",
     ]
     if extra_flags:
         cmd[11:11] = extra_flags.split()
     res = subprocess.run(cmd, cwd=str(msex_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    ok = (msex_root / cod_rel).exists()
+    asm_path = msex_root / rel.with_suffix(".ASM")
+    cod_path = msex_root / cod_rel
+    if asm_path.exists() and not cod_path.exists():
+        cod_path.write_text(asm_path.read_text(errors="replace"), encoding="utf-8", errors="replace")
+    ok = cod_path.exists()
     return ok, res.returncode, res.stdout
 
 
