@@ -138,7 +138,13 @@ def choose_mount_root(src_file: Path, repo_root: Path):
     return best
 
 
-def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, extra_flags: list[str]):
+def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, extra_flags: list[str], timeout_sec: int):
+    def _timeout_out(o):
+        if o is None:
+            return ''
+        if isinstance(o, bytes):
+            return o.decode('latin1', errors='replace')
+        return str(o)
     rel = src_file.relative_to(src_root)
     mount_root = choose_mount_root(src_file, src_root)
     src_dir = src_file.parent
@@ -231,7 +237,10 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
             f'/FcC:\\{cod_path.name}',
             src_dos,
         ]
-        res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        try:
+            res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
+        except subprocess.TimeoutExpired as e:
+            return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
         if use_stage:
             staged_cod = mount_root / ('SRC.COD')
             if staged_cod.exists() and not cod_path.exists():
@@ -253,7 +262,10 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
             f'-nC:\\{asm_path.name}',
             src_dos,
         ]
-        res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        try:
+            res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
+        except subprocess.TimeoutExpired as e:
+            return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
         if use_stage:
             staged_asm = mount_root / ('SRC.ASM')
             if staged_asm.exists() and not cod_path.exists():
@@ -275,7 +287,10 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
         f'-nC:\\{asm_path.name}',
             src_dos,
     ]
-    res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        res = subprocess.run(cmd, cwd=str(src_root), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='latin1', errors='replace', timeout=timeout_sec)
+    except subprocess.TimeoutExpired as e:
+        return False, 124, _timeout_out(e.stdout) + '\n[TIMEOUT]'
     if use_stage:
         staged_asm = mount_root / ('SRC.ASM')
         if staged_asm.exists() and not cod_path.exists():
@@ -286,7 +301,7 @@ def compile_with_tc(src_file: Path, src_root: Path, tc_name: str, tc_cfg: dict, 
     return ok, res.returncode, res.stdout
 
 
-def collect_sources(repo_root: Path, dirs: list[str], max_files: int):
+def collect_sources(repo_root: Path, dirs: list[str], max_files: int, offset: int):
     files = []
     for d in dirs:
         base = repo_root / d
@@ -295,6 +310,8 @@ def collect_sources(repo_root: Path, dirs: list[str], max_files: int):
         for ext in DEFAULT_EXTS:
             files.extend(base.rglob(f'*{ext}'))
     files = sorted(set(files))
+    if offset > 0:
+        files = files[offset:]
     if max_files > 0:
         files = files[:max_files]
     return files
@@ -304,11 +321,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dirs', nargs='+', default=['msex', 'bcex', 'tcex'])
     ap.add_argument('--max-files', type=int, default=0)
+    ap.add_argument('--offset', type=int, default=0)
     ap.add_argument('--clean', action='store_true')
     ap.add_argument('--report', default='artifacts/corpus_cod_build_report.json')
     ap.add_argument('--log', default='artifacts/corpus_cod_build.log')
     ap.add_argument('--flag-matrix', default='')
     ap.add_argument('--jobs', type=int, default=1)
+    ap.add_argument('--attempt-timeout', type=int, default=45)
     args = ap.parse_args()
 
     if not KVIKDOS.exists():
@@ -320,7 +339,7 @@ def main():
     if not base_order:
         raise SystemExit('No toolchains detected')
 
-    src_files = collect_sources(REPO_ROOT, args.dirs, args.max_files)
+    src_files = collect_sources(REPO_ROOT, args.dirs, args.max_files, args.offset)
     if args.clean:
         for f in src_files:
             c = f.with_suffix('.COD')
@@ -342,7 +361,7 @@ def main():
         for tc in order:
             kind = tcs[tc]['kind']
             for vflags in variant_flags.get(kind, [[]]):
-                ok, rc, out = compile_with_tc(src, REPO_ROOT, tc, tcs[tc], vflags)
+                ok, rc, out = compile_with_tc(src, REPO_ROOT, tc, tcs[tc], vflags, args.attempt_timeout)
                 entry['attempts'].append({'compiler': tc, 'flags': vflags, 'rc': rc})
                 entry['logs'].append(f"===== {rel} :: {tc} flags={vflags} rc={rc} =====\\n{out}\\n")
                 if ok:
@@ -378,7 +397,7 @@ def main():
         'total_files': len(src_files),
         'success': succ,
         'failed': fail,
-        'toolchains': order,
+        'toolchains': base_order,
         'results': results,
     }
     Path(args.report).write_text(json.dumps(summary, indent=2), encoding='utf-8')
