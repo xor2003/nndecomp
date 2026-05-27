@@ -1,0 +1,17 @@
+{
+  "msc": {
+    "mode": "cartesian",
+    "groups": [
+      {"name": "opt", "choices": [[], ["/Od"], ["/O1"], ["/O2"]]},
+      {"name": "model", "choices": [[], ["/AS"], ["/AL"]]},
+      {"name": "debug", "choices": [[], ["/Zi"]]}
+    ]
+  },
+  "tcc": {
+    "mode": "cartesian",
+    "groups": [
+      {"name": "model", "choices": [[], ["-ms"], ["-mm"], ["-ml"]]},
+      {"name": "opt", "choices": [[], ["-O"], ["-O2"]]}
+    ]
+  }
+}

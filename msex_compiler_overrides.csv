@@ -1,0 +1,3 @@
+path,compilers,flags
+labfl/LAB3D.C,"msc61,msc6,msc5,tcpp1",/Od
+sopsw/SOPWITH.C,"msc61,msc6,msc5,tcpp1",/D_DS=0 -Gs -Zl -FPc -Osa
