@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage:
+#   scripts/run_final_combo_dataset.sh [compiler]
+# Default compiler: msc61
+
+COMPILER="${1:-msc61}"
+
+python3 scripts/build_combo_dataset.py \
+  --reports \
+    artifacts/msex_cod_build_report.json \
+    artifacts/retest_chunk2_report.json \
+    artifacts/corpus_cod_build_report_full_v4.json \
+  --compiler "$COMPILER" \
+  --out artifacts/dataset/cod_combo_strict_all_messages.jsonl \
+  --index artifacts/dataset/cod_combo_index.jsonl \
+  --timeout 20 \
+  --resume \
+  --max-kept-variants-per-source 24
