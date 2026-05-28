@@ -18,9 +18,9 @@ BENCH_INDEX="$OUT_DIR/benchmark_readable.index.json"
 BENCH_MANIFEST="$OUT_DIR/benchmark_readable.manifest.json"
 MANIFEST="$OUT_DIR/manifest.json"
 
-rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$IN_JSONL"
+python3 scripts/validate_dataset_schema.py --in-jsonl "$IN_JSONL"
 
-rtk python3 scripts/split_dataset_leak_safe.py \
+python3 scripts/split_dataset_leak_safe.py \
   --in-jsonl "$IN_JSONL" \
   --out-train "$TRAIN" \
   --out-val "$VAL" \
@@ -30,7 +30,7 @@ rtk python3 scripts/split_dataset_leak_safe.py \
   --seed 1337 \
   --stage-filter all
 
-rtk python3 scripts/make_benchmark_pack.py \
+python3 scripts/make_benchmark_pack.py \
   --in-jsonl "$TEST" \
   --out-jsonl "$BENCH" \
   --out-index "$BENCH_INDEX" \
@@ -42,18 +42,18 @@ rtk python3 scripts/make_benchmark_pack.py \
   --per-opt 20 \
   --seed 1337
 
-rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$TRAIN"
-rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$VAL"
-rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$TEST"
-rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$BENCH"
+python3 scripts/validate_dataset_schema.py --in-jsonl "$TRAIN"
+python3 scripts/validate_dataset_schema.py --in-jsonl "$VAL"
+python3 scripts/validate_dataset_schema.py --in-jsonl "$TEST"
+python3 scripts/validate_dataset_schema.py --in-jsonl "$BENCH"
 
-rtk python3 scripts/make_dataset_manifest.py --in-jsonl "$IN_JSONL" --out-json "$MANIFEST"
+python3 scripts/make_dataset_manifest.py --in-jsonl "$IN_JSONL" --out-json "$MANIFEST"
 
 REPORTS=()
 for i in $(seq 1 "$REPEATS"); do
   R="${EVAL_REPORT%.json}.r${i}.json"
   S="${EVAL_SAMPLES%.jsonl}.r${i}.jsonl"
-  rtk python3 scripts/eval_dos_reexec.py \
+  python3 scripts/eval_dos_reexec.py \
     --dataset "$BENCH" \
     --stage-filter readable \
     --max-samples 64 \
@@ -63,7 +63,7 @@ for i in $(seq 1 "$REPEATS"); do
   REPORTS+=("$R")
 done
 
-rtk python3 scripts/aggregate_eval_reports.py --reports "${REPORTS[@]}" --out "$EVAL_AGG"
+python3 scripts/aggregate_eval_reports.py --reports "${REPORTS[@]}" --out "$EVAL_AGG"
 
 echo "Smoke pipeline done"
 echo "Input:      $IN_JSONL"
