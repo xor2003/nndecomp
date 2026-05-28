@@ -5,6 +5,8 @@ IN_JSONL="${1:-artifacts/dataset/cod_combo_parallel_small.jsonl}"
 OUT_DIR="${2:-artifacts/dataset/smoke}"
 EVAL_REPORT="${3:-artifacts/eval/dos_reexec_smoke_pipeline.json}"
 EVAL_SAMPLES="${4:-artifacts/eval/dos_reexec_smoke_pipeline.samples.jsonl}"
+EVAL_AGG="${5:-artifacts/eval/dos_reexec_smoke_pipeline.aggregate.json}"
+REPEATS="${REPEATS:-2}"
 
 mkdir -p "$OUT_DIR" "$(dirname "$EVAL_REPORT")"
 
@@ -47,13 +49,21 @@ rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$BENCH"
 
 rtk python3 scripts/make_dataset_manifest.py --in-jsonl "$IN_JSONL" --out-json "$MANIFEST"
 
-rtk python3 scripts/eval_dos_reexec.py \
-  --dataset "$BENCH" \
-  --stage-filter readable \
-  --max-samples 64 \
-  --max-candidates 1 \
-  --out-samples "$EVAL_SAMPLES" \
-  --report "$EVAL_REPORT"
+REPORTS=()
+for i in $(seq 1 "$REPEATS"); do
+  R="${EVAL_REPORT%.json}.r${i}.json"
+  S="${EVAL_SAMPLES%.jsonl}.r${i}.jsonl"
+  rtk python3 scripts/eval_dos_reexec.py \
+    --dataset "$BENCH" \
+    --stage-filter readable \
+    --max-samples 64 \
+    --max-candidates 1 \
+    --out-samples "$S" \
+    --report "$R"
+  REPORTS+=("$R")
+done
+
+rtk python3 scripts/aggregate_eval_reports.py --reports "${REPORTS[@]}" --out "$EVAL_AGG"
 
 echo "Smoke pipeline done"
 echo "Input:      $IN_JSONL"
@@ -61,5 +71,5 @@ echo "Train/Val/Test: $TRAIN | $VAL | $TEST"
 echo "Benchmark:  $BENCH"
 echo "Bench man.: $BENCH_MANIFEST"
 echo "Manifest:   $MANIFEST"
-echo "Eval:       $EVAL_REPORT"
-echo "Eval rows:  $EVAL_SAMPLES"
+echo "Eval runs:  ${REPORTS[*]}"
+echo "Eval agg:   $EVAL_AGG"

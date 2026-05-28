@@ -78,7 +78,9 @@ python3 scripts/build_combo_dataset.py \
 ```bash
 scripts/run_eval_dos_smoke.sh \
   artifacts/dataset/cod_combo_two_stage_small.jsonl \
-  artifacts/eval/dos_reexec_smoke.json
+  artifacts/eval/dos_reexec_smoke.json \
+  artifacts/eval/dos_reexec_smoke.samples.jsonl \
+  artifacts/eval/dos_reexec_smoke.aggregate.json
 ```
 
 ### Evaluate directly
@@ -96,7 +98,9 @@ python3 scripts/eval_dos_reexec.py \
 scripts/run_dataset_smoke_pipeline.sh \
   artifacts/dataset/cod_combo_parallel_small.jsonl \
   artifacts/dataset/smoke \
-  artifacts/eval/dos_reexec_smoke_pipeline.json
+  artifacts/eval/dos_reexec_smoke_pipeline.json \
+  artifacts/eval/dos_reexec_smoke_pipeline.samples.jsonl \
+  artifacts/eval/dos_reexec_smoke_pipeline.aggregate.json
 ```
 
 ### Write dataset manifest
@@ -140,6 +144,7 @@ Rows are JSON objects with `messages` (chat format) and optional `meta`.
   - failure taxonomy buckets in report/sample rows,
   - stratified metrics,
   - optional edit similarity.
+- Smoke wrappers run repeated eval (default `REPEATS=2`) and auto-aggregate reports.
 - Benchmark pack supports frozen stable sample IDs and optional benchmark manifest with checksums/params.
 
 ## Notes
