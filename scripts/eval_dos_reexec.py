@@ -224,6 +224,7 @@ def main():
     ap.add_argument('--bootstrap-iters', type=int, default=1000, help='Bootstrap iterations for confidence intervals.')
     ap.add_argument('--bootstrap-alpha', type=float, default=0.05, help='Alpha for confidence intervals.')
     ap.add_argument('--report', default='artifacts/eval/dos_reexec_report.json')
+    ap.add_argument('--out-samples', default='', help='Optional JSONL path for per-sample eval outcomes.')
     args = ap.parse_args()
 
     rows = load_jsonl(Path(args.dataset))
@@ -239,6 +240,7 @@ def main():
     strat = {}
     edit_scores = []
     failures = []
+    sample_rows = []
     compile_binary = []
     run_binary = []
     cand_stats = {'rows': 0, 'total_candidates': 0, 'compile_success_candidates': 0, 'run_success_candidates': 0}
@@ -380,10 +382,30 @@ def main():
                     gt = m2['content']
                     break
             if gt:
-                edit_scores.append(edit_similarity(gt, best_pred))
+                es = edit_similarity(gt, best_pred)
+                edit_scores.append(es)
+            else:
+                es = None
+        else:
+            es = None
 
         if not ok and len(failures) < 20:
             failures.append({'index': i, 'source': meta.get('source', ''), 'compiler': comp, 'flags': flags, 'diag': diag[-500:]})
+        sample_rows.append({
+            'index': i,
+            'source': meta.get('source', ''),
+            'function': meta.get('function', ''),
+            'stage': stage,
+            'compiler': comp,
+            'flags': flags,
+            'candidates': len(preds),
+            'compile_ok': bool(ok),
+            'run_ok': bool(ok_run),
+            'candidate_compile_hits': cand_compile_hits,
+            'candidate_run_hits': cand_run_hits,
+            'edit_similarity': es,
+            'diag_tail': (diag[-500:] if isinstance(diag, str) else ''),
+        })
 
     report = {
         'dataset': args.dataset,
@@ -440,6 +462,12 @@ def main():
     }
 
     Path(args.report).write_text(json.dumps(report, indent=2), encoding='utf-8')
+    if args.out_samples:
+        op = Path(args.out_samples)
+        op.parent.mkdir(parents=True, exist_ok=True)
+        with op.open('w', encoding='utf-8') as w:
+            for r in sample_rows:
+                w.write(json.dumps(r, ensure_ascii=False) + '\n')
     print(json.dumps({
         'samples_evaluated': report['samples_evaluated'],
         'compile_rate': report['compile_rate'],

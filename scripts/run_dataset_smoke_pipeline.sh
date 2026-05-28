@@ -4,6 +4,7 @@ set -euo pipefail
 IN_JSONL="${1:-artifacts/dataset/cod_combo_parallel_small.jsonl}"
 OUT_DIR="${2:-artifacts/dataset/smoke}"
 EVAL_REPORT="${3:-artifacts/eval/dos_reexec_smoke_pipeline.json}"
+EVAL_SAMPLES="${4:-artifacts/eval/dos_reexec_smoke_pipeline.samples.jsonl}"
 
 mkdir -p "$OUT_DIR" "$(dirname "$EVAL_REPORT")"
 
@@ -47,6 +48,7 @@ rtk python3 scripts/eval_dos_reexec.py \
   --stage-filter readable \
   --max-samples 64 \
   --max-candidates 1 \
+  --out-samples "$EVAL_SAMPLES" \
   --report "$EVAL_REPORT"
 
 echo "Smoke pipeline done"
@@ -55,3 +57,4 @@ echo "Train/Val/Test: $TRAIN | $VAL | $TEST"
 echo "Benchmark:  $BENCH"
 echo "Manifest:   $MANIFEST"
 echo "Eval:       $EVAL_REPORT"
+echo "Eval rows:  $EVAL_SAMPLES"

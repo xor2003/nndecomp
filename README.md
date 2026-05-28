@@ -133,6 +133,7 @@ Rows are JSON objects with `messages` (chat format) and optional `meta`.
   - optional run-rate,
   - pass@k estimates for multi-candidate outputs,
   - bootstrap confidence intervals,
+  - per-sample JSONL output for failure mining,
   - stratified metrics,
   - optional edit similarity.
 
