@@ -40,6 +40,7 @@ Generated outputs are scored with DOS toolchain re-compilation checks (and optio
 - `scripts/preprocess_dos_c_for_llm.py`: source preprocessing and function extraction.
 - `scripts/make_cod_function_qa.py`: strict asm/C QA construction.
 - `scripts/build_combo_dataset.py`: compiler-flag combo dataset generation (single/two-stage).
+- `scripts/make_benchmark_pack.py`: benchmark subset builder (`bucket` and `opt-balanced` modes).
 - `scripts/eval_dos_reexec.py`: compile/run/edit-sim evaluator.
 - `scripts/validate_dataset_schema.py`: JSONL schema checks for training rows.
 - `scripts/make_dataset_manifest.py`: dataset hash/stat manifest generator.

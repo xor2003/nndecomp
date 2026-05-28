@@ -25,6 +25,8 @@ def main():
     ap.add_argument('--stage-filter', choices=['all', 'readable', 'skeleton'], default='readable')
     ap.add_argument('--quality', default='high')
     ap.add_argument('--per-bucket', type=int, default=50)
+    ap.add_argument('--mode', choices=['bucket', 'opt-balanced'], default='bucket')
+    ap.add_argument('--per-opt', type=int, default=0, help='Rows per opt bucket when --mode=opt-balanced.')
     ap.add_argument('--seed', type=int, default=1337)
     args = ap.parse_args()
 
@@ -50,21 +52,47 @@ def main():
 
     selected = []
     index = []
-    for k in sorted(buckets):
-        picked = stable_pick(buckets[k], args.per_bucket, args.seed)
-        for r in picked:
-            selected.append(r)
-            m = r.get('meta') or {}
-            index.append({'bucket': k, 'source': m.get('source'), 'function': m.get('function'), 'flags': m.get('flags')})
+    if args.mode == 'bucket':
+        for k in sorted(buckets):
+            picked = stable_pick(buckets[k], args.per_bucket, args.seed)
+            for r in picked:
+                selected.append(r)
+                m = r.get('meta') or {}
+                index.append({'bucket': k, 'source': m.get('source'), 'function': m.get('function'), 'flags': m.get('flags')})
+    else:
+        # Keep benchmark balanced by optimization bucket regardless of compiler/lang mix.
+        by_opt = defaultdict(list)
+        for k, rows in buckets.items():
+            _comp, opt, _lang = k.split(':', 2)
+            by_opt[opt].extend(rows)
+        per_opt = args.per_opt if args.per_opt > 0 else args.per_bucket
+        for opt in sorted(by_opt):
+            picked = stable_pick(by_opt[opt], per_opt, args.seed)
+            for r in picked:
+                selected.append(r)
+                m = r.get('meta') or {}
+                src = str(m.get('source') or '')
+                lang = 'cpp' if src.lower().endswith('.cpp') else 'c'
+                comp = str(m.get('compiler') or 'unknown')
+                index.append({
+                    'bucket': f'{comp}:{opt}:{lang}',
+                    'opt_bucket': opt,
+                    'source': m.get('source'),
+                    'function': m.get('function'),
+                    'flags': m.get('flags'),
+                })
 
     Path(args.out_jsonl).parent.mkdir(parents=True, exist_ok=True)
     with Path(args.out_jsonl).open('w', encoding='utf-8') as w:
         for r in selected:
             w.write(json.dumps(r, ensure_ascii=False) + '\n')
     Path(args.out_index).write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding='utf-8')
-    print(json.dumps({'rows': len(selected), 'buckets': {k: len(v) for k, v in buckets.items()}}))
+    print(json.dumps({
+        'rows': len(selected),
+        'mode': args.mode,
+        'buckets': {k: len(v) for k, v in buckets.items()},
+    }))
 
 
 if __name__ == '__main__':
     main()
-

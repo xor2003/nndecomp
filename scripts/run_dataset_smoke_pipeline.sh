@@ -31,9 +31,10 @@ rtk python3 scripts/make_benchmark_pack.py \
   --in-jsonl "$TEST" \
   --out-jsonl "$BENCH" \
   --out-index "$BENCH_INDEX" \
+  --mode opt-balanced \
   --stage-filter readable \
   --quality high \
-  --per-bucket 20 \
+  --per-opt 20 \
   --seed 1337
 
 rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$TRAIN"
