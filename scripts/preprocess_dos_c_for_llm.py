@@ -15,6 +15,22 @@ C_EXTS = {'.c', '.cpp'}
 RISKY_TOKENS = (
     b'interrupt', b'__interrupt', b'far', b'near', b'huge', b'_asm', b'asm', b'#pragma', b'__emit__'
 )
+LLM4D_TYPEDEF_MAP = {
+    "__int64": "long long",
+    "__int32": "int",
+    "__int16": "short",
+    "__int8": "char",
+    "_QWORD": "unsigned long",
+    "_DWORD": "unsigned int",
+    "_WORD": "unsigned short",
+    "_BYTE": "unsigned char",
+    "_BOOL8": "unsigned char",
+    "_BOOL4": "int",
+    "_TBYTE": "unsigned short",
+    "_OWORD": "long double",
+    "_UNKNOWN": "void",
+    "size_t": "unsigned int",
+}
 TOOLCHAINS = {
     'msc61': {'root': REPO_ROOT / 'msc61', 'kind': 'msc', 'exe': 'CL.EXE'},
     'msc6': {'root': REPO_ROOT / 'msc60', 'kind': 'msc', 'exe': 'CL.EXE'},
@@ -149,6 +165,50 @@ def aggressive_split_ops_latin1(s: str) -> str:
     for op in ['&&', '||', '==', '!=', '<=', '>=', '+', '-', '*', '/', '%', '&', '|', '^']:
         s = s.replace(f' {op} ', f' \\n{op} ')
     return s
+
+
+def llm4d_hex_to_dec(text: str) -> str:
+    pat = re.compile(r'\b(0x[0-9a-fA-F]+)([uUlL]{1,3})?\b')
+    def cv(m):
+        return str(int(m.group(1), 16)) + (m.group(2) or '')
+    return pat.sub(cv, text)
+
+
+def llm4d_remove_keywords(text: str) -> str:
+    return re.sub(r'\b(__fastcall|__cdecl|__ptr32|__noreturn\s+noreturn)\b', '', text)
+
+
+def llm4d_replace_typedefs(text: str) -> str:
+    for alias, original in LLM4D_TYPEDEF_MAP.items():
+        text = re.sub(rf'\b{re.escape(alias)}\b', original, text)
+    return text
+
+
+def llm4d_strip_empty(text: str) -> str:
+    return '\n'.join(line for line in text.splitlines() if line.strip())
+
+
+def llm4d_good_func(text: str) -> bool:
+    func = '{'.join(text.split('{')[1:])
+    total = 0
+    for line in func.splitlines():
+        if len(line.strip()) >= 3:
+            total += 1
+    return 3 < total < 300
+
+
+def llm4d_normalize_variant(text: str) -> tuple[str | None, str | None]:
+    s = re.sub(r'/\*.*?\*/', '', text, flags=re.S)
+    s = re.sub(r'//.*?$', '', s, flags=re.M)
+    s = llm4d_hex_to_dec(s)
+    s = llm4d_remove_keywords(s)
+    s = llm4d_replace_typedefs(s)
+    s = llm4d_strip_empty(s)
+    if not s.strip():
+        return None, 'llm4d_empty_after_normalize'
+    if not llm4d_good_func(s):
+        return None, 'llm4d_filtered_good_func'
+    return s + '\n', None
 
 
 def extract_functions_c_latin1(text: str):
@@ -421,6 +481,7 @@ def main():
     ap.add_argument('--compare-compilation', action='store_true', help='Compile original and each derived variant; record parity matrix.')
     ap.add_argument('--make-compact-variant', action='store_true', help='Create compact variant with duplicate blank lines collapsed.')
     ap.add_argument('--make-aggressive-style-variant', action='store_true', help='Create aggressive operator-split style variant (not compile-guaranteed).')
+    ap.add_argument('--llm4d-normalize', action='store_true', help='Add LLM4Decompile-style normalized C variant.')
     ap.add_argument('--one-function-per-row', action='store_true')
     args = ap.parse_args()
 
@@ -468,6 +529,8 @@ def main():
 
             compact = None
             aggressive = None
+            llm4d_norm = None
+            llm4d_norm_error = None
             raw_text_latin1 = bytes_to_latin1_text(raw)
             nocomments_latin1 = bytes_to_latin1_text(nocomments)
             pretty_latin1 = bytes_to_latin1_text(pretty_bytes) if pretty_bytes is not None else None
@@ -477,6 +540,8 @@ def main():
             if args.make_aggressive_style_variant:
                 base = compact if compact is not None else (pretty_latin1 if pretty_latin1 is not None else nocomments_latin1)
                 aggressive = aggressive_split_ops_latin1(base)
+            if args.llm4d_normalize:
+                llm4d_norm, llm4d_norm_error = llm4d_normalize_variant(raw_text_latin1)
 
             preprocessed = None
             macro_error = None
@@ -521,6 +586,7 @@ def main():
                     'preprocessed_latin1': preprocessed,
                     'compact_latin1': compact,
                     'aggressive_style_latin1': aggressive,
+                    'llm4d_norm_latin1': llm4d_norm,
                 },
                 'transforms': {
                     'comments_removed': True,
@@ -533,6 +599,8 @@ def main():
                     'compact_variant': bool(args.make_compact_variant),
                     'aggressive_style_variant': bool(args.make_aggressive_style_variant),
                     'aggressive_style_compile_guaranteed': False,
+                    'llm4d_normalize': bool(args.llm4d_normalize),
+                    'llm4d_normalize_error': llm4d_norm_error,
                     'source_files_unchanged': True,
                 },
                 'build_context': build,

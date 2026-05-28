@@ -97,6 +97,11 @@ Rows are JSON objects with `messages` (chat format) and optional `meta`.
 - `raw_hash`, `norm_hash`
 - `stage` (`skeleton` / `readable`) for two-stage mode
 
+## Dataset Link
+
+- Current small parallel sample dataset:
+  - https://github.com/xor2003/nndecomp/blob/master/artifacts/dataset/cod_combo_parallel_small.jsonl
+
 ## Current Features
 
 - DOS compiler build automation via `kvikdos`.

@@ -76,6 +76,28 @@ def choose_prediction(row: dict) -> str:
     return ''
 
 
+def choose_candidates(row: dict, candidates_field: str) -> list[str]:
+    base = choose_prediction(row)
+    cands = []
+    if base.strip():
+        cands.append(base)
+    if candidates_field:
+        v = row.get(candidates_field)
+        if isinstance(v, list):
+            for x in v:
+                if isinstance(x, str) and x.strip():
+                    cands.append(x)
+    # stable de-dup preserving order
+    out = []
+    seen = set()
+    for c in cands:
+        if c in seen:
+            continue
+        seen.add(c)
+        out.append(c)
+    return out
+
+
 def canonicalize_pred_func_name(pred: str, expected_name: str) -> str:
     if not pred.strip() or not expected_name:
         return pred
@@ -166,6 +188,8 @@ def main():
     ap.add_argument('--with-edit-sim', action='store_true')
     ap.add_argument('--with-run', action='store_true', help='Also compute run_rate for rows containing test/main code.')
     ap.add_argument('--stage-filter', choices=['all', 'readable', 'skeleton'], default='readable')
+    ap.add_argument('--candidates-field', default='', help='Optional list[str] field with alternative predictions.')
+    ap.add_argument('--max-candidates', type=int, default=0, help='If >0, evaluate at most this many candidates per row.')
     ap.add_argument('--report', default='artifacts/eval/dos_reexec_report.json')
     args = ap.parse_args()
 
@@ -190,15 +214,17 @@ def main():
             continue
         if args.stage_filter == 'skeleton' and stage and stage != 'skeleton':
             continue
-        pred = choose_prediction(row)
-        if not pred.strip():
+        preds = choose_candidates(row, args.candidates_field)
+        if args.max_candidates > 0:
+            preds = preds[:args.max_candidates]
+        if not preds:
             continue
         comp = args.compiler or meta.get('compiler', 'msc61')
         if comp not in TOOLCHAINS:
             comp = 'msc61'
         flags = meta.get('flags') or args.default_flags
 
-        pred = canonicalize_pred_func_name(pred, str(meta.get('function', '') or ''))
+        preds = [canonicalize_pred_func_name(p, str(meta.get('function', '') or '')) for p in preds]
         dep = ''
         test_code = ''
         for k in ('func_dep', 'dep', 'includes', 'headers'):
@@ -210,7 +236,7 @@ def main():
                 test_code = row[k]
                 break
         # Try with includes from original source if available; fallback to plain prediction.
-        code_variants = []
+        code_variants_all = []
         src_rel = meta.get('source')
         src_includes = ''
         if isinstance(src_rel, str) and src_rel:
@@ -221,25 +247,43 @@ def main():
         if args.with_run and test_code.strip():
             run_eligible += 1
             inc_pred, body_pred = split_includes_and_body(pred)
-            code_run = '\n'.join([x for x in (src_includes, dep, inc_pred, body_pred, test_code) if x.strip()])
-            code_variants.append((code_run, True))
-        code_compile = '\n'.join([x for x in (src_includes, pred) if x.strip()])
-        code_variants.append((code_compile, False))
-        if not code_compile.strip():
-            code_variants.append((pred, False))
+            pass
 
         ok = False
         ok_run = False
         diag = ''
+        best_pred = ''
         src_dir = None
         if isinstance(src_rel, str) and src_rel:
             sp = REPO_ROOT / src_rel
             if sp.exists():
                 src_dir = sp.parent
-        for code, want_run in code_variants:
-            ok, ok_run, diag = compile_and_maybe_run(code, comp, flags, args.timeout, want_run, src_dir=src_dir)
-            if ok:
+        for pred in preds:
+            code_variants = []
+            if args.with_run and test_code.strip():
+                inc_pred, body_pred = split_includes_and_body(pred)
+                code_run = '\n'.join([x for x in (src_includes, dep, inc_pred, body_pred, test_code) if x.strip()])
+                code_variants.append((code_run, True))
+            code_compile = '\n'.join([x for x in (src_includes, pred) if x.strip()])
+            code_variants.append((code_compile, False))
+            if not code_compile.strip():
+                code_variants.append((pred, False))
+            local_ok = False
+            local_run = False
+            local_diag = ''
+            for code, want_run in code_variants:
+                local_ok, local_run, local_diag = compile_and_maybe_run(code, comp, flags, args.timeout, want_run, src_dir=src_dir)
+                if local_ok:
+                    break
+            if local_ok and not ok:
+                ok, ok_run, diag = local_ok, local_run, local_diag
+                best_pred = pred
+            elif (not ok) and local_diag:
+                diag = local_diag
+            if ok and (ok_run or not args.with_run):
                 break
+        if not best_pred and preds:
+            best_pred = preds[0]
 
         total += 1
         if ok:
@@ -269,7 +313,7 @@ def main():
                     gt = m2['content']
                     break
             if gt:
-                edit_scores.append(edit_similarity(gt, pred))
+                edit_scores.append(edit_similarity(gt, best_pred))
 
         if not ok and len(failures) < 20:
             failures.append({'index': i, 'source': meta.get('source', ''), 'compiler': comp, 'flags': flags, 'diag': diag[-500:]})
