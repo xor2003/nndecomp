@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import math
+import random
 import re
 import statistics
 import subprocess
@@ -178,6 +180,34 @@ def compile_and_maybe_run(code: str, compiler: str, flags: str, timeout: int, ru
         return True, ok_run, (r.stdout + '\n' + rr.stdout)[-3000:]
 
 
+def pass_at_k(n: int, c: int, k: int) -> float:
+    # HumanEval-style unbiased estimator.
+    if k <= 0 or n <= 0:
+        return 0.0
+    k = min(k, n)
+    if n - c < k:
+        return 1.0
+    prod = 1.0
+    for i in range(n - c + 1, n + 1):
+        prod *= (1.0 - (k / i))
+    return 1.0 - prod
+
+
+def bootstrap_ci(values: list[int], iters: int = 1000, alpha: float = 0.05, seed: int = 1337) -> tuple[float | None, float | None]:
+    if not values:
+        return None, None
+    rng = random.Random(seed)
+    n = len(values)
+    means = []
+    for _ in range(iters):
+        sample = [values[rng.randrange(n)] for _ in range(n)]
+        means.append(sum(sample) / n)
+    means.sort()
+    lo_i = int(math.floor((alpha / 2.0) * (iters - 1)))
+    hi_i = int(math.ceil((1.0 - alpha / 2.0) * (iters - 1)))
+    return means[lo_i], means[hi_i]
+
+
 def main():
     ap = argparse.ArgumentParser(description='Evaluate DOS decompilation outputs by compile-rate (and optional edit-sim).')
     ap.add_argument('--dataset', required=True, help='JSONL with messages+meta and optional prediction field.')
@@ -190,6 +220,9 @@ def main():
     ap.add_argument('--stage-filter', choices=['all', 'readable', 'skeleton'], default='readable')
     ap.add_argument('--candidates-field', default='', help='Optional list[str] field with alternative predictions.')
     ap.add_argument('--max-candidates', type=int, default=0, help='If >0, evaluate at most this many candidates per row.')
+    ap.add_argument('--pass-k', default='1,3,5', help='Comma-separated k values for pass@k estimate.')
+    ap.add_argument('--bootstrap-iters', type=int, default=1000, help='Bootstrap iterations for confidence intervals.')
+    ap.add_argument('--bootstrap-alpha', type=float, default=0.05, help='Alpha for confidence intervals.')
     ap.add_argument('--report', default='artifacts/eval/dos_reexec_report.json')
     args = ap.parse_args()
 
@@ -206,6 +239,18 @@ def main():
     strat = {}
     edit_scores = []
     failures = []
+    compile_binary = []
+    run_binary = []
+    cand_stats = {'rows': 0, 'total_candidates': 0, 'compile_success_candidates': 0, 'run_success_candidates': 0}
+    passk_compile_acc = {}
+    passk_run_acc = {}
+    pass_ks = []
+    for x in str(args.pass_k).split(','):
+        x = x.strip()
+        if x.isdigit() and int(x) > 0:
+            pass_ks.append(int(x))
+    if not pass_ks:
+        pass_ks = [1, 3, 5]
 
     for i, row in enumerate(rows):
         meta = row.get('meta') or {}
@@ -219,6 +264,8 @@ def main():
             preds = preds[:args.max_candidates]
         if not preds:
             continue
+        cand_stats['rows'] += 1
+        cand_stats['total_candidates'] += len(preds)
         comp = args.compiler or meta.get('compiler', 'msc61')
         if comp not in TOOLCHAINS:
             comp = 'msc61'
@@ -253,6 +300,8 @@ def main():
         ok_run = False
         diag = ''
         best_pred = ''
+        cand_compile_hits = 0
+        cand_run_hits = 0
         src_dir = None
         if isinstance(src_rel, str) and src_rel:
             sp = REPO_ROOT / src_rel
@@ -274,6 +323,9 @@ def main():
             for code, want_run in code_variants:
                 local_ok, local_run, local_diag = compile_and_maybe_run(code, comp, flags, args.timeout, want_run, src_dir=src_dir)
                 if local_ok:
+                    cand_compile_hits += 1
+                    if local_run:
+                        cand_run_hits += 1
                     break
             if local_ok and not ok:
                 ok, ok_run, diag = local_ok, local_run, local_diag
@@ -288,8 +340,23 @@ def main():
         total += 1
         if ok:
             compile_ok += 1
+            compile_binary.append(1)
+        else:
+            compile_binary.append(0)
         if ok_run:
             run_ok += 1
+            run_binary.append(1)
+        elif args.with_run and test_code.strip():
+            run_binary.append(0)
+        cand_stats['compile_success_candidates'] += cand_compile_hits
+        cand_stats['run_success_candidates'] += cand_run_hits
+        n = len(preds)
+        c_comp = min(cand_compile_hits, n)
+        c_run = min(cand_run_hits, n)
+        for k in pass_ks:
+            passk_compile_acc.setdefault(str(k), []).append(pass_at_k(n, c_comp, k))
+            if args.with_run and test_code.strip():
+                passk_run_acc.setdefault(str(k), []).append(pass_at_k(n, c_run, k))
 
         key_opt = 'OPTUNK'
         m = re.search(r'/O([A-Za-z]+)', flags)
@@ -329,6 +396,30 @@ def main():
             'ok': run_ok,
             'run_rate': (run_ok / run_eligible) if run_eligible else None,
         },
+        'confidence_intervals': {
+            'compile_rate': {
+                'alpha': args.bootstrap_alpha,
+                'iters': args.bootstrap_iters,
+                'low': bootstrap_ci(compile_binary, args.bootstrap_iters, args.bootstrap_alpha)[0],
+                'high': bootstrap_ci(compile_binary, args.bootstrap_iters, args.bootstrap_alpha)[1],
+            },
+            'run_rate': {
+                'alpha': args.bootstrap_alpha,
+                'iters': args.bootstrap_iters,
+                'low': bootstrap_ci(run_binary, args.bootstrap_iters, args.bootstrap_alpha)[0],
+                'high': bootstrap_ci(run_binary, args.bootstrap_iters, args.bootstrap_alpha)[1],
+            },
+        },
+        'candidate_stats': {
+            **cand_stats,
+            'avg_candidates_per_row': (cand_stats['total_candidates'] / cand_stats['rows']) if cand_stats['rows'] else 0.0,
+            'candidate_compile_rate': (cand_stats['compile_success_candidates'] / cand_stats['total_candidates']) if cand_stats['total_candidates'] else 0.0,
+            'candidate_run_rate': (cand_stats['run_success_candidates'] / cand_stats['total_candidates']) if cand_stats['total_candidates'] else 0.0,
+        },
+        'pass_at_k': {
+            'compile': {k: (statistics.fmean(v) if v else 0.0) for k, v in sorted(passk_compile_acc.items(), key=lambda x: int(x[0]))},
+            'run': {k: (statistics.fmean(v) if v else 0.0) for k, v in sorted(passk_run_acc.items(), key=lambda x: int(x[0]))},
+        },
         'stratified': {
             k: {
                 'total': v['total'],
@@ -353,6 +444,7 @@ def main():
         'samples_evaluated': report['samples_evaluated'],
         'compile_rate': report['compile_rate'],
         'run_rate': report['run']['run_rate'],
+        'pass_at_1_compile': report['pass_at_k']['compile'].get('1'),
         'edit_mean': report['edit_similarity']['mean'],
         'report': args.report,
     }))

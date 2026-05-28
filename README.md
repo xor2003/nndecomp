@@ -131,6 +131,8 @@ Rows are JSON objects with `messages` (chat format) and optional `meta`.
 - Re-exec evaluator with:
   - compile-rate,
   - optional run-rate,
+  - pass@k estimates for multi-candidate outputs,
+  - bootstrap confidence intervals,
   - stratified metrics,
   - optional edit similarity.
 
