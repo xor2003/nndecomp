@@ -123,6 +123,29 @@ def split_includes_and_body(text: str) -> tuple[str, str]:
     return '\n'.join(inc), '\n'.join(body)
 
 
+def classify_failure(diag: str) -> str:
+    d = (diag or '').lower()
+    if not d:
+        return 'unknown'
+    if 'timeout_compile' in d:
+        return 'timeout_compile'
+    if 'timeout_run' in d:
+        return 'timeout_run'
+    if 'compiler_not_found' in d:
+        return 'compiler_not_found'
+    if 'fatal error' in d and ('cannot open include file' in d or 'include' in d):
+        return 'missing_include'
+    if 'syntax error' in d or 'parse error' in d:
+        return 'syntax_error'
+    if 'undeclared identifier' in d or 'undefined symbol' in d:
+        return 'undefined_symbol'
+    if 'redefinition' in d or 'already defined' in d:
+        return 'redefinition'
+    if 'error' in d:
+        return 'compile_error_other'
+    return 'other'
+
+
 def compile_and_maybe_run(code: str, compiler: str, flags: str, timeout: int, run_exe: bool, src_dir: Path | None = None) -> tuple[bool, bool, str]:
     tc = TOOLCHAINS[compiler]
     exe_dos = find_exe(tc['root'], tc['exe'])
@@ -246,6 +269,7 @@ def main():
     cand_stats = {'rows': 0, 'total_candidates': 0, 'compile_success_candidates': 0, 'run_success_candidates': 0}
     passk_compile_acc = {}
     passk_run_acc = {}
+    fail_reason_counts = {}
     pass_ks = []
     for x in str(args.pass_k).split(','):
         x = x.strip()
@@ -391,6 +415,8 @@ def main():
 
         if not ok and len(failures) < 20:
             failures.append({'index': i, 'source': meta.get('source', ''), 'compiler': comp, 'flags': flags, 'diag': diag[-500:]})
+        reason = 'ok' if ok else classify_failure(diag)
+        fail_reason_counts[reason] = fail_reason_counts.get(reason, 0) + 1
         sample_rows.append({
             'index': i,
             'source': meta.get('source', ''),
@@ -404,6 +430,7 @@ def main():
             'candidate_compile_hits': cand_compile_hits,
             'candidate_run_hits': cand_run_hits,
             'edit_similarity': es,
+            'reason': reason,
             'diag_tail': (diag[-500:] if isinstance(diag, str) else ''),
         })
 
@@ -442,6 +469,7 @@ def main():
             'compile': {k: (statistics.fmean(v) if v else 0.0) for k, v in sorted(passk_compile_acc.items(), key=lambda x: int(x[0]))},
             'run': {k: (statistics.fmean(v) if v else 0.0) for k, v in sorted(passk_run_acc.items(), key=lambda x: int(x[0]))},
         },
+        'failure_reasons': dict(sorted(fail_reason_counts.items())),
         'stratified': {
             k: {
                 'total': v['total'],

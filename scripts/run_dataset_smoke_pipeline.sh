@@ -13,6 +13,7 @@ VAL="$OUT_DIR/val.jsonl"
 TEST="$OUT_DIR/test.jsonl"
 BENCH="$OUT_DIR/benchmark_readable.jsonl"
 BENCH_INDEX="$OUT_DIR/benchmark_readable.index.json"
+BENCH_MANIFEST="$OUT_DIR/benchmark_readable.manifest.json"
 MANIFEST="$OUT_DIR/manifest.json"
 
 rtk python3 scripts/validate_dataset_schema.py --in-jsonl "$IN_JSONL"
@@ -31,6 +32,7 @@ rtk python3 scripts/make_benchmark_pack.py \
   --in-jsonl "$TEST" \
   --out-jsonl "$BENCH" \
   --out-index "$BENCH_INDEX" \
+  --out-manifest "$BENCH_MANIFEST" \
   --mode opt-balanced \
   --dedup-by norm_hash \
   --stage-filter readable \
@@ -57,6 +59,7 @@ echo "Smoke pipeline done"
 echo "Input:      $IN_JSONL"
 echo "Train/Val/Test: $TRAIN | $VAL | $TEST"
 echo "Benchmark:  $BENCH"
+echo "Bench man.: $BENCH_MANIFEST"
 echo "Manifest:   $MANIFEST"
 echo "Eval:       $EVAL_REPORT"
 echo "Eval rows:  $EVAL_SAMPLES"

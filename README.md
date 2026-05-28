@@ -43,6 +43,7 @@ Generated outputs are scored with DOS toolchain re-compilation checks (and optio
 - `scripts/make_benchmark_pack.py`: benchmark subset builder (`bucket` and `opt-balanced` modes).
   - supports pre-sampling dedup (`--dedup-by norm_hash|raw_hash|source_function`).
 - `scripts/eval_dos_reexec.py`: compile/run/edit-sim evaluator.
+- `scripts/aggregate_eval_reports.py`: aggregate repeated eval reports (mean/std + failure totals).
 - `scripts/validate_dataset_schema.py`: JSONL schema checks for training rows.
 - `scripts/make_dataset_manifest.py`: dataset hash/stat manifest generator.
 - `scripts/run_final_combo_dataset.sh`: convenience wrapper for full combo generation.
@@ -136,8 +137,10 @@ Rows are JSON objects with `messages` (chat format) and optional `meta`.
   - pass@k estimates for multi-candidate outputs,
   - bootstrap confidence intervals,
   - per-sample JSONL output for failure mining,
+  - failure taxonomy buckets in report/sample rows,
   - stratified metrics,
   - optional edit similarity.
+- Benchmark pack supports frozen stable sample IDs and optional benchmark manifest with checksums/params.
 
 ## Notes
 
