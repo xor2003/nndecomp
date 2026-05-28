@@ -32,6 +32,7 @@ rtk python3 scripts/make_benchmark_pack.py \
   --out-jsonl "$BENCH" \
   --out-index "$BENCH_INDEX" \
   --mode opt-balanced \
+  --dedup-by norm_hash \
   --stage-filter readable \
   --quality high \
   --per-opt 20 \

@@ -27,10 +27,13 @@ def main():
     ap.add_argument('--per-bucket', type=int, default=50)
     ap.add_argument('--mode', choices=['bucket', 'opt-balanced'], default='bucket')
     ap.add_argument('--per-opt', type=int, default=0, help='Rows per opt bucket when --mode=opt-balanced.')
+    ap.add_argument('--dedup-by', choices=['none', 'norm_hash', 'raw_hash', 'source_function'], default='none')
     ap.add_argument('--seed', type=int, default=1337)
     args = ap.parse_args()
 
     buckets = defaultdict(list)
+    seen = set()
+    dedup_dropped = 0
     with Path(args.in_jsonl).open(encoding='utf-8') as f:
         for ln in f:
             if not ln.strip():
@@ -42,6 +45,16 @@ def main():
                 continue
             if args.quality and str(meta.get('quality') or '') != args.quality:
                 continue
+            if args.dedup_by != 'none':
+                if args.dedup_by in ('norm_hash', 'raw_hash'):
+                    dk = str(meta.get(args.dedup_by) or '')
+                else:
+                    dk = f"{str(meta.get('source') or '')}::{str(meta.get('function') or '')}"
+                if dk:
+                    if dk in seen:
+                        dedup_dropped += 1
+                        continue
+                    seen.add(dk)
             comp = str(meta.get('compiler') or 'unknown')
             flags = str(meta.get('flags') or '')
             opt = opt_bucket(flags)
@@ -90,6 +103,8 @@ def main():
     print(json.dumps({
         'rows': len(selected),
         'mode': args.mode,
+        'dedup_by': args.dedup_by,
+        'dedup_dropped': dedup_dropped,
         'buckets': {k: len(v) for k, v in buckets.items()},
     }))
 
